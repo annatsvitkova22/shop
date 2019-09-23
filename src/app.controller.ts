@@ -7,7 +7,8 @@ import { AuthService } from 'src/auth/auth.service';
 
 @Controller('api')
 export class AppController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService, appService: AppService) { }
+ 
 
   @Get()
   getHello(): boolean {
