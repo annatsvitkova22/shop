@@ -1,30 +1,14 @@
 import { Controller, Get, UseGuards, Post, Request, Body } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Env, getEnv } from 'src/environment/environment';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from 'src/auth/auth.service';
 
-
-@Controller('api')
+@Controller()
 export class AppController {
-  constructor(private readonly authService: AuthService, appService: AppService) { }
- 
+  constructor(appService: AppService) { }
 
   @Get()
   getHello(): boolean {
-    let viewEnvitonment: Env = getEnv();
+    const viewEnvitonment: Env = getEnv();
     return viewEnvitonment.production;
-  }
-
-
-  @Post('login')
-  async login(@Body() req) {
-    return this.authService.login(req.user);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('me')
-  getProfile(@Request() req) {
-    return req.user;
   }
 }
