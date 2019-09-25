@@ -10,11 +10,13 @@ import { LocalStrategy } from 'src/common/local.strategy';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/users/users.service';
 
+const fs = require('fs');
+
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: "secretKey",
+      secret: fs.readFileSync('src/secrets/domain.key'),
       signOptions: { expiresIn: '30m' },
     })],
   controllers: [AppController, ControllersController, AuthenticationController],

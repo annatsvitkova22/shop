@@ -4,6 +4,11 @@ import { environmentProd } from 'src/environment/environment.prod'
 export interface Env {
     production?: boolean;
     name?: string;
+    secret: string,
+    refreshTokenSecret: string,
+    port: number,
+    tokenLife: number,
+    refreshTokenLife: number,
 }
 
 export const getEnv = (): Env => {
@@ -13,6 +18,5 @@ export const getEnv = (): Env => {
     if (process.env.NODE_ENV == 'production') {
         environment = environmentProd;
     }
-
     return environment;
 }

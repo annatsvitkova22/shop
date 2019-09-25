@@ -1,12 +1,15 @@
 import { Injectable} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { Env, getEnv } from 'src/environment/environment';
+
+const jwt = require('jsonwebtoken');
+const myEnvitonment: Env = getEnv();
+
 
 @Injectable()
 export class AuthService {
   constructor(
       private readonly usersService: UsersService,
-      private readonly jwtService: JwtService,
       ) {}
 
   public async validateUser(username: string, pass: string): Promise<any> {
@@ -20,12 +23,18 @@ export class AuthService {
     return null;
   }
 
-  public async login(user: any) {
-    const payload = { username: user.username, user: user.userId };
+  public async getToken(user: any) {
     const access_token = {
-      access_token: this.jwtService.sign(payload),
+      access_token: jwt.sign(user, myEnvitonment.secret, { expiresIn: myEnvitonment.tokenLife}),
     };
 
     return access_token;
+  }
+
+  public async getRefresh(user: any){
+    const refreshToken = {
+      refresh_token: jwt.sign(user, myEnvitonment.refreshTokenSecret, { expiresIn: myEnvitonment.refreshTokenLife}),
+    }
+    return refreshToken;
   }
 }

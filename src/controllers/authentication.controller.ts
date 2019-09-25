@@ -9,8 +9,9 @@ export class AuthenticationController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Body() req) {
-
-    return this.authService.login(req);
+    const log = this.authService.getToken(req);
+    console.log(log);
+    return this.authService.getRefresh(req);
   }
 
 
