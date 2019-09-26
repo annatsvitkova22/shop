@@ -1,3 +1,4 @@
+  
 import { Injectable} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { Env, getEnv } from 'src/environment/environment';
@@ -5,6 +6,13 @@ import { Env, getEnv } from 'src/environment/environment';
 const jwt = require('jsonwebtoken');
 const myEnvitonment: Env = getEnv();
 
+// export interface Payload {
+//   roles: string,
+// }
+
+// export const payload: Payload ={
+//   roles: "admin",
+// };
 
 @Injectable()
 export class AuthService {
@@ -27,14 +35,20 @@ export class AuthService {
     const access_token = {
       access_token: jwt.sign(user, myEnvitonment.secret, { expiresIn: myEnvitonment.tokenLife}),
     };
-
+    
     return access_token;
   }
 
-  public async getRefresh(user: any){
+  public async getRefresh(payload: any){
+    const user = {
+      role: payload.role,
+      userId: payload.userId, 
+      username: payload.username,
+    };
     const refreshToken = {
       refresh_token: jwt.sign(user, myEnvitonment.refreshTokenSecret, { expiresIn: myEnvitonment.refreshTokenLife}),
-    }
+    };
+
     return refreshToken;
   }
 }

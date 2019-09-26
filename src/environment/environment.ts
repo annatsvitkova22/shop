@@ -2,8 +2,8 @@ import { environmentDev } from 'src/environment/environment.dev'
 import { environmentProd } from 'src/environment/environment.prod'
 
 export interface Env {
-    production?: boolean;
-    name?: string;
+    production?: boolean,
+    name?: string,
     secret: string,
     refreshTokenSecret: string,
     port: number,

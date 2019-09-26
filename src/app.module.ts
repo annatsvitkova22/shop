@@ -9,18 +9,26 @@ import { JwtStrategy } from 'src/common/jwt.strategy';
 import { LocalStrategy } from 'src/common/local.strategy';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/users/users.service';
+import { Env, getEnv } from 'src/environment/environment';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from 'src/common/roles.guard'
 
+const myEnvitonment: Env = getEnv();
 const fs = require('fs');
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: fs.readFileSync('src/secrets/domain.key'),
+      secret: myEnvitonment.secret,
       signOptions: { expiresIn: '30m' },
     })],
   controllers: [AppController, ControllersController, AuthenticationController],
-  providers: [AppService, AuthService, UsersService, LocalStrategy, JwtStrategy],
+  providers: [AppService, AuthService, UsersService, LocalStrategy, JwtStrategy, 
+    {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  }],
 })
 export class AppModule { }
 
