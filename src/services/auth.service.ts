@@ -14,6 +14,7 @@ const myEnvitonment: Env = getEnv();
 //   roles: "admin",
 // };
 
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,7 +25,7 @@ export class AuthService {
     const user = await this.usersService.findOne(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
-
+     
       return result;
     }
 
