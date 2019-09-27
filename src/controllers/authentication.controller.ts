@@ -1,14 +1,17 @@
-import { Controller, Get, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, Query} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/services/auth.service';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
+import { ApiBearerAuth, ApiUseTags, ApiImplicitQuery } from '@nestjs/swagger';
 
 export interface Token {
   access_token: string,
   refresh_token: string,
 }
 
+@ApiBearerAuth()
+@ApiUseTags('authentication')
 @Controller('api')
 export class AuthenticationController {
   constructor(private readonly authService: AuthService) { }
@@ -23,7 +26,7 @@ export class AuthenticationController {
     }
     return  myToken;
   }
-  
+
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('me')
   @Roles('user')

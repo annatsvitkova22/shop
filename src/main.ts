@@ -1,6 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { PassportModule } from '@nestjs/passport';
+
 
 async function bootstrap() {
   const fs = require('fs');
@@ -8,16 +11,26 @@ async function bootstrap() {
   const http = require('http');
   const https = require('https');
 
-  const httpsOptions = {
-    key: fs.readFileSync('src/secrets/privatekey.key'),
-    cert: fs.readFileSync('src/secrets/certificate.crt'),
-  };
-
   const server = express();
   const app = await NestFactory.create(
     AppModule,
     new ExpressAdapter(server),
   );
+
+  const options = new DocumentBuilder()
+    .setTitle('Shop')
+    .setDescription('The shop API description')
+    .setVersion('1.0')
+    .addTag('shop')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  
+  SwaggerModule.setup('api', app, document);
+
+  const httpsOptions = {
+    key: fs.readFileSync('src/secrets/privatekey.key'),
+    cert: fs.readFileSync('src/secrets/certificate.crt'),
+  };
 
   app.enableCors();
   await app.init();

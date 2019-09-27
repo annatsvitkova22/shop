@@ -34,8 +34,10 @@
     "angular-environment": "^1.0.8",
     "bcrypt": "^3.0.6",
     "bcryptjs": "^2.4.3",
+    "class-validator": "^0.10.1",
     "config": "^3.2.2",
     "dotenv": "^8.1.0",
+    "fastify-swagger": "^2.4.0",
     "helmet": "^3.21.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
@@ -43,6 +45,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^2.6.2",
     "rxjs": "^6.5.3",
+    "swagger": "^0.7.5",
+    "swagger-ui-express": "^4.1.1",
     "typeorm": "^0.2.19"
   },
   "devDependencies": {
