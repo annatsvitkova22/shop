@@ -14,7 +14,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from 'src/common/roles.guard'
 
 const myEnvitonment: Env = getEnv();
-const fs = require('fs');
 
 @Module({
   imports: [

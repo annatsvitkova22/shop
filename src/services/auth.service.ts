@@ -1,19 +1,16 @@
   
 import { Injectable} from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService, User } from 'src/users/users.service';
 import { Env, getEnv } from 'src/environment/environment';
+
+export interface validateUser {
+  userId: number,
+  username: string,
+  role: string,
+}
 
 const jwt = require('jsonwebtoken');
 const myEnvitonment: Env = getEnv();
-
-// export interface Payload {
-//   roles: string,
-// }
-
-// export const payload: Payload ={
-//   roles: "admin",
-// };
-
 
 @Injectable()
 export class AuthService {
@@ -21,7 +18,7 @@ export class AuthService {
       private readonly usersService: UsersService,
       ) {}
 
-  public async validateUser(username: string, pass: string): Promise<any> {
+  public async validateUser(username: string, pass: string): Promise<validateUser> {
     const user = await this.usersService.findOne(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
@@ -32,24 +29,20 @@ export class AuthService {
     return null;
   }
 
-  public async getToken(user: any) {
-    const access_token = {
-      access_token: jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.tokenLife}),
-    };
+  public getToken(user: User) {
+    const access_token: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.tokenLife});
     
     return access_token;
   }
 
-  public async getRefresh(payload: any){
+  public  getRefresh(payload: User){
     const user = {
       role: payload.role,
       userId: payload.userId, 
       username: payload.username,
     };
-    const refreshToken = {
-      refresh_token: jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife}),
-    };
+    const refresh_token: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife});
 
-    return refreshToken;
+    return refresh_token;
   }
 }
