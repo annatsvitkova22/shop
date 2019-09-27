@@ -4,8 +4,7 @@ import { environmentProd } from 'src/environment/environment.prod'
 export interface Env {
     production?: boolean,
     name?: string,
-    secret: string,
-    refreshTokenSecret: string,
+    tokenSecret: string,
     port: number,
     tokenLife: number,
     refreshTokenLife: number,

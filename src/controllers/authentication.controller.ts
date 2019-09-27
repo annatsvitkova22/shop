@@ -3,9 +3,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/services/auth.service';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
-import { Env, getEnv } from 'src/environment/environment';
-
-const myEnvironment: Env = getEnv();
 
 @Controller('api')
 //@UseGuards(RolesGuard)
@@ -14,10 +11,11 @@ export class AuthenticationController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Body() req) {
-    const log = this.authService.getToken(req);
-    console.log(log);
+    const access_token = this.authService.getToken(req);
+    console.log(access_token);
     const refresh_token = this.authService.getRefresh(req);
-    return refresh_token;
+    
+    return  refresh_token;
   }
   
   @UseGuards(AuthGuard('jwt'), RolesGuard)

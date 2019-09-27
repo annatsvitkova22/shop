@@ -34,7 +34,7 @@ export class AuthService {
 
   public async getToken(user: any) {
     const access_token = {
-      access_token: jwt.sign(user, myEnvitonment.secret, { expiresIn: myEnvitonment.tokenLife}),
+      access_token: jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.tokenLife}),
     };
     
     return access_token;
@@ -47,7 +47,7 @@ export class AuthService {
       username: payload.username,
     };
     const refreshToken = {
-      refresh_token: jwt.sign(user, myEnvitonment.refreshTokenSecret, { expiresIn: myEnvitonment.refreshTokenLife}),
+      refresh_token: jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife}),
     };
 
     return refreshToken;

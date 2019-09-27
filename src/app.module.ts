@@ -20,7 +20,7 @@ const fs = require('fs');
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: myEnvitonment.secret,
+      secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: '30m' },
     })],
   controllers: [AppController, ControllersController, AuthenticationController],
