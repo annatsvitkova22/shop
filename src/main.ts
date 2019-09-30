@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { PassportModule } from '@nestjs/passport';
-
+import { AllExceptionsFilter } from 'src/common/exception.filter';
+import { RequestMiddleware} from 'src/common/request.middleware'
 
 async function bootstrap() {
   const fs = require('fs');
@@ -18,10 +18,9 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .setTitle('Shop')
+    .setTitle('My API')
     .setDescription('The shop API description')
     .setVersion('1.0')
-    .addTag('shop')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   
@@ -32,6 +31,8 @@ async function bootstrap() {
     cert: fs.readFileSync('src/secrets/certificate.crt'),
   };
 
+  //app.useGlobalFilters(new AllExceptionsFilter());
+  //app.use(RequestMiddleware);
   app.enableCors();
   await app.init();
 

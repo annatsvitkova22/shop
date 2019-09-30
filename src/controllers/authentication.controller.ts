@@ -1,9 +1,10 @@
-import { Controller, Get, UseGuards, Post, Body, Query} from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, UseFilters } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/services/auth.service';
+import { AllExceptionsFilter } from 'src/common/exception.filter'
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
-import { ApiBearerAuth, ApiUseTags, ApiImplicitQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 
 export interface Token {
   access_token: string,
@@ -15,6 +16,9 @@ export interface Token {
 @Controller('api')
 export class AuthenticationController {
   constructor(private readonly authService: AuthService) { }
+
+  @UseFilters(new AllExceptionsFilter())
+
   @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Body() req) {

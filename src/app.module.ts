@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AppController } from 'src/app.controller';
@@ -10,8 +10,10 @@ import { LocalStrategy } from 'src/common/local.strategy';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/users/users.service';
 import { Env, getEnv } from 'src/environment/environment';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_FILTER } from '@nestjs/core';
 import { RolesGuard } from 'src/common/roles.guard'
+import { AllExceptionsFilter } from 'src/common/exception.filter'
+import { RequestMiddleware } from 'src/common/request.middleware'
 
 const myEnvitonment: Env = getEnv();
 
@@ -27,7 +29,18 @@ const myEnvitonment: Env = getEnv();
     {
     provide: APP_GUARD,
     useClass: RolesGuard,
-  }],
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule implements NestModule{ 
+  configure(consumer: MiddlewareConsumer){
+    consumer
+      .apply(RequestMiddleware)
+      .forRoutes(AuthenticationController, AppController);
+  }
+}
 
