@@ -25,16 +25,18 @@ export class BooksService {
 
     async getBooks(){
         const books = await this.bookModel.find().exec();
-        return books.map(book => ({
-            id: book.id,
-            name: book.name,
-            description: book.description,
-            price: book.price,
-            status: book.status,
-            currency: book.currency,
-            type: book.type,
-            author: book.author,
-        }));
+        const result = books.map(book => ({
+                id: book.id,
+                name: book.name,
+                description: book.description,
+                price: book.price,
+                status: book.status,
+                currency: book.currency,
+                type: book.type,
+                author: book.author,
+            }));
+        
+        return result;
     }
 
     async getSingleBook(bookId: string) {
@@ -49,7 +51,7 @@ export class BooksService {
             type: book.type,
             author: book.author,
         };
-        
+
         return result;
     }
 
@@ -61,6 +63,7 @@ export class BooksService {
         status: string,
         currency: string,
         type: string,
+        author: string,
       ) {
         const updatedBook = await this.findBook(bookId);
         if (name) {
@@ -80,6 +83,9 @@ export class BooksService {
         }
         if (type) {
             updatedBook.type = type;
+        }
+        if (author) {
+            updatedBook.author = author;
         }
         updatedBook.save();
       }

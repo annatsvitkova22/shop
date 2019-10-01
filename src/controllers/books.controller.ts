@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param, Patch, Delete, NotFoundException} from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
 import { AuthorsService } from 'src/services/authors.service';
+import { BookSchema } from 'src/models/books.model';
   
   @Controller('books')
   export class BooksController {
@@ -38,7 +39,6 @@ import { AuthorsService } from 'src/services/authors.service';
     @Get()
     async getAllBooks() {
       const books = await this.booksService.getBooks();
-
       return books;
     }
   
@@ -59,14 +59,21 @@ import { AuthorsService } from 'src/services/authors.service';
       @Body('status') bookStatus: string,
       @Body('currency') bookCurrency: string,
       @Body('type') bookType: string,
+      @Body('author') bookAuthor: string,
     ) {
-      await this.booksService.updateBook(bookId, bookName, bookDescription, bookPrice, bookStatus, bookCurrency, bookType);
-      return null;
+        const author = await this.authorsService.getSingleAuthor(bookAuthor);
+        if(!author){
+            throw new NotFoundException('Could not find author.');
+        }
+        
+        await this.booksService.updateBook(bookId, bookName, bookDescription, bookPrice, bookStatus, bookCurrency, bookType, bookAuthor);
+
+        return "Ok";
     }
   
     @Delete(':id')
     async removeBook(@Param('id') bookId: string) {
         await this.booksService.deleteBook(bookId);
-        return null;
+        return "OK";
     }
   }
