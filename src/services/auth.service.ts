@@ -1,7 +1,7 @@
   
 import { Injectable} from '@nestjs/common';
 import { UsersService, User } from 'src/users/users.service';
-import { Env, getEnv } from 'src/environment/environment';
+import { Enviroment, getEnv } from 'src/environment/environment';
 
 export interface validateUser {
   userId: number,
@@ -10,7 +10,7 @@ export interface validateUser {
 }
 
 const jwt = require('jsonwebtoken');
-const myEnvitonment: Env = getEnv();
+const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class AuthService {

@@ -1,8 +1,8 @@
-import { Env } from "src/environment/environment";
+import { Enviroment } from "src/environment/environment";
 
 const fs = require('fs');
 
-export const environmentDev: Env = {
+export const environmentDev: Enviroment = {
   production: false,
   name: 'development',
   tokenSecret: fs.readFileSync('src/secrets/domain.key'),
