@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AllExceptionsFilter } from 'src/common/exception.filter';
-import { RequestMiddleware} from 'src/common/request.middleware'
 
 async function bootstrap() {
   const fs = require('fs');

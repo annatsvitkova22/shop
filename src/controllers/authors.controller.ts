@@ -1,14 +1,14 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, NotFoundException} from '@nestjs/common';
 import { AuthorsService } from 'src/services/authors.service';
   
   @Controller('authors')
   export class AuthorsController {
-    constructor(private readonly authorsService: AuthorsService) {}
+    constructor(
+      private readonly authorsService: AuthorsService,
+      ) {}
   
     @Post()
-    async addAuthors(
-      @Body('name') authorName: string,
-    ) {
+    async createAuthors( @Body('name') authorName: string ) {
       const generatedId = await this.authorsService.insertAuthor( authorName );
       
       return { id: generatedId };
@@ -17,12 +17,15 @@ import { AuthorsService } from 'src/services/authors.service';
     @Get()
     async getAllAuthors() {
       const authors = await this.authorsService.getAuthors();
+
       return authors;
     }
   
     @Get(':id')
-    getBook(@Param('id') authorId: string) {
-      return this.authorsService.getSingleAuthor(authorId);
+    async getBook(@Param('id') authorId: string) {
+      const author = await this.authorsService.getSingleAuthor(authorId);
+      
+      return author;
     }
   
     @Patch(':id')
@@ -31,12 +34,14 @@ import { AuthorsService } from 'src/services/authors.service';
       @Body('name') authorName: string,
     ) {
       await this.authorsService.updateAuthor(authorId, authorName);
-      return null;
+
+      return "Ok";
     }
   
     @Delete(':id')
     async removeAuthor(@Param('id') authorId: string) {
         await this.authorsService.deleteAuthor(authorId);
-        return null;
+      
+        return "Ok";
     }
   }

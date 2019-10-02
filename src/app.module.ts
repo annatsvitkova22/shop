@@ -14,7 +14,7 @@ import { RolesGuard } from 'src/common/roles.guard';
 import { AllExceptionsFilter } from 'src/common/exception.filter';
 import { RequestMiddleware } from 'src/common/request.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BookSchema } from 'src/models/books.model';
+import { BookSchema } from 'src/document/books.model';
 import { BooksController } from 'src/controllers/books.controller';
 import { BooksService } from 'src/services/books.service';
 import { BookModule } from 'src/common/book.module'

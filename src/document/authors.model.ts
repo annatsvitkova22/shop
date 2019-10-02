@@ -5,6 +5,6 @@ export const AuthorSchema = new mongoose.Schema({
 });
 
 export interface Author extends mongoose.Document{
-    id: string,
-    name: string,
+    id?: string,
+    name?: string,
 }

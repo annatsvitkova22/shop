@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { AuthorSchema } from 'src/models/authors.model';
+import { AuthorSchema } from 'src/document/authors.model';
 
 
 export const BookSchema = new mongoose.Schema({
@@ -13,14 +13,14 @@ export const BookSchema = new mongoose.Schema({
 });
 
 export interface Book extends mongoose.Document{
-    id: string,
-    name: string,
-    description: string,
-    price: number,
-    status: string,
-    currency: string,
-    type: string,
-    author: string,
+    id?: string,
+    name?: string,
+    description?: string,
+    price?: number,
+    status?: string,
+    currency?: string,
+    type?: string,
+    author?: string,
 }
 
 var Author = mongoose.model('Author', AuthorSchema);

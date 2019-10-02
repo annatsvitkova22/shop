@@ -1,39 +1,18 @@
 import { Controller, Post, Body, Get, Param, Patch, Delete, NotFoundException} from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
-import { AuthorsService } from 'src/services/authors.service';
-import { BookSchema } from 'src/models/books.model';
+import { CreateBookModel, UpdateBookModel } from 'src/models';
   
   @Controller('books')
   export class BooksController {
     constructor(
         private readonly booksService: BooksService,
-        private readonly authorsService: AuthorsService,
         ) {}
   
     @Post()
-    async addBook(
-      @Body('name') bookName: string,
-      @Body('description') bookDescription: string,
-      @Body('price') bookPrice: number,
-      @Body('status') bookStatus: string,
-      @Body('currency') bookCurrency: string,
-      @Body('type') bookType: string,
-      @Body('author') bookAuthor: string,
-    ) {
-        const author = await this.authorsService.getSingleAuthor(bookAuthor);
-        if(!author){
-            throw new NotFoundException('Could not find author.');
-        }
-      const generatedId = await this.booksService.insertBook(
-        bookName,
-        bookDescription,
-        bookPrice,
-        bookStatus,
-        bookCurrency,
-        bookType,
-        bookAuthor,
-      );
-      return { id: generatedId };
+    async createBook(@Body() createBook: CreateBookModel){
+      const getId = await this.booksService.createBook(createBook);
+
+      return { getId };
     }
   
     @Get()
@@ -44,29 +23,15 @@ import { BookSchema } from 'src/models/books.model';
   
     @Get(':id')
     async getBook(@Param('id') bookId: string) {
-        const book =  await this.booksService.getSingleBook(bookId);
-        const authorId = book.author;
-        const author = await this.authorsService.getSingleAuthor(authorId);
-        return {book, author};
+        const result =  await this.booksService.getSingleBook(bookId);
+        
+        return {result};
     }
   
-    @Patch(':id')
+    @Patch()
     async updateBook(
-      @Param('id') bookId: string,
-      @Body('name') bookName: string,
-      @Body('description') bookDescription: string,
-      @Body('price') bookPrice: number,
-      @Body('status') bookStatus: string,
-      @Body('currency') bookCurrency: string,
-      @Body('type') bookType: string,
-      @Body('author') bookAuthor: string,
-    ) {
-        const author = await this.authorsService.getSingleAuthor(bookAuthor);
-        if(!author){
-            throw new NotFoundException('Could not find author.');
-        }
-        
-        await this.booksService.updateBook(bookId, bookName, bookDescription, bookPrice, bookStatus, bookCurrency, bookType, bookAuthor);
+      @Body() book: UpdateBookModel){
+        await this.booksService.updateBook(book);
 
         return "Ok";
     }
