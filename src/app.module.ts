@@ -14,8 +14,14 @@ import { RolesGuard } from 'src/common/roles.guard';
 import { AllExceptionsFilter } from 'src/common/exception.filter';
 import { RequestMiddleware } from 'src/common/request.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BookModule } from 'src/common/book.module';
-import { AuthorModule } from 'src/common/author.module';
+import { BookSchema } from 'src/document/books.model';
+import { AuthorSchema } from 'src/document/authors.model';
+import { AuthorsService } from 'src/services/authors.service';
+import { BooksService } from 'src/services/books.service';
+import { AuthorRepository } from 'src/repositories/author.repository';
+import { BookRepository } from 'src/repositories/book.repository';
+import { AuthorsController } from 'src/controllers/authors.controller';
+import { BooksController } from 'src/controllers/books.controller';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -26,14 +32,14 @@ const myEnvitonment: Enviroment = getEnv();
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
-    BookModule,
-    AuthorModule,
+    MongooseModule.forFeature([{ name: 'Book', schema: BookSchema }]),
+    MongooseModule.forFeature([{ name: 'Author', schema: AuthorSchema }]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: '30m' },
     })],
-  controllers: [AppController, ControllersController, AuthenticationController],
-  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy,
+  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsController ],
+  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, AuthorsService, BooksService, AuthorRepository, BookRepository,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
