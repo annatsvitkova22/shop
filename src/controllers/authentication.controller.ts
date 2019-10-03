@@ -1,20 +1,12 @@
 import { Controller, Get, UseGuards, Post, Body, UseFilters, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/services/auth.service';
-import { AllExceptionsFilter } from 'src/common/exception.filter'
+import { AllExceptionsFilter } from 'src/common/exception.filter';
 import { RolesGuard } from 'src/common/roles.guard';
 import { Roles } from 'src/common/roles.decorator';
 import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse } from '@nestjs/swagger';
-import { User } from 'src/users/users.service'
-import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
-
-export class Token {
-  @ApiModelProperty()
-  @ApiProduces()
-  access_token: string;
-  @ApiModelProperty()
-  refresh_token: string;
-}
+import { User } from 'src/models';
+import { Token } from 'src/models';
 
 @ApiBearerAuth()
 @ApiUseTags('authentication')
@@ -23,18 +15,17 @@ export class AuthenticationController {
   constructor(private readonly authService: AuthService) { }
 
   @UseFilters(new AllExceptionsFilter())
-
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: User })
   public async login(@Body() req) {
-    const access_token = this.authService.getToken(req);
-    const refresh_token = this.authService.getRefresh(req);
+    const getAccessToken = this.authService.getToken(req);
+    const getRefreshToken = this.authService.getRefresh(req);
     const myToken: Token = {
-      access_token: access_token,
-      refresh_token: refresh_token,
-    }
-    return  myToken;
+      accessToken: getAccessToken,
+      refreshToken: getRefreshToken,
+    };
+    return myToken;
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

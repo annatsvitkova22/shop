@@ -1,13 +1,8 @@
-  
-import { Injectable} from '@nestjs/common';
-import { UsersService, User } from 'src/users/users.service';
+import { Injectable } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
+import { User } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
-
-export interface validateUser {
-  userId: number,
-  username: string,
-  role: string,
-}
+import { ValidateUser } from 'src/models';
 
 const jwt = require('jsonwebtoken');
 const myEnvitonment: Enviroment = getEnv();
@@ -15,14 +10,14 @@ const myEnvitonment: Enviroment = getEnv();
 @Injectable()
 export class AuthService {
   constructor(
-      private readonly usersService: UsersService,
-      ) {}
+    private readonly usersService: UsersService,
+  ) { }
 
-  public async validateUser(username: string, pass: string): Promise<validateUser> {
+  public async validateUser(username: string, pass: string): Promise<ValidateUser> {
     const user = await this.usersService.findOne(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
-     
+
       return result;
     }
 
@@ -30,19 +25,19 @@ export class AuthService {
   }
 
   public getToken(user: User) {
-    const access_token: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.tokenLife});
-    
-    return access_token;
+    const accessToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.tokenLife });
+
+    return accessToken;
   }
 
-  public  getRefresh(payload: User){
+  public getRefresh(payload: User) {
     const user = {
       role: payload.role,
-      userId: payload.userId, 
+      userId: payload.userId,
       username: payload.username,
     };
-    const refresh_token: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife});
+    const refreshToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
 
-    return refresh_token;
+    return refreshToken;
   }
 }

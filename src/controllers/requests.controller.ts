@@ -29,7 +29,6 @@ export class ControllersController {
         updateElement.age = update.age;
         updateElement.breed = update.breed;
         updateElement.name = update.name;
-  
         return updateElement;
     }
 

@@ -1,3 +1,3 @@
-export class CreateAuthorModel{
+export class CreateAuthorModel {
     name?: string;
 }

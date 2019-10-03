@@ -4,3 +4,6 @@ export * from 'src/models/create-book.model';
 export * from 'src/models/create-author.model';
 export * from 'src/models/update-book.model';
 export * from 'src/models/update-author.model';
+export * from 'src/models/token.model';
+export * from 'src/models/validate-user.model';
+export * from 'src/models/user.model';

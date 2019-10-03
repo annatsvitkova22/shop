@@ -1,91 +1,93 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Author } from 'src/document/authors.model';
-import { Book } from 'src/document/books.model'
-import { BooksService } from 'src/services/books.service';
+import { AuthorDocument } from 'src/document/authors.model';
+import { AuthorRepository } from 'src/repositories/author.repository';
+import { CreateAuthorModel, UpdateAuthorModel } from 'src/models';
 
 @Injectable()
 export class AuthorsService {
-    constructor(
-        @InjectModel ('Author') private authorModel: Model<Author>,
-        @InjectModel ('Book') private bookModel: Model<Book>,
-    ){}
+  constructor(
+    public readonly authorRepository: AuthorRepository,
+  ) { }
 
-    async insertAuthor(name: string ){
-        const newAuthor = new this.authorModel({
-            name,
-        });
-        const result = await newAuthor.save();
-        return result.id as string;
+  async createAuthor(createAuthor: CreateAuthorModel) {
+    const getAuthor: AuthorDocument = {} as AuthorDocument;
+    getAuthor.name = createAuthor.name;
+    const result = await this.authorRepository.createAuthor(getAuthor);
+    return result;
+  }
+
+  async getAuthors() {
+    const authors = await this.authorRepository.getAuthors();
+    const result = authors.map(authors => ({
+      id: authors.id,
+      name: authors.name,
+    }));
+
+    return result;
+  }
+
+  async getAuthorById(authorId: string) {
+    const author = await this.findAuthor(authorId);
+
+    return author;
+  }
+
+  async updateAuthor(updateAuthor: UpdateAuthorModel) {
+    const getAuthor: AuthorDocument = {} as AuthorDocument;
+    getAuthor.id = updateAuthor.id;
+    getAuthor.name = updateAuthor.name;
+    const updatedAuthor = await this.findAuthor(getAuthor.id);
+    if (getAuthor.name) {
+      updatedAuthor.name = getAuthor.name;
     }
 
-    async getAuthors(){
-        const authors = await this.authorModel.find().exec();
-        return authors.map(authors => ({
-            id: authors.id,
-            name: authors.name,
-        }));
+    await this.authorRepository.updateAuthor(updatedAuthor);
+  }
+
+  async deleteAuthor(authorId: string) {
+    const idAuthor: AuthorDocument = {} as AuthorDocument;
+    idAuthor.id = authorId;
+    const result = await this.authorRepository.deleteAuthor(idAuthor);
+    await this.getBookByAuthor(idAuthor.id);
+    if (result.n === 0) {
+      throw new NotFoundException('Could not find author.');
     }
+  }
 
-    async getSingleAuthor(authorId: string) {
-        const author = await this.findAuthor(authorId);
-    
-        return author;
+  private async findAuthor(id: string): Promise<AuthorDocument> {
+    const idAuthor: AuthorDocument = {} as AuthorDocument;
+    idAuthor.id = id;
+    const author = await this.authorRepository.findAuthor(idAuthor);
+    return author;
+  }
+
+  async getBookByAuthor(authorId: string) {
+    const book = await this.findBookByAuthor(authorId);
+    const result = {
+      id: book.id,
+      name: book.name,
+      description: book.description,
+      price: book.price,
+      status: book.status,
+      currency: book.currency,
+      type: book.type,
+      author: book.author,
+    };
+    return result;
+  }
+
+  private async findBookByAuthor(authorId: string) {
+    const idAuthor: AuthorDocument = {} as AuthorDocument;
+    idAuthor.id = authorId;
+    let book;
+    try {
+      book = await this.authorRepository.findBookByAuthor(idAuthor);
+    } catch (error) {
+      throw new NotFoundException('Could not find book.');
     }
-
-    async updateAuthor(
-        authorId: string,
-        name: string,
-      ) {
-        const updatedAuthor = await this.findAuthor(authorId);
-        if (name) {
-            updatedAuthor.name = name;
-        }
-        updatedAuthor.save();
-      }
-    
-      async deleteAuthor(authorId: string) {
-        const result = await this.authorModel.deleteOne({_id: authorId}).exec();
-        await this.getBookByAuthor(authorId);
-        if (result.n === 0) {
-          throw new NotFoundException('Could not find author.');
-        }
-      }
-
-    private async findAuthor(id: string): Promise<Author> {
-        let author;
-          author = await this.authorModel.findById(id);
-      
-        return author;
-      }
-
-      async getBookByAuthor(authorId: string) {
-        const book = await this.findBookByAuthor(authorId);
-        const result = {
-            id: book.id,
-            name: book.name,
-            description: book.description,
-            price: book.price,
-            status: book.status,
-            currency: book.currency,
-            type: book.type,
-            author: book.author,
-        };
-        return result;
+    if (!book) {
+      throw new NotFoundException('Could not find book.');
     }
-
-      private async findBookByAuthor(authorId: string) {
-        let book;
-        try {
-            book = await this.bookModel.findOneAndUpdate({author: authorId}, {$set: {author: null}});
-          } catch (error) {
-            throw new NotFoundException('Could not find book.');
-        }
-        if (!book) {
-            throw new NotFoundException('Could not find book.');
-        }
-        return book;
-    }
-
+    return book;
+  }
 }

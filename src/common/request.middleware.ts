@@ -6,10 +6,6 @@ export class RequestMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: Function) {
     const url = req.protocol + '://' + req.hostname + req.url;
     const { password, ...user } = req.body;
-    
-    console.log(url);
-    console.log(user);
-    
     next();
   }
 }

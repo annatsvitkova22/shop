@@ -1,6 +1,6 @@
 import { Controller, Get, UseFilters } from '@nestjs/common';
 import { Enviroment, getEnv } from 'src/environment/environment';
-import { AllExceptionsFilter } from 'src/common/exception.filter'
+import { AllExceptionsFilter } from 'src/common/exception.filter';
 
 @Controller()
 export class AppController {

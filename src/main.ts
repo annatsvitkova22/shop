@@ -23,7 +23,6 @@ async function bootstrap() {
     .addBearerAuth('Authorization', 'header', 'basic')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  
   SwaggerModule.setup('api', app, document);
 
   const httpsOptions = {
@@ -31,14 +30,12 @@ async function bootstrap() {
     cert: fs.readFileSync('src/secrets/certificate.crt'),
   };
 
-  //app.useGlobalFilters(new AllExceptionsFilter());
-  //app.use(RequestMiddleware);
   app.enableCors();
   await app.init();
 
   https.createServer(httpsOptions, server).listen(443);
 
-  let http_server = http.createServer(function (req, res) {
+  http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
   }).listen(80);

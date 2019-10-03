@@ -1,4 +1,4 @@
-import { Enviroment } from "./environment";
+import { Enviroment } from 'src/environment/environment';
 
 const fs = require('fs');
 

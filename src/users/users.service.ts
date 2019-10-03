@@ -1,16 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
-
-export class User {
-  @ApiModelProperty()
-  userId: number;
-  @ApiModelProperty()
-  username: string;
-  @ApiModelProperty()
-  password: string;
-  @ApiModelProperty()
-  role: string
-}
+import { User } from 'src/models';
 
 @Injectable()
 export class UsersService {
@@ -40,7 +29,7 @@ export class UsersService {
   }
 
   async findOne(username: string): Promise<User | undefined> {
-    const find_user = this.users.find(user => user.username === username);
-    return find_user;
+    const findUser = this.users.find(user => user.username === username);
+    return findUser;
   }
 }

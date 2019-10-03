@@ -14,11 +14,8 @@ import { RolesGuard } from 'src/common/roles.guard';
 import { AllExceptionsFilter } from 'src/common/exception.filter';
 import { RequestMiddleware } from 'src/common/request.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BookSchema } from 'src/document/books.model';
-import { BooksController } from 'src/controllers/books.controller';
-import { BooksService } from 'src/services/books.service';
-import { BookModule } from 'src/common/book.module'
-import { AuthorModule } from 'src/common/author.module'
+import { BookModule } from 'src/common/book.module';
+import { AuthorModule } from 'src/common/author.module';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -35,11 +32,11 @@ const myEnvitonment: Enviroment = getEnv();
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: '30m' },
     })],
-  controllers: [AppController, ControllersController, AuthenticationController, ],
-  providers: [ AuthService, UsersService, LocalStrategy, JwtStrategy, 
+  controllers: [AppController, ControllersController, AuthenticationController],
+  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy,
     {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     {
       provide: APP_FILTER,
@@ -47,11 +44,10 @@ const myEnvitonment: Enviroment = getEnv();
     },
   ],
 })
-export class AppModule implements NestModule{ 
-  configure(consumer: MiddlewareConsumer){
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RequestMiddleware)
       .forRoutes(AuthenticationController, AppController);
   }
 }
-

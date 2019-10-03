@@ -1,5 +1,5 @@
-import { environmentDev } from 'src/environment/environment.dev'
-import { environmentProd } from 'src/environment/environment.prod'
+import { environmentDev } from 'src/environment/environment.dev';
+import { environmentProd } from 'src/environment/environment.prod';
 
 export class Enviroment {
     production?: boolean;
@@ -14,8 +14,8 @@ export const getEnv = (): Enviroment => {
     let environment: Enviroment;
     environment = environmentDev;
 
-    if (process.env.NODE_ENV == 'production') {
+    if (process.env.NODE_ENV === 'production') {
         environment = environmentProd;
     }
     return environment;
-}
+};
