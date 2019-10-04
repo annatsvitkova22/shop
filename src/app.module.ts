@@ -22,6 +22,11 @@ import { AuthorRepository } from 'src/repositories/author.repository';
 import { BookRepository } from 'src/repositories/book.repository';
 import { AuthorsController } from 'src/controllers/authors.controller';
 import { BooksController } from 'src/controllers/books.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PrintingEdition } from 'src/entity/printing-edition.entity';
+import { PrintingEditionsController } from 'src/controllers/printing-editions.controller';
+import { PrintingEditionService } from 'src/services/printing-editions.service';
+import { PrintingEditionRepository } from 'src/repositories/printing-edition.repository';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -34,12 +39,24 @@ const myEnvitonment: Enviroment = getEnv();
     }),
     MongooseModule.forFeature([{ name: 'Book', schema: BookSchema }]),
     MongooseModule.forFeature([{ name: 'Author', schema: AuthorSchema }]),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: '127.0.0.1',
+      port: 3306,
+      username: 'root',
+      password: '1111',
+      database: 'shop',
+      entities: [PrintingEdition],
+      synchronize: true,
+    }),
+    TypeOrmModule.forFeature([PrintingEdition]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: '30m' },
     })],
-  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsController ],
+  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsController, PrintingEditionsController],
   providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, AuthorsService, BooksService, AuthorRepository, BookRepository,
+    PrintingEditionService, PrintingEditionRepository,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
