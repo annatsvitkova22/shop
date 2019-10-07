@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { PrintingEditionService } from 'src/services/printing-editions.service';
-import { PrintingEdition } from 'src/entity/printing-edition.entity';
 import { CreatePrintingEditionModel } from 'src/models/create-printing-edition.model';
 import { UpdatePrintingEditionModel } from 'src/models/update-priting-edition.model';
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrintingEdition } from 'src/entity/printing-edition.entity';
+import { PrintingEdition } from 'src/entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -20,7 +20,7 @@ export class PrintingEditionRepository {
     public async getPrintingEditionById(editionId: PrintingEdition) {
         const findPrintingEdition = await this.printingEditionRepository.find({
             select: ['name', 'description', 'price', 'isRemoved', 'status', 'currency', 'type'],
-            where: [{ 'id': editionId.id }],
+            where: [{ id: editionId.id }],
         });
         return findPrintingEdition;
     }

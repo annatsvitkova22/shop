@@ -1,4 +1,4 @@
-export class UpdateAuthorModel {
+export class UpdateRoleModel {
     id?: number;
     name?: string;
 }

@@ -1,46 +1,40 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
-import { AuthorsService } from 'src/services/authors.service';
+import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
+import { AuthorService } from 'src/services';
 import { CreateAuthorModel, UpdateAuthorModel } from 'src/models';
 
-@Controller('authors')
+@Controller('author')
 export class AuthorsController {
-  constructor(
-    private readonly authorsService: AuthorsService,
-  ) { }
 
-  @Post()
-  async createAuthors(@Body() createAuthor: CreateAuthorModel) {
-    const getAuthor = await this.authorsService.createAuthor(createAuthor);
+    constructor(
+        private authorService: AuthorService,
+        ) { }
 
-    return { getAuthor };
-  }
+    @Get(':id')
+    get(@Param() params) {
+        const author = this.authorService.getAuthorById(params.id);
+        return author;
+    }
 
-  @Get()
-  async getAllAuthors() {
-    const authors = await this.authorsService.getAuthors();
-
-    return authors;
-  }
-
-  @Get(':id')
-  async getBook(@Param('id') authorId: string) {
-    const author = await this.authorsService.getAuthorById(authorId);
-
+    @Get()
+    getAll() {
+    const author = this.authorService.getAuthors();
     return author;
   }
 
-  @Patch()
-  async updateAuthor(
-    @Body() updateAuthor: UpdateAuthorModel) {
-    await this.authorsService.updateAuthor(updateAuthor);
+    @Post()
+    create(@Body() author: CreateAuthorModel) {
+        const createAuthor = this.authorService.createAuthor(author);
+        return createAuthor;
+    }
 
-    return true;
-  }
+    @Put()
+    update(@Body() author: UpdateAuthorModel) {
+        const updateAuthor = this.authorService.updateAuthor(author);
+        return updateAuthor;
+    }
 
-  @Delete(':id')
-  async removeAuthor(@Param('id') authorId: string) {
-    await this.authorsService.deleteAuthor(authorId);
-
-    return true;
-  }
+    @Delete(':id')
+    delete(@Param() params) {
+        return this.authorService.deleteAuthor(params.id);
+    }
 }

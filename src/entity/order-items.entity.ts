@@ -3,14 +3,13 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class OrderItem {
     @PrimaryGeneratedColumn()
-    id: number;
+    id?: number;
     @Column()
-    amount: number;
+    amount?: number;
     @Column()
-    currency: string;
+    currency?: string;
     @Column()
-    PritingEditionId: number;
+    pritingEditionId?: number;
     @Column()
-    count: string;
-
+    count?: string;
 }

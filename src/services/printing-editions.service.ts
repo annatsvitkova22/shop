@@ -1,15 +1,12 @@
-
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PrintingEdition } from 'src/entity/printing-edition.entity';
-import { CreatePrintingEditionModel } from 'src/models/create-printing-edition.model';
+import { PrintingEdition } from 'src/entity';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel } from 'src/models';
 import { PrintingEditionRepository } from 'src/repositories/printing-edition.repository';
-import { UpdatePrintingEditionModel } from 'src/models/update-priting-edition.model';
 
 @Injectable()
 export class PrintingEditionService {
 
-    constructor(@InjectRepository(PrintingEdition) private printingEditionRepository: PrintingEditionRepository) { }
+    constructor( private printingEditionRepository: PrintingEditionRepository) { }
 
     async getPrintingEditions(): Promise<PrintingEdition[]> {
         const getEdition = await this.printingEditionRepository.getPrintinEditions();

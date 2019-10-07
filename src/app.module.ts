@@ -2,31 +2,23 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AppController } from 'src/app.controller';
-import { ControllersController } from 'src/controllers/requests.controller';
-import { AuthenticationController } from 'src/controllers/authentication.controller';
-import { JwtStrategy } from 'src/common/jwt.strategy';
-import { LocalStrategy } from 'src/common/local.strategy';
-import { AuthService } from 'src/services/auth.service';
+import { ControllersController, AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
+  UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController} from 'src/controllers';
+import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware } from 'src/common';
+import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService, UserService, OrderService, OrderItemService,
+  AuthorService, RoleService, PaymentService} from 'src/services';
 import { UsersService } from 'src/users/users.service';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
-import { RolesGuard } from 'src/common/roles.guard';
-import { AllExceptionsFilter } from 'src/common/exception.filter';
-import { RequestMiddleware } from 'src/common/request.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BookSchema } from 'src/document/books.model';
-import { AuthorSchema } from 'src/document/authors.model';
-import { AuthorsService } from 'src/services/authors.service';
-import { BooksService } from 'src/services/books.service';
-import { AuthorRepository } from 'src/repositories/author.repository';
-import { BookRepository } from 'src/repositories/book.repository';
-import { AuthorsController } from 'src/controllers/authors.controller';
-import { BooksController } from 'src/controllers/books.controller';
+import { BookSchema, AuthorSchema } from 'src/document';
+import { AuthorMongoRepository, BookRepository, PrintingEditionRepository, UserRepository, OrderRepository,
+  OrderItemRepository,
+  AuthorRepository,
+  RoleRepository,
+  PaymentRepository} from 'src/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PrintingEdition } from 'src/entity/printing-edition.entity';
-import { PrintingEditionsController } from 'src/controllers/printing-editions.controller';
-import { PrintingEditionService } from 'src/services/printing-editions.service';
-import { PrintingEditionRepository } from 'src/repositories/printing-edition.repository';
+import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment } from 'src/entity';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -46,17 +38,19 @@ const myEnvitonment: Enviroment = getEnv();
       username: 'root',
       password: '1111',
       database: 'shop',
-      entities: [PrintingEdition],
+      entities: [PrintingEdition, User, Order, OrderItem, Author, Role, Payment],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([PrintingEdition]),
+    TypeOrmModule.forFeature([PrintingEdition, User, Order, OrderItem, Author, Role, Payment]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: '30m' },
     })],
-  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsController, PrintingEditionsController],
-  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, AuthorsService, BooksService, AuthorRepository, BookRepository,
-    PrintingEditionService, PrintingEditionRepository,
+  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsMongoController, PrintingEditionsController,
+    UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController],
+  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
+    PrintingEditionService, PrintingEditionRepository, UserService, UserRepository, OrderService, OrderRepository, OrderItemService,
+    OrderItemRepository, AuthorService, AuthorRepository, RoleService, RoleRepository, PaymentService, PaymentRepository,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
