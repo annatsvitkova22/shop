@@ -1,22 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { OrderItem } from 'src/entity';
-import { OrderItemRepository } from 'src/repositories';
 import { UpdateOrderItemModel, CreateOrderItemModel } from 'src/models';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class OrderItemService {
 
-    constructor( private orderItemRepository: OrderItemRepository) { }
+    constructor( @InjectRepository(OrderItem) private orderItemRepository: Repository<OrderItem>) { }
 
     async getOrderItems(): Promise<OrderItem[]> {
-        const getOrderItems = await this.orderItemRepository.getOrderItems();
+        const getOrderItems = await this.orderItemRepository.find();
         return getOrderItems;
     }
 
     async getOrderItemById(id: number) {
         const OrderItemId: UpdateOrderItemModel = {};
         OrderItemId.id = id;
-        const orderItem = await this.orderItemRepository.getOrderItemsById(OrderItemId);
+        const orderItem = await this.orderItemRepository.find({
+            select: ['amount', 'currency', 'pritingEditionId', 'count'],
+            where: [{ id: OrderItemId.id }],
+        });
         return orderItem;
     }
 
@@ -26,7 +30,7 @@ export class OrderItemService {
         getOrderItem.currency = createOrderItem.currency;
         getOrderItem.pritingEditionId = createOrderItem.pritingEditionId;
         getOrderItem.count = createOrderItem.count;
-        const orderItem = await this.orderItemRepository.createOrderItem(getOrderItem);
+        const orderItem = await this.orderItemRepository.save(getOrderItem);
         return(orderItem.id);
     }
 
@@ -37,21 +41,21 @@ export class OrderItemService {
         getOrderItem.currency = updateOrderItem.currency;
         getOrderItem.pritingEditionId = updateOrderItem.pritingEditionId;
         getOrderItem.count = updateOrderItem.count;
-        const toUpdate = await this.orderItemRepository.getOrderItemById(getOrderItem);
+        const toUpdate = await this.orderItemRepository.findOne(getOrderItem.id);
         delete toUpdate.amount;
         delete toUpdate.currency;
         delete toUpdate.pritingEditionId;
         delete toUpdate.count;
         delete getOrderItem.id;
         const updated = Object.assign(toUpdate, getOrderItem);
-        const orderItem = await this.orderItemRepository.createOrderItem(updated);
+        const orderItem = await this.orderItemRepository.save(updated);
         return orderItem;
       }
 
     async deleteOrderItem(orderItemId: number) {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = orderItemId;
-        const result = this.orderItemRepository.deleteOrderItem(orderItem);
+        const result = this.orderItemRepository.delete(orderItem);
         return result;
     }
 }

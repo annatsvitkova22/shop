@@ -20,3 +20,7 @@ export * from 'src/models/create-role.model';
 export * from 'src/models/update-role.model';
 export * from 'src/models/create-payment.model';
 export * from 'src/models/update-payment.model';
+export * from 'src/models/update-author-book.model';
+export * from 'src/models/create-author-book.model';
+export * from 'src/models/create-role-users.model';
+export * from 'src/models/update-role-users.model';

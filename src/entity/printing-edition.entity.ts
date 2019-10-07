@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { OrderItem, AuthorInBooks } from 'src/entity';
 
 @Entity()
 export class PrintingEdition {
@@ -19,4 +20,9 @@ export class PrintingEdition {
     @Column()
     type?: string;
 
+    @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
+    printingEditionConnection?: Promise<OrderItem[]>;
+
+    @ManyToOne(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
+    bookConnection?: Promise<AuthorInBooks[]>;
 }

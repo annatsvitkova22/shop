@@ -9,3 +9,5 @@ export * from 'src/controllers/order-items.controller';
 export * from 'src/controllers/authors.controller';
 export * from 'src/controllers/roles.controller';
 export * from 'src/controllers/payment.controller';
+export * from 'src/controllers/role-users.controller';
+export * from 'src/controllers/author-books.controller';

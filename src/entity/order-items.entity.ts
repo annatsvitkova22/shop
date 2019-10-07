@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { PrintingEdition } from 'src/entity';
 
 @Entity()
 export class OrderItem {
@@ -8,8 +9,13 @@ export class OrderItem {
     amount?: number;
     @Column()
     currency?: string;
-    @Column()
+    @Column({name: 'printing-edition_id'})
     pritingEditionId?: number;
     @Column()
     count?: string;
+
+    @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.printingEditionConnection, {primary:
+        true})
+    @JoinColumn({name: 'printing-edition_id'})
+    printingEdition?: PrintingEdition[];
 }

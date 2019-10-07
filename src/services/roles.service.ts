@@ -1,29 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from 'src/entity';
-import { RoleRepository } from 'src/repositories';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RoleService {
 
-    constructor( private roleRepository: RoleRepository) { }
+    constructor( @InjectRepository(Role) private roleRepository: Repository<Role>) { }
 
     async getRoles(): Promise<Role[]> {
-        const getRoles = await this.roleRepository.getRoles();
+        const getRoles = await this.roleRepository.find();
         return getRoles;
     }
 
     async getRoleById(id: number) {
         const RoleId: UpdateRoleModel = {};
         RoleId.id = id;
-        const role = await this.roleRepository.getRolesById(RoleId);
+        const role = await this.roleRepository.find({
+            select: ['name'],
+            where: [{ id: RoleId.id }],
+        });
         return role;
     }
 
     async createRole(createRole: CreateRoleModel) {
         const getRole: Role = {} as Role;
         getRole.name = createRole.name;
-        const role = await this.roleRepository.createRole(getRole);
+        const role = await this.roleRepository.save(getRole);
         return(role.id);
     }
 
@@ -31,18 +35,18 @@ export class RoleService {
         const getRole: Role = {} as Role;
         getRole.id = updateRole.id;
         getRole.name = updateRole.name;
-        const toUpdate = await this.roleRepository.getRoleById(getRole);
+        const toUpdate = await this.roleRepository.findOne(getRole.id);
         delete toUpdate.name;
         delete getRole.id;
         const updated = Object.assign(toUpdate, getRole);
-        const role = await this.roleRepository.createRole(updated);
+        const role = await this.roleRepository.save(updated);
         return role;
       }
 
     async deleteRole(roleId: number) {
         const role: Role = {} as Role;
         role.id = roleId;
-        const result = this.roleRepository.deleteRole(role);
+        const result = this.roleRepository.delete(role);
         return result;
     }
 }

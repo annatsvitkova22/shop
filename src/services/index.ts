@@ -8,3 +8,5 @@ export * from 'src/services/order-items.service';
 export * from 'src/services/authors.service';
 export * from 'src/services/roles.service';
 export * from 'src/services/payment.service';
+export * from 'src/services/role-users.service';
+export * from 'src/services/author-books.sevice';
