@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/models';
+import { Injectable, Body } from '@nestjs/common';
+import { UserService } from 'src/services';
+import { User } from 'src/entity';
+import { CreateUserModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { ValidateUser } from 'src/models';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm'
 
 const jwt = require('jsonwebtoken');
 const myEnvitonment: Enviroment = getEnv();
@@ -10,14 +13,21 @@ const myEnvitonment: Enviroment = getEnv();
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
-  ) { }
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
-  public async validateUser(username: string, pass: string): Promise<ValidateUser> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-
+  public async validateUser(getUser: CreateUserModel): Promise<CreateUserModel> {
+    const newUser: User = {} as User;
+    newUser.firstName = getUser.firstName;
+    newUser.lastName = getUser.lastName;
+    newUser.passwordHash = getUser.passwordHash;
+    newUser.email = getUser.email;
+    const user = await this.userRepository.findOne({ email: newUser.email });
+    if (!user) {
+      return null;
+    }
+    if (user && user.passwordHash === newUser.passwordHash) {
+      const { passwordHash, ...result } = user;
       return result;
     }
 
@@ -32,9 +42,9 @@ export class AuthService {
 
   public getRefresh(payload: User) {
     const user = {
-      role: payload.role,
-      userId: payload.userId,
-      username: payload.username,
+      role: payload.userRoleConnection,
+      userId: payload.lastName,
+      username: payload.firstName,
     };
     const refreshToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
 

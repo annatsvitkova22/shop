@@ -3,10 +3,11 @@ import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-
+    private saltRounds = 10;
     constructor( @InjectRepository(User) private userRepository: Repository<User>) { }
 
     async getUsers(): Promise<User[]> {
@@ -28,9 +29,14 @@ export class UserService {
         const getUser: User = {} as User;
         getUser.firstName = createUser.firstName;
         getUser.lastName = createUser.lastName;
-        getUser.passwordHash = createUser.passwordHash;
         getUser.email = createUser.email;
-        const user = await this.userRepository.save(getUser);
+        getUser.passwordHash = await this.getHash(createUser.passwordHash);
+        let user = await this.userRepository.findOne({ email: getUser.email });
+        if (user) {
+            const message: string = 'user with this email already exists';
+            return message;
+        }
+        user = await this.userRepository.save(getUser);
         return(user.id);
     }
 
@@ -58,4 +64,12 @@ export class UserService {
         const result = this.userRepository.delete(user);
         return result;
     }
+
+    async getHash(password: string|undefined): Promise<string> {
+        return bcrypt.hash(password, this.saltRounds);
+    }
+
+    // async compareHash(password: string|undefined, hash: string|undefined): Promise<boolean> {
+    //     return bcrypt.compare(password, hash);
+    //   }
 }
