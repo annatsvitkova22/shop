@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Author, PrintingEdition } from 'src/entity';
 @Entity()
 export class AuthorInBooks {
@@ -9,12 +9,12 @@ export class AuthorInBooks {
     @Column({name: 'book_id'})
     bookId?: number;
 
-    @OneToOne(() => Author,  author => author.authorConnection, {primary:
+    @ManyToOne(() => Author,  author => author.authorConnection, {primary:
         true})
     @JoinColumn({name: 'author_id'})
     author?: Author[];
 
-    @OneToMany(() => PrintingEdition,  printingEdition => printingEdition.bookConnection, {primary:
+    @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.bookConnection, {primary:
         true})
     @JoinColumn({name: 'book_id'})
     printingEdition?: PrintingEdition[];

@@ -23,6 +23,6 @@ export class PrintingEdition {
     @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
     printingEditionConnection?: Promise<OrderItem[]>;
 
-    @ManyToOne(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
+    @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
     bookConnection?: Promise<AuthorInBooks[]>;
 }

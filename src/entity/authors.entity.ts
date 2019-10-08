@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { AuthorInBooks } from 'src/entity';
 @Entity()
 export class Author {
@@ -7,6 +7,6 @@ export class Author {
     @Column()
     name?: string;
 
-    @OneToOne(() => AuthorInBooks, authorInBooks => authorInBooks.authorId)
+    @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.authorId)
     authorConnection?: Promise<AuthorInBooks[]>;
 }

@@ -18,7 +18,7 @@ export class OrderItemService {
         const OrderItemId: UpdateOrderItemModel = {};
         OrderItemId.id = id;
         const orderItem = await this.orderItemRepository.find({
-            select: ['amount', 'currency', 'pritingEditionId', 'count'],
+            select: ['pritingEditionId', 'count'],
             where: [{ id: OrderItemId.id }],
         });
         return orderItem;
@@ -26,8 +26,6 @@ export class OrderItemService {
 
     async createOrderItem(createOrderItem: CreateOrderItemModel) {
         const getOrderItem: OrderItem = {} as OrderItem;
-        getOrderItem.amount = createOrderItem.amount;
-        getOrderItem.currency = createOrderItem.currency;
         getOrderItem.pritingEditionId = createOrderItem.pritingEditionId;
         getOrderItem.count = createOrderItem.count;
         const orderItem = await this.orderItemRepository.save(getOrderItem);
@@ -37,13 +35,9 @@ export class OrderItemService {
     async updateOrderItem(updateOrderItem: UpdateOrderItemModel): Promise<OrderItem> {
         const getOrderItem: OrderItem = {} as OrderItem;
         getOrderItem.id = updateOrderItem.id;
-        getOrderItem.amount = updateOrderItem.amount;
-        getOrderItem.currency = updateOrderItem.currency;
         getOrderItem.pritingEditionId = updateOrderItem.pritingEditionId;
         getOrderItem.count = updateOrderItem.count;
         const toUpdate = await this.orderItemRepository.findOne(getOrderItem.id);
-        delete toUpdate.amount;
-        delete toUpdate.currency;
         delete toUpdate.pritingEditionId;
         delete toUpdate.count;
         delete getOrderItem.id;

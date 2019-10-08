@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, OneToMany, PrimaryGeneratedColumn, ManyToMany, ManyToOne } from 'typeorm';
 import { User, Role } from 'src/entity';
 
 @Entity()
@@ -15,7 +15,7 @@ export class UserInRoles {
     @JoinColumn({name: 'user_id'})
     user?: User[];
 
-    @OneToMany(() => Role,  role => role.roleConnection, {primary:
+    @ManyToOne(() => Role,  role => role.roleConnection, {primary:
         true})
     @JoinColumn({name: 'role_id'})
     role?: Role[];

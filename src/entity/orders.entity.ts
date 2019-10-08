@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne} from 'typeorm';
-import { User, Payment } from 'src/entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, OneToMany} from 'typeorm';
+import { User, Payment, OrderItem } from 'src/entity';
 @Entity()
 export class Order {
     @PrimaryGeneratedColumn()
@@ -22,4 +22,7 @@ export class Order {
         true})
     @JoinColumn({name: 'payment_id'})
     payment?: Payment[];
+
+    @OneToMany(() => OrderItem, orderItem => orderItem.orderId)
+    orderItemConnection?: Promise<OrderItem[]>;
 }

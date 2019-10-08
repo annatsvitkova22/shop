@@ -19,7 +19,7 @@ export class OrderItemRepository {
 
     public async getOrderItemsById(orderItemId: OrderItem) {
         const findOrderItem = await this.orderItemRepository.find({
-            select: ['amount', 'currency', 'pritingEditionId', 'count'],
+            select: ['pritingEditionId', 'count'],
             where: [{ id: orderItemId.id }],
         });
         return findOrderItem;

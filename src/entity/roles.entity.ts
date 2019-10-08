@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { UserInRoles } from 'src/entity';
 @Entity()
 export class Role {
@@ -7,6 +7,6 @@ export class Role {
     @Column({ length: 25 })
     name?: string;
 
-    @ManyToOne(() => UserInRoles, userInRoles => userInRoles.roleId)
+    @OneToMany(() => UserInRoles, userInRoles => userInRoles.roleId)
     roleConnection?: Promise<UserInRoles[]>;
 }

@@ -35,7 +35,7 @@ const myEnvitonment: Enviroment = getEnv();
       port: 3306,
       username: 'root',
       password: '1111',
-      database: 'shop',
+      database: 'book-shop',
       entities: [PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks],
       synchronize: true,
     }),
