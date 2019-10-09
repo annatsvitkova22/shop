@@ -13,6 +13,8 @@ export class User {
     passwordHash?: string;
     @Column()
     email?: string;
+    @Column()
+    salt?: string;
 
     @OneToMany(() => Order, order => order.userId)
     userConnection?: Promise<Order[]>;

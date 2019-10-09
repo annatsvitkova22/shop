@@ -3,4 +3,5 @@ export class CreateUserModel {
     lastName?: string;
     passwordHash?: string;
     email?: string;
+    salt?: string;
 }

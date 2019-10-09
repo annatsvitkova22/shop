@@ -4,4 +4,5 @@ export class UpdateUserModel {
     lastName?: string;
     passwordHash?: string;
     email?: string;
+    saltRaound?: number;
 }

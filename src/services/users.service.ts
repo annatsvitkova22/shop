@@ -7,8 +7,13 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-    private saltRounds = 10;
-    constructor( @InjectRepository(User) private userRepository: Repository<User>) { }
+    public saltRounds = 10;
+    constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+
+    async getRandomSalt() {
+        const randomSalt: string = await bcrypt.genSalt(this.saltRounds);
+        return randomSalt;
+    }
 
     async getUsers(): Promise<User[]> {
         const getUsers = await this.userRepository.find();
@@ -30,14 +35,17 @@ export class UserService {
         getUser.firstName = createUser.firstName;
         getUser.lastName = createUser.lastName;
         getUser.email = createUser.email;
-        getUser.passwordHash = await this.getHash(createUser.passwordHash);
         let user = await this.userRepository.findOne({ email: getUser.email });
         if (user) {
             const message: string = 'user with this email already exists';
             return message;
         }
+        const randomSalt = await this.getRandomSalt();
+        getUser.salt = randomSalt;
+        const pass = await this.getHash(createUser.passwordHash, randomSalt);
+        getUser.passwordHash = pass;
         user = await this.userRepository.save(getUser);
-        return(user.id);
+        return user;
     }
 
     async updateUser(updateUser: UpdateUserModel): Promise<User> {
@@ -56,7 +64,7 @@ export class UserService {
         const updated = Object.assign(toUpdate, getUser);
         const user = await this.userRepository.save(updated);
         return user;
-      }
+    }
 
     async deleteUser(userId: number) {
         const user: User = {} as User;
@@ -65,11 +73,9 @@ export class UserService {
         return result;
     }
 
-    async getHash(password: string|undefined): Promise<string> {
-        return bcrypt.hash(password, this.saltRounds);
+    async getHash(password: string, randomSalt: string) {
+        const result = bcrypt.hash(password, randomSalt);
+        console.log(result);
+        return result;
     }
-
-    // async compareHash(password: string|undefined, hash: string|undefined): Promise<boolean> {
-    //     return bcrypt.compare(password, hash);
-    //   }
 }
