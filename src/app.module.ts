@@ -17,11 +17,13 @@ import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository} from 'src/repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
+import { StripeModule } from './stripe/stripe.module';
 
 const myEnvitonment: Enviroment = getEnv();
 
 @Module({
   imports: [
+    StripeModule,
     PassportModule,
     MongooseModule.forRoot('mongodb+srv://tsvitkova_work:rFI3VAA3eysltGbn@cluster0-mbfra.mongodb.net/nestjs-demo?retryWrites=true&w=majority', {
       useNewUrlParser: true,

@@ -1,9 +1,7 @@
-import { Injectable, Body } from '@nestjs/common';
-import { UserService } from 'src/services';
+import { Injectable } from '@nestjs/common';
 import { User } from 'src/entity';
-import { CreateUserModel } from 'src/models';
-import { Enviroment, getEnv } from 'src/environment/environment';
 import { ValidateUser } from 'src/models';
+import { Enviroment, getEnv } from 'src/environment/environment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -18,20 +16,20 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  public async validateUser(getUser: CreateUserModel): Promise<CreateUserModel> {
+  public async validateUser(username: string, password: string): Promise<ValidateUser> {
     const newUser: User = {} as User;
-    newUser.firstName = getUser.firstName;
-    newUser.lastName = getUser.lastName;
-    newUser.passwordHash = getUser.passwordHash;
-    newUser.email = getUser.email;
+    newUser.passwordHash = password;
+    newUser.email = username;
     const user = await this.userRepository.findOne({ email: newUser.email });
     if (!user) {
       return null;
     }
     if (user) {
-      const getPassword = await this.compareHash(getUser.passwordHash, user.passwordHash);
+      const getPassword = await this.compareHash(newUser.passwordHash, user.passwordHash);
       if (getPassword) {
-        const { passwordHash, ...result } = user;
+        const result: ValidateUser = {} as ValidateUser;
+        result.firstName = user.firstName;
+        result.userId = user.id;
         return result;
       }
     }
