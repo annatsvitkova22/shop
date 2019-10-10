@@ -12,29 +12,34 @@ export class OrderItemsController {
     @Get(':id')
     get(@Param() params) {
         const orderItem = this.orderItemService.getOrderItemById(params.id);
+
         return orderItem;
     }
 
     @Get()
     getAll() {
-    const orderItem = this.orderItemService.getOrderItems();
-    return orderItem;
-  }
+        const orderItem = this.orderItemService.getOrderItems();
+
+        return orderItem;
+    }
 
     @Post()
     create(@Body() orderItem: CreateOrderItemModel) {
         const createOrderItem = this.orderItemService.createOrderItem(orderItem);
+
         return createOrderItem;
     }
 
     @Put()
     update(@Body() orderItem: UpdateOrderItemModel) {
         const updateOrderItem = this.orderItemService.updateOrderItem(orderItem);
+
         return updateOrderItem;
     }
 
     @Delete(':id')
     delete(@Param() params) {
+
         return this.orderItemService.deleteOrderItem(params.id);
     }
 }

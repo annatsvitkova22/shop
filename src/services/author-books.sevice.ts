@@ -2,54 +2,62 @@ import { Injectable } from '@nestjs/common';
 import { AuthorInBooks } from 'src/entity';
 import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class AuthorInBookService {
 
     constructor( @InjectRepository(AuthorInBooks) private authorInBooksRepository: Repository<AuthorInBooks>) { }
 
-    async getAuthorInBooks(): Promise<AuthorInBooks[]> {
+    public async getAuthorInBooks(): Promise<AuthorInBooks[]> {
         const getAuthorInBooks = await this.authorInBooksRepository.find();
+
         return getAuthorInBooks;
     }
 
-    async getAuthorInBooksById(id: number) {
+    public async getAuthorInBooksById(id: number): Promise<AuthorInBooks[]> {
         const AuthorInBookId: UpdateAuthorInBooksModel = {};
         AuthorInBookId.id = id;
         const authorInBook = await this.authorInBooksRepository.find({
             select: ['authorId', 'bookId'],
             where: [{ id: AuthorInBookId.id }],
         });
+
         return authorInBook;
     }
 
-    async createAuthorInBook(createAuthorInBook: CreateAuthorInBooksModel) {
-        const getAuthorInBook: AuthorInBooks = {} as AuthorInBooks;
-        getAuthorInBook.authorId = createAuthorInBook.authorId;
-        getAuthorInBook.bookId = createAuthorInBook.bookId;
-        const authorInBook = await this.authorInBooksRepository.save(getAuthorInBook);
-        return(authorInBook.id);
+    public async createAuthorInBook(authorInBook: CreateAuthorInBooksModel): Promise<number> {
+        const createdAuthorInBook: AuthorInBooks = {};
+        createdAuthorInBook.authorId = authorInBook.authorId;
+        createdAuthorInBook.bookId = authorInBook.bookId;
+
+        const savedAuthorInBook = await this.authorInBooksRepository.save(createdAuthorInBook);
+
+        return(savedAuthorInBook.id);
     }
 
-    async updateAuthorInBook(updateAuthorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const getAuthorInBook: AuthorInBooks = {} as AuthorInBooks;
-        getAuthorInBook.id = updateAuthorInBook.id;
-        getAuthorInBook.authorId = updateAuthorInBook.authorId;
-        getAuthorInBook.bookId = updateAuthorInBook.bookId;
-        const toUpdate = await this.authorInBooksRepository.findOne(getAuthorInBook.id);
-        delete toUpdate.authorId;
-        delete toUpdate.bookId;
-        delete getAuthorInBook.id;
-        const updated = Object.assign(toUpdate, getAuthorInBook);
-        const authorInBook = await this.authorInBooksRepository.save(updated);
-        return authorInBook;
+    public async updateAuthorInBook(authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
+        const updateAuthorInBook: AuthorInBooks = {};
+        updateAuthorInBook.id = authorInBook.id;
+        updateAuthorInBook.authorId = authorInBook.authorId;
+        updateAuthorInBook.bookId = authorInBook.bookId;
+
+        const toUpdate = await this.authorInBooksRepository.findOne(updateAuthorInBook.id);
+
+        toUpdate.authorId = updateAuthorInBook.authorId;
+        toUpdate.bookId = updateAuthorInBook.bookId;
+
+        const savedAuthorInBook = await this.authorInBooksRepository.save(toUpdate);
+
+        return savedAuthorInBook;
       }
 
-    async deleteAuthorInBook(authorInBookId: number) {
-        const authorInBook: AuthorInBooks = {} as AuthorInBooks;
+      public async deleteAuthorInBook(authorInBookId: number): Promise<DeleteResult> {
+        const authorInBook: AuthorInBooks = {};
         authorInBook.id = authorInBookId;
+
         const result = this.authorInBooksRepository.delete(authorInBook);
+
         return result;
     }
 }

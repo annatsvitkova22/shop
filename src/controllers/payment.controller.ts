@@ -12,29 +12,34 @@ export class PaymentsController {
     @Get(':id')
     get(@Param() params) {
         const payment = this.paymentService.getUPaymentById(params.id);
+
         return payment;
     }
 
     @Get()
     getAll() {
-    const payment = this.paymentService.getPayments();
-    return payment;
-  }
+        const payment = this.paymentService.getPayments();
+
+        return payment;
+    }
 
     @Post()
     create(@Body() payment: CreatePaymentModel) {
         const createPayment = this.paymentService.createPayment(payment);
+
         return createPayment;
     }
 
     @Put()
     update(@Body() payment: UpdatePaymentModel) {
         const updatePayment = this.paymentService.updatePayment(payment);
+
         return updatePayment;
     }
 
     @Delete(':id')
     delete(@Param() params) {
+
         return this.paymentService.deletePayment(params.id);
     }
 }

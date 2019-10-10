@@ -2,51 +2,56 @@ import { Injectable } from '@nestjs/common';
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class RoleService {
 
     constructor( @InjectRepository(Role) private roleRepository: Repository<Role>) { }
 
-    async getRoles(): Promise<Role[]> {
+    public async getRoles(): Promise<Role[]> {
         const getRoles = await this.roleRepository.find();
+
         return getRoles;
     }
 
-    async getRoleById(id: number) {
-        const RoleId: UpdateRoleModel = {};
-        RoleId.id = id;
-        const role = await this.roleRepository.find({
+    public async getRoleById(id: number): Promise<Role[]> {
+        const role: UpdateRoleModel = {};
+        role.id = id;
+        const foundRole = await this.roleRepository.find({
             select: ['name'],
-            where: [{ id: RoleId.id }],
+            where: [{ id: role.id }],
         });
-        return role;
+
+        return foundRole;
     }
 
-    async createRole(createRole: CreateRoleModel) {
-        const getRole: Role = {} as Role;
-        getRole.name = createRole.name;
-        const role = await this.roleRepository.save(getRole);
-        return(role.id);
+    public async createRole(createRole: CreateRoleModel): Promise<number> {
+        const role: Role = {} as Role;
+        role.name = createRole.name;
+        const saveRole = await this.roleRepository.save(role);
+
+        return(saveRole.id);
     }
 
-    async updateRole(updateRole: UpdateRoleModel): Promise<Role> {
-        const getRole: Role = {} as Role;
-        getRole.id = updateRole.id;
-        getRole.name = updateRole.name;
-        const toUpdate = await this.roleRepository.findOne(getRole.id);
-        delete toUpdate.name;
-        delete getRole.id;
-        const updated = Object.assign(toUpdate, getRole);
-        const role = await this.roleRepository.save(updated);
-        return role;
+    public async updateRole(updateRole: UpdateRoleModel): Promise<Role> {
+        const role: Role = {};
+        role.id = updateRole.id;
+        role.name = updateRole.name;
+
+        const toUpdate = await this.roleRepository.findOne(role.id);
+        toUpdate.name = role.name;
+
+        const savedRole = await this.roleRepository.save(toUpdate);
+
+        return savedRole;
       }
 
-    async deleteRole(roleId: number) {
+    public async deleteRole(roleId: number): Promise<DeleteResult> {
         const role: Role = {} as Role;
         role.id = roleId;
         const result = this.roleRepository.delete(role);
+
         return result;
     }
 }

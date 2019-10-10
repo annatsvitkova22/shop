@@ -9,27 +9,28 @@ export class BooksController {
   ) { }
 
   @Post()
-  async createBook(@Body() createBook: CreateBookModel) {
+  public async createBook(@Body() createBook: CreateBookModel) {
     const getBook = await this.booksService.createBook(createBook);
 
     return { getBook };
   }
 
   @Get()
-  async getAllBooks() {
+  public async getAllBooks() {
     const books = await this.booksService.getBooks();
+
     return books;
   }
 
   @Get(':id')
-  async getBook(@Param('id') bookId: string) {
+  public async getBook(@Param('id') bookId: string) {
     const result = await this.booksService.getBookById(bookId);
 
     return { result };
   }
 
   @Patch()
-  async updateBook(
+  public async updateBook(
     @Body() updateBook: UpdateBookModel) {
     await this.booksService.updateBook(updateBook);
 
@@ -37,8 +38,9 @@ export class BooksController {
   }
 
   @Delete(':id')
-  async removeBook(@Param('id') bookId: string) {
+  public async removeBook(@Param('id') bookId: string) {
     await this.booksService.deleteBook(bookId);
+
     return true;
   }
 }

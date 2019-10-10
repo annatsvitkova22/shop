@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,72 +10,82 @@ export class UserService {
     public saltRounds = 10;
     constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
 
-    async getRandomSalt() {
+    public async getRandomSalt(): Promise<string> {
         const randomSalt: string = await bcrypt.genSalt(this.saltRounds);
+
         return randomSalt;
     }
 
-    async getUsers(): Promise<User[]> {
+    public async getUsers(): Promise<User[]> {
         const getUsers = await this.userRepository.find();
+
         return getUsers;
     }
 
-    async getUserById(id: number) {
-        const UserId: UpdateUserModel = {};
-        UserId.id = id;
-        const user = await this.userRepository.find({
+    public async getUserById(id: number): Promise<User[]> {
+        const user: UpdateUserModel = {};
+        user.id = id;
+        const foundUser = await this.userRepository.find({
             select: ['firstName', 'lastName', 'passwordHash', 'email'],
-            where: [{ id: UserId.id }],
+            where: [{ id: user.id }],
         });
-        return user;
+
+        return foundUser;
     }
 
-    async createUser(createUser: CreateUserModel) {
-        const getUser: User = {} as User;
-        getUser.firstName = createUser.firstName;
-        getUser.lastName = createUser.lastName;
-        getUser.email = createUser.email;
-        let user = await this.userRepository.findOne({ email: getUser.email });
-        if (user) {
+    public async createUser(createUser: CreateUserModel): Promise<User|string> {
+        const user: User = {};
+        user.firstName = createUser.firstName;
+        user.lastName = createUser.lastName;
+        user.email = createUser.email;
+
+        const foundUser = await this.userRepository.findOne({ email: user.email });
+        if (foundUser) {
             const message: string = 'user with this email already exists';
+
             return message;
         }
+
         const randomSalt = await this.getRandomSalt();
-        getUser.salt = randomSalt;
+        user.salt = randomSalt;
         const pass = await this.getHash(createUser.passwordHash, randomSalt);
-        getUser.passwordHash = pass;
-        user = await this.userRepository.save(getUser);
-        return user;
+        user.passwordHash = pass;
+
+        const savedUser = await this.userRepository.save(user);
+
+        return savedUser;
     }
 
-    async updateUser(updateUser: UpdateUserModel): Promise<User> {
-        const getUser: User = {} as User;
-        getUser.id = updateUser.id;
-        getUser.firstName = updateUser.firstName;
-        getUser.lastName = updateUser.lastName;
-        getUser.passwordHash = updateUser.passwordHash;
-        getUser.email = updateUser.email;
-        const toUpdate = await this.userRepository.findOne(getUser.id);
-        delete toUpdate.firstName;
-        delete toUpdate.lastName;
-        delete toUpdate.passwordHash;
-        delete toUpdate.email;
-        delete getUser.id;
-        const updated = Object.assign(toUpdate, getUser);
-        const user = await this.userRepository.save(updated);
-        return user;
+    public async updateUser(updateUser: UpdateUserModel): Promise<User> {
+        const user: User = {};
+        user.id = updateUser.id;
+        user.firstName = updateUser.firstName;
+        user.lastName = updateUser.lastName;
+        user.passwordHash = updateUser.passwordHash;
+        user.email = updateUser.email;
+
+        const toUpdate = await this.userRepository.findOne(user.id);
+        toUpdate.firstName = user.firstName;
+        toUpdate.lastName = user.lastName;
+        toUpdate.passwordHash = user.passwordHash;
+        toUpdate.email = user.email;
+
+        const savedUser = await this.userRepository.save(toUpdate);
+
+        return savedUser;
     }
 
-    async deleteUser(userId: number) {
+    public async deleteUser(userId: number): Promise<DeleteResult> {
         const user: User = {} as User;
         user.id = userId;
         const result = this.userRepository.delete(user);
+
         return result;
     }
 
-    async getHash(password: string, randomSalt: string) {
+    public async getHash(password: string, randomSalt: string): Promise<string> {
         const result = bcrypt.hash(password, randomSalt);
-        console.log(result);
+
         return result;
     }
 }

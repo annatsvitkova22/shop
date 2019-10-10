@@ -13,29 +13,34 @@ export class PrintingEditionsController {
     @Get(':id')
     get(@Param() params) {
         const printingEdition = this.printingEditionService.getPrintingEditionsById(params.id);
+
         return printingEdition;
     }
 
     @Get()
     getAll() {
-    const printingEdition = this.printingEditionService.getPrintingEditions();
-    return printingEdition;
-  }
+        const printingEdition = this.printingEditionService.getPrintingEditions();
+
+        return printingEdition;
+    }
 
     @Post()
     create(@Body() printingEdition: CreatePrintingEditionModel) {
         const createEdition = this.printingEditionService.createPrintingEdition(printingEdition);
+
         return createEdition;
     }
 
     @Put()
     update(@Body() printingEdition: UpdatePrintingEditionModel) {
         const updateEdition = this.printingEditionService.updatePrintingEdition(printingEdition);
+
         return updateEdition;
     }
 
     @Delete(':id')
     delete(@Param() params) {
+
         return this.printingEditionService.deletePrintingEdition(params.id);
     }
 }

@@ -12,29 +12,34 @@ export class RolesController {
     @Get(':id')
     get(@Param() params) {
         const role = this.roleService.getRoleById(params.id);
+
         return role;
     }
 
     @Get()
     getAll() {
-    const role = this.roleService.getRoles();
-    return role;
-  }
+        const role = this.roleService.getRoles();
+
+        return role;
+    }
 
     @Post()
     create(@Body() role: CreateRoleModel) {
         const createRole = this.roleService.createRole(role);
+
         return createRole;
     }
 
     @Put()
     update(@Body() role: UpdateRoleModel) {
         const updateRole = this.roleService.updateRole(role);
+
         return updateRole;
     }
 
     @Delete(':id')
     delete(@Param() params) {
+
         return this.roleService.deleteRole(params.id);
     }
 }

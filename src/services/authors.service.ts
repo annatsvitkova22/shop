@@ -2,51 +2,54 @@ import { Injectable } from '@nestjs/common';
 import { Author } from 'src/entity';
 import { UpdateAuthorModel, CreateAuthorModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class AuthorService {
 
     constructor( @InjectRepository(Author) private authorRepository: Repository<Author>) { }
 
-    async getAuthors(): Promise<Author[]> {
-        const getAuthors = await this.authorRepository.find();
-        return getAuthors;
+    public async getAuthors(): Promise<Author[]> {
+        const gotAuthors = await this.authorRepository.find();
+        return gotAuthors;
     }
 
-    async getAuthorById(id: number) {
-        const AuthorId: UpdateAuthorModel = {};
-        AuthorId.id = id;
-        const author = await this.authorRepository.find({
+    public async getAuthorById(id: number): Promise<Author[]> {
+        const author: UpdateAuthorModel = {};
+        author.id = id;
+        const foundAuthor = await this.authorRepository.find({
             select: ['name'],
-            where: [{ id: AuthorId.id }],
+            where: [{ id: author.id }],
         });
-        return author;
+        return foundAuthor;
     }
 
-    async createAuthor(createAuthor: CreateAuthorModel) {
-        const getAuthor: Author = {} as Author;
-        getAuthor.name = createAuthor.name;
-        const author = await this.authorRepository.save(getAuthor);
-        return(author.id);
+    public async createAuthor(author: CreateAuthorModel): Promise<number> {
+        const createAuthor: Author = {};
+        createAuthor.name = author.name;
+        const savedAuthor = await this.authorRepository.save(createAuthor);
+
+        return(savedAuthor.id);
     }
 
-    async updateAuthor(updateAuthor: UpdateAuthorModel): Promise<Author> {
-        const getAuthor: Author = {} as Author;
-        getAuthor.id = updateAuthor.id;
-        getAuthor.name = updateAuthor.name;
-        const toUpdate = await this.authorRepository.findOne(getAuthor.id);
-        delete toUpdate.name;
-        delete getAuthor.id;
-        const updated = Object.assign(toUpdate, getAuthor);
-        const author = await this.authorRepository.save(updated);
-        return author;
+    public async updateAuthor(author: UpdateAuthorModel): Promise<Author> {
+        const updateAuthor: Author = {};
+        updateAuthor.id = author.id;
+        updateAuthor.name = author.name;
+
+        const toUpdate = await this.authorRepository.findOne(updateAuthor.id);
+        toUpdate.name = updateAuthor.name;
+
+        const savedAuthor = await this.authorRepository.save(toUpdate);
+
+        return savedAuthor;
       }
 
-    async deleteAuthor(authorId: number) {
-        const author: Author = {} as Author;
+    public async deleteAuthor(authorId: number): Promise<DeleteResult> {
+        const author: Author = {};
         author.id = authorId;
         const result = this.authorRepository.delete(author);
+
         return result;
     }
 }

@@ -9,28 +9,28 @@ export class AuthorsMongoController {
   ) { }
 
   @Post()
-  async createAuthors(@Body() createAuthor: CreateAuthorModel) {
+  public async createAuthors(@Body() createAuthor: CreateAuthorModel) {
     const getAuthor = await this.authorsService.createAuthor(createAuthor);
 
     return { getAuthor };
   }
 
   @Get()
-  async getAllAuthors() {
+  public async getAllAuthors() {
     const authors = await this.authorsService.getAuthors();
 
     return authors;
   }
 
   @Get(':id')
-  async getBook(@Param('id') authorId: string) {
+  public async getBook(@Param('id') authorId: string) {
     const author = await this.authorsService.getAuthorById(authorId);
 
     return author;
   }
 
   @Patch()
-  async updateAuthor(
+  public async updateAuthor(
     @Body() updateAuthor: UpdateAuthorMongoModel) {
     await this.authorsService.updateAuthor(updateAuthor);
 
@@ -38,7 +38,7 @@ export class AuthorsMongoController {
   }
 
   @Delete(':id')
-  async removeAuthor(@Param('id') authorId: string) {
+  public async removeAuthor(@Param('id') authorId: string) {
     await this.authorsService.deleteAuthor(authorId);
 
     return true;

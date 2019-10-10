@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Author, PrintingEdition } from 'src/entity';
 @Entity()
 export class AuthorInBooks {

@@ -19,7 +19,7 @@ async function bootstrap() {
     .setTitle('My API')
     .setDescription('The shop API description')
     .setVersion('1.0')
-    .setSchemes('https')
+    .setSchemes('https', 'http')
     .addBearerAuth('Authorization', 'header', 'basic')
     .build();
   const document = SwaggerModule.createDocument(app, options);

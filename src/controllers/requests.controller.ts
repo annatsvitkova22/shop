@@ -19,6 +19,7 @@ export class ControllersController {
 
     @Get(':id')
     findOne(@Param('id') id: string) {
+
         return `This action returns a #${id} shop`;
     }
 
@@ -29,11 +30,13 @@ export class ControllersController {
         updateElement.age = update.age;
         updateElement.breed = update.breed;
         updateElement.name = update.name;
+
         return updateElement;
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
+
         return `This action removes a #${id} shop`;
     }
 

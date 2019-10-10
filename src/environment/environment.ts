@@ -4,10 +4,17 @@ import { environmentProd } from 'src/environment/environment.prod';
 export class Enviroment {
     production?: boolean;
     name?: string;
-    tokenSecret: string;
-    port: number;
-    tokenLife: number;
-    refreshTokenLife: number;
+    tokenSecret?: string;
+    port?: number;
+    tokenLife?: number;
+    refreshTokenLife?: number;
+    mongoConnection?: string;
+    databaseType?: string;
+    databaseHost?: string;
+    databasePort?: number;
+    databaseUsername?: string;
+    databasePassword?: string;
+    database?: string;
 }
 
 export const getEnv = (): Enviroment => {

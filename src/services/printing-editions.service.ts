@@ -2,69 +2,74 @@ import { Injectable } from '@nestjs/common';
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel } from 'src/models';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class PrintingEditionService {
 
     constructor( @InjectRepository(PrintingEdition) private printingEditionRepository: Repository<PrintingEdition>) { }
 
-    async getPrintingEditions(): Promise<PrintingEdition[]> {
-        const getEdition = await this.printingEditionRepository.find();
-        return getEdition;
+    public async getPrintingEditions(): Promise<PrintingEdition[]> {
+        const getEditions = await this.printingEditionRepository.find();
+
+        return getEditions;
     }
 
-    async getPrintingEditionsById(id: number) {
-        const editionId: UpdatePrintingEditionModel = {};
-        editionId.id = id;
-        const printingEdition = await this.printingEditionRepository.find({
+    public async getPrintingEditionsById(id: number): Promise<PrintingEdition[]> {
+        const edition: UpdatePrintingEditionModel = {};
+        edition.id = id;
+        const foundPrintingEdition = await this.printingEditionRepository.find({
             select: ['name', 'description', 'price', 'isRemoved', 'status', 'currency', 'type'],
-            where: [{ id: editionId.id }],
+            where: [{ id: edition.id }],
         });
-        return printingEdition;
+
+        return foundPrintingEdition;
     }
 
-    async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel) {
-        const getEdition: PrintingEdition = {} as PrintingEdition;
-        getEdition.name = createPrintingEdition.name;
-        getEdition.description = createPrintingEdition.description;
-        getEdition.price = createPrintingEdition.price;
-        getEdition.isRemoved = createPrintingEdition.isRemoved;
-        getEdition.status = createPrintingEdition.status;
-        getEdition.currency = createPrintingEdition.currency;
-        getEdition.type = createPrintingEdition.type;
-        const edition = await this.printingEditionRepository.save(getEdition);
-        return(edition.id);
+    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<number> {
+        const edition: PrintingEdition = {} as PrintingEdition;
+        edition.name = createPrintingEdition.name;
+        edition.description = createPrintingEdition.description;
+        edition.price = createPrintingEdition.price;
+        edition.isRemoved = createPrintingEdition.isRemoved;
+        edition.status = createPrintingEdition.status;
+        edition.currency = createPrintingEdition.currency;
+        edition.type = createPrintingEdition.type;
+        const savedEdition = await this.printingEditionRepository.save(edition);
+
+        return(savedEdition.id);
     }
 
-    async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const getEdition: PrintingEdition = {} as PrintingEdition;
-        getEdition.id = updatePrintingEdition.id;
-        getEdition.name = updatePrintingEdition.name;
-        getEdition.description = updatePrintingEdition.description;
-        getEdition.price = updatePrintingEdition.price;
-        getEdition.isRemoved = updatePrintingEdition.isRemoved;
-        getEdition.status = updatePrintingEdition.status;
-        getEdition.currency = updatePrintingEdition.currency;
-        getEdition.type = updatePrintingEdition.type;
-        const toUpdate = await this.printingEditionRepository.findOne(getEdition.id);
-        delete toUpdate.name;
-        delete toUpdate.description;
-        delete toUpdate.price;
-        delete toUpdate.isRemoved;
-        delete toUpdate.status;
-        delete toUpdate.currency;
-        delete toUpdate.type;
-        delete getEdition.id;
-        const updated = Object.assign(toUpdate, getEdition);
-        const edition = await this.printingEditionRepository.save(updated);
-        return edition;
+    public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
+        const edition: PrintingEdition = {} as PrintingEdition;
+        edition.id = updatePrintingEdition.id;
+        edition.name = updatePrintingEdition.name;
+        edition.description = updatePrintingEdition.description;
+        edition.price = updatePrintingEdition.price;
+        edition.isRemoved = updatePrintingEdition.isRemoved;
+        edition.status = updatePrintingEdition.status;
+        edition.currency = updatePrintingEdition.currency;
+        edition.type = updatePrintingEdition.type;
+
+        const toUpdate = await this.printingEditionRepository.findOne(edition.id);
+        toUpdate.name = edition.name;
+        toUpdate.description = edition.description;
+        toUpdate.price = edition.price;
+        toUpdate.isRemoved = edition.isRemoved;
+        toUpdate.status = edition.status;
+        toUpdate.currency = edition.currency;
+        toUpdate.type = edition.type;
+
+        const savedEdition = await this.printingEditionRepository.save(toUpdate);
+
+        return savedEdition;
       }
 
-    async deletePrintingEdition(printingEditionId: number) {
+    public async deletePrintingEdition(printingEditionId: number): Promise<DeleteResult> {
         const printingEdition: PrintingEdition = {} as PrintingEdition;
         printingEdition.id = printingEditionId;
         const result = this.printingEditionRepository.delete(printingEdition);
+
         return result;
     }
 }

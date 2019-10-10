@@ -11,7 +11,7 @@ export class AuthorMongoRepository {
         @InjectModel('Author') public authorModel: Model<AuthorDocument>,
     ) { }
 
-    public async createAuthor(createAuthor: AuthorDocument) {
+    public async createAuthor(createAuthor: AuthorDocument): Promise<AuthorDocument> {
         const newAuthor = new this.authorModel(
             createAuthor,
         );
@@ -20,14 +20,16 @@ export class AuthorMongoRepository {
         return result;
     }
 
-    public async getAuthors() {
+    public async getAuthors(): Promise<AuthorDocument[]>  {
         const authors = await this.authorModel.find().exec();
 
         return authors;
     }
 
-    public async updateAuthor(updatedAuthor: AuthorDocument) {
-        updatedAuthor.save();
+    public async updateAuthor(updatedAuthor: AuthorDocument): Promise<AuthorDocument>  {
+        const result = updatedAuthor.save();
+
+        return result;
     }
 
     public async deleteAuthor(idAuthor: AuthorDocument) {
@@ -36,13 +38,13 @@ export class AuthorMongoRepository {
         return result;
     }
 
-    public async findAuthor(idAuthor: AuthorDocument) {
+    public async findAuthorById(idAuthor: AuthorDocument): Promise<AuthorDocument>  {
         const author = await this.authorModel.findById(idAuthor.id);
 
         return author;
     }
 
-    public async findBookByAuthor(idAuthor: AuthorDocument) {
+    public async findBookByAuthor(idAuthor: AuthorDocument): Promise<AuthorDocument> {
         const book = await this.bookModel.findOneAndUpdate({ author: idAuthor.id }, { $set: { author: null } });
 
         return book;
