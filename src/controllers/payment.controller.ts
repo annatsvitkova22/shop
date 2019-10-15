@@ -1,7 +1,10 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
+import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+
 import { PaymentService } from 'src/services';
 import { CreatePaymentModel, UpdatePaymentModel } from 'src/models';
 
+@ApiUseTags('Users table')
 @Controller('user')
 export class PaymentsController {
 
@@ -10,6 +13,7 @@ export class PaymentsController {
         ) { }
 
     @Get(':id')
+    @ApiOperation({ title: 'Search payment by id'})
     get(@Param() params) {
         const payment = this.paymentService.getUPaymentById(params.id);
 
@@ -17,6 +21,7 @@ export class PaymentsController {
     }
 
     @Get()
+    @ApiOperation({ title: 'Search all payments'})
     getAll() {
         const payment = this.paymentService.getPayments();
 
@@ -24,6 +29,7 @@ export class PaymentsController {
     }
 
     @Post()
+    @ApiOperation({ title: 'Create payment by id'})
     create(@Body() payment: CreatePaymentModel) {
         const createPayment = this.paymentService.createPayment(payment);
 
@@ -31,6 +37,7 @@ export class PaymentsController {
     }
 
     @Put()
+    @ApiOperation({ title: 'Update payment by id'})
     update(@Body() payment: UpdatePaymentModel) {
         const updatePayment = this.paymentService.updatePayment(payment);
 
@@ -38,6 +45,7 @@ export class PaymentsController {
     }
 
     @Delete(':id')
+    @ApiOperation({ title: 'Delete payment by id'})
     delete(@Param() params) {
 
         return this.paymentService.deletePayment(params.id);

@@ -1,7 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from 'src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
+
+import { AppModule } from 'src/app.module';
 
 async function bootstrap() {
   const fs = require('fs');
@@ -39,6 +40,5 @@ async function bootstrap() {
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
     res.end();
   }).listen(80);
-
 }
 bootstrap();

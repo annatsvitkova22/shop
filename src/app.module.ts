@@ -9,20 +9,18 @@ import { AppController } from 'src/app.controller';
 import { ControllersController, AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
   UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController,
   RoleInUserController, AuthorInBookController} from 'src/controllers';
-import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware } from 'src/common';
+import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper } from 'src/common';
 import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService, UserService, OrderService, OrderItemService,
   AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository} from 'src/repositories';
 import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
-import { StripeModule } from 'src/stripe/stripe.module';
 
 const myEnvitonment: Enviroment = getEnv();
 
 @Module({
   imports: [
-    StripeModule,
     PassportModule,
     MongooseModule.forRoot(myEnvitonment.mongoConnection, {
       useNewUrlParser: true,
@@ -50,7 +48,7 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService,
+    AuthorInBookService, HashHelper,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

@@ -1,8 +1,10 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
-import { PrintingEditionService } from 'src/services/printing-editions.service';
-import { CreatePrintingEditionModel } from 'src/models/create-printing-edition.model';
-import { UpdatePrintingEditionModel } from 'src/models/update-priting-edition.model';
+import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
+import { PrintingEditionService } from 'src/services';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel } from 'src/models';
+
+@ApiUseTags('Printing editions table')
 @Controller('printingEdition')
 export class PrintingEditionsController {
 
@@ -11,6 +13,7 @@ export class PrintingEditionsController {
         ) { }
 
     @Get(':id')
+    @ApiOperation({ title: 'Search printing edition by id'})
     get(@Param() params) {
         const printingEdition = this.printingEditionService.getPrintingEditionsById(params.id);
 
@@ -18,6 +21,7 @@ export class PrintingEditionsController {
     }
 
     @Get()
+    @ApiOperation({ title: 'Search all printing editions'})
     getAll() {
         const printingEdition = this.printingEditionService.getPrintingEditions();
 
@@ -25,6 +29,7 @@ export class PrintingEditionsController {
     }
 
     @Post()
+    @ApiOperation({ title: 'Create printing edition'})
     create(@Body() printingEdition: CreatePrintingEditionModel) {
         const createEdition = this.printingEditionService.createPrintingEdition(printingEdition);
 
@@ -32,6 +37,7 @@ export class PrintingEditionsController {
     }
 
     @Put()
+    @ApiOperation({ title: 'Update printing edition by id'})
     update(@Body() printingEdition: UpdatePrintingEditionModel) {
         const updateEdition = this.printingEditionService.updatePrintingEdition(printingEdition);
 
@@ -39,6 +45,7 @@ export class PrintingEditionsController {
     }
 
     @Delete(':id')
+    @ApiOperation({ title: 'Delete printing edition by id'})
     delete(@Param() params) {
 
         return this.printingEditionService.deletePrintingEdition(params.id);

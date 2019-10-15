@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository, DeleteResult } from 'typeorm';
+
 import { AuthorInBooks } from 'src/entity';
 import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class AuthorInBookService {

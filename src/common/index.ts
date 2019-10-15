@@ -4,3 +4,4 @@ export * from 'src/common/local.strategy';
 export * from 'src/common/request.middleware';
 export * from 'src/common/roles.decorator';
 export * from 'src/common/roles.guard';
+export * from 'src/common/hash.helper';

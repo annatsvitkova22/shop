@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository, DeleteResult } from 'typeorm';
+
 import { Payment } from 'src/entity';
 import { UpdatePaymentModel, CreatePaymentModel } from 'src/models';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
 
 @Injectable()
 export class PaymentService {

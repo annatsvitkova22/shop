@@ -1,18 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import * as jsonwebtoken from 'jsonwebtoken';
+
 import { User } from 'src/entity';
 import { ValidateUser } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { HashHelper } from 'src/common';
 
-const jwt = require('jsonwebtoken');
+const jwt = jsonwebtoken;
 const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class AuthService {
 
   constructor(
+    @Inject(forwardRef(() => HashHelper)) private readonly hashHelper: HashHelper,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
@@ -23,7 +28,7 @@ export class AuthService {
       return null;
     }
 
-    const getPassword = await this.compareHash(password, user.passwordHash);
+    const getPassword = await this.hashHelper.compareHash(password, user.passwordHash);
 
     if ( getPassword) {
         const result: ValidateUser = {};
@@ -51,11 +56,5 @@ export class AuthService {
     const refreshToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
 
     return refreshToken;
-  }
-
-  public async compareHash(password: string|undefined, hash: string|undefined): Promise<boolean> {
-    const result = bcrypt.compare(password, hash);
-
-    return result;
   }
 }

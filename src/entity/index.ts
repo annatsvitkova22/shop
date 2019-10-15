@@ -7,3 +7,4 @@ export * from 'src/entity/orders.entity';
 export * from 'src/entity/payments.entity';
 export * from 'src/entity/author-books.entity';
 export * from 'src/entity/user-role.entity';
+export * from 'src/common/hash.helper';

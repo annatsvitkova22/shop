@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
-import { CreateShopModel, UpdateShopModel } from 'src/models';
 import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse } from '@nestjs/swagger';
+
+import { CreateShopModel, UpdateShopModel } from 'src/models';
 
 @ApiUseTags('requests')
 @ApiBearerAuth()

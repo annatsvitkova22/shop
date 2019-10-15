@@ -1,7 +1,10 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
+import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+
 import { OrderItemService } from 'src/services';
 import { CreateOrderItemModel, UpdateOrderItemModel } from 'src/models';
 
+@ApiUseTags('Order Items table')
 @Controller('orderItem')
 export class OrderItemsController {
 
@@ -10,6 +13,7 @@ export class OrderItemsController {
         ) { }
 
     @Get(':id')
+    @ApiOperation({ title: 'Search order item by id'})
     get(@Param() params) {
         const orderItem = this.orderItemService.getOrderItemById(params.id);
 
@@ -17,6 +21,7 @@ export class OrderItemsController {
     }
 
     @Get()
+    @ApiOperation({ title: 'Search all order items'})
     getAll() {
         const orderItem = this.orderItemService.getOrderItems();
 
@@ -24,6 +29,7 @@ export class OrderItemsController {
     }
 
     @Post()
+    @ApiOperation({ title: 'Create order item'})
     create(@Body() orderItem: CreateOrderItemModel) {
         const createOrderItem = this.orderItemService.createOrderItem(orderItem);
 
@@ -31,6 +37,7 @@ export class OrderItemsController {
     }
 
     @Put()
+    @ApiOperation({ title: 'Update order item by id'})
     update(@Body() orderItem: UpdateOrderItemModel) {
         const updateOrderItem = this.orderItemService.updateOrderItem(orderItem);
 
@@ -38,6 +45,7 @@ export class OrderItemsController {
     }
 
     @Delete(':id')
+    @ApiOperation({ title: 'Delete order item by id'})
     delete(@Param() params) {
 
         return this.orderItemService.deleteOrderItem(params.id);

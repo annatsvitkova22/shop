@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository, DeleteResult } from 'typeorm';
+
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel } from 'src/models';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { HashHelper } from 'src/common/hash.helper';
 
 @Injectable()
 export class UserService {
     public saltRounds = 10;
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
-
-    public async getRandomSalt(): Promise<string> {
-        const randomSalt: string = await bcrypt.genSalt(this.saltRounds);
-
-        return randomSalt;
-    }
+    constructor(
+        public readonly hashHelper: HashHelper,
+        @InjectRepository(User) private userRepository: Repository<User>,
+        ) { }
 
     public async getUsers(): Promise<User[]> {
         const getUsers = await this.userRepository.find();
@@ -46,9 +45,9 @@ export class UserService {
             return message;
         }
 
-        const randomSalt = await this.getRandomSalt();
+        const randomSalt = await this.hashHelper.getRandomSalt();
         user.salt = randomSalt;
-        const pass = await this.getHash(createUser.passwordHash, randomSalt);
+        const pass = await this.hashHelper.getHash(createUser.passwordHash, randomSalt);
         user.passwordHash = pass;
 
         const savedUser = await this.userRepository.save(user);
@@ -83,9 +82,4 @@ export class UserService {
         return result;
     }
 
-    public async getHash(password: string, randomSalt: string): Promise<string> {
-        const result = bcrypt.hash(password, randomSalt);
-
-        return result;
-    }
 }

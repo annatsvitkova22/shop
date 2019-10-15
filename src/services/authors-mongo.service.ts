@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AuthorDocument } from 'src/document/authors.model';
-import { AuthorMongoRepository } from 'src/repositories/author-mongo.repository';
+
+import { AuthorMongoRepository } from 'src/repositories';
 import { CreateAuthorModel, UpdateAuthorMongoModel } from 'src/models';
-import { BookDocument } from 'src/document';
+import { BookDocument, AuthorDocument } from 'src/document';
 
 @Injectable()
 export class AuthorsMongoService {

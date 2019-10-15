@@ -1,7 +1,10 @@
 import { Controller, Get, UseFilters } from '@nestjs/common';
-import { Enviroment, getEnv } from 'src/environment/environment';
-import { AllExceptionsFilter } from 'src/common/exception.filter';
+import { ApiUseTags } from '@nestjs/swagger';
 
+import { Enviroment, getEnv } from 'src/environment/environment';
+import { AllExceptionsFilter } from 'src/common/';
+
+@ApiUseTags('Environment')
 @Controller()
 export class AppController {
 
