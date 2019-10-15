@@ -9,7 +9,7 @@ import { AppController } from 'src/app.controller';
 import { ControllersController, AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
   UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController,
   RoleInUserController, AuthorInBookController} from 'src/controllers';
-import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper } from 'src/common';
+import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper, PaymentHelper } from 'src/common';
 import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService, UserService, OrderService, OrderItemService,
   AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
@@ -48,7 +48,7 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper,
+    AuthorInBookService, HashHelper, PaymentHelper,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

@@ -5,7 +5,7 @@ import { PaymentService } from 'src/services';
 import { CreatePaymentModel, UpdatePaymentModel } from 'src/models';
 
 @ApiUseTags('Users table')
-@Controller('user')
+@Controller('payment')
 export class PaymentsController {
 
     constructor(

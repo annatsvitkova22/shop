@@ -4,5 +4,5 @@ export class UpdatePaymentModel {
     @ApiModelProperty()
     id?: number;
     @ApiModelProperty()
-    transactionId?: number;
+    transactionId?: string;
 }

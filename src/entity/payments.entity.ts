@@ -5,7 +5,7 @@ export class Payment {
     @PrimaryGeneratedColumn()
     id?: number;
     @Column()
-    transactionId?: number;
+    transactionId?: string;
 
     @OneToOne(() => Order, order => order.paymentId)
     paymentConnection?: Promise<Order[]>;
