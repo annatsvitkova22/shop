@@ -1,8 +1,11 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
+import { DeleteResult } from 'typeorm';
+
 import { RoleService } from 'src/services';
 import { CreateRoleModel, UpdateRoleModel } from 'src/models';
+import { Role } from 'src/entity';
 
 @ApiUseTags('Roles table')
 @Controller('role')
@@ -14,40 +17,41 @@ export class RolesController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search role by id'})
-    get(@Param() params) {
-        const role = this.roleService.getRoleById(params.id);
+    public get(@Param() params): Promise<Role[]> {
+        const role: Promise<Role[]> = this.roleService.getRoleById(params.id);
 
         return role;
     }
 
     @Get()
     @ApiOperation({ title: 'Search all roles'})
-    getAll() {
-        const role = this.roleService.getRoles();
+    public getAll(): Promise<Role[]> {
+        const role: Promise<Role[]> = this.roleService.getRoles();
 
         return role;
     }
 
     @Post()
     @ApiOperation({ title: 'Creste user'})
-    create(@Body() role: CreateRoleModel) {
-        const createRole = this.roleService.createRole(role);
+    public create(@Body() role: CreateRoleModel): Promise<number> {
+        const createRole: Promise<number> = this.roleService.createRole(role);
 
         return createRole;
     }
 
     @Put()
     @ApiOperation({ title: 'Update user by id'})
-    update(@Body() role: UpdateRoleModel) {
-        const updateRole = this.roleService.updateRole(role);
+    public update(@Body() role: UpdateRoleModel): Promise<Role> {
+        const updateRole: Promise<Role> = this.roleService.updateRole(role);
 
         return updateRole;
     }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete user by id'})
-    delete(@Param() params) {
+    public delete(@Param() params): Promise<DeleteResult> {
+        const deleted: Promise<DeleteResult> = this.roleService.deleteRole(params.id);
 
-        return this.roleService.deleteRole(params.id);
+        return deleted;
     }
 }

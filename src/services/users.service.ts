@@ -16,7 +16,7 @@ export class UserService {
         ) { }
 
     public async getUsers(): Promise<User[]> {
-        const getUsers = await this.userRepository.find();
+        const getUsers: User[] = await this.userRepository.find();
 
         return getUsers;
     }
@@ -24,7 +24,7 @@ export class UserService {
     public async getUserById(id: number): Promise<User[]> {
         const user: UpdateUserModel = {};
         user.id = id;
-        const foundUser = await this.userRepository.find({
+        const foundUser: User[] = await this.userRepository.find({
             select: ['firstName', 'lastName', 'passwordHash', 'email'],
             where: [{ id: user.id }],
         });
@@ -38,19 +38,19 @@ export class UserService {
         user.lastName = createUser.lastName;
         user.email = createUser.email;
 
-        const foundUser = await this.userRepository.findOne({ email: user.email });
+        const foundUser: User = await this.userRepository.findOne({ email: user.email });
         if (foundUser) {
             const message: string = 'user with this email already exists';
 
             return message;
         }
 
-        const randomSalt = await this.hashHelper.getRandomSalt();
+        const randomSalt: string = await this.hashHelper.getRandomSalt();
         user.salt = randomSalt;
-        const pass = await this.hashHelper.getHash(createUser.passwordHash, randomSalt);
+        const pass: string = await this.hashHelper.getHash(createUser.passwordHash, randomSalt);
         user.passwordHash = pass;
 
-        const savedUser = await this.userRepository.save(user);
+        const savedUser: User = await this.userRepository.save(user);
 
         return savedUser;
     }
@@ -63,13 +63,13 @@ export class UserService {
         user.passwordHash = updateUser.passwordHash;
         user.email = updateUser.email;
 
-        const toUpdate = await this.userRepository.findOne(user.id);
+        const toUpdate: User = await this.userRepository.findOne(user.id);
         toUpdate.firstName = user.firstName;
         toUpdate.lastName = user.lastName;
         toUpdate.passwordHash = user.passwordHash;
         toUpdate.email = user.email;
 
-        const savedUser = await this.userRepository.save(toUpdate);
+        const savedUser: User = await this.userRepository.save(toUpdate);
 
         return savedUser;
     }
@@ -77,7 +77,7 @@ export class UserService {
     public async deleteUser(userId: number): Promise<DeleteResult> {
         const user: User = {} as User;
         user.id = userId;
-        const result = this.userRepository.delete(user);
+        const result: Promise<DeleteResult> = this.userRepository.delete(user);
 
         return result;
     }

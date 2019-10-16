@@ -12,7 +12,7 @@ export class OrderService {
     constructor( @InjectRepository(Order) private orderRepository: Repository<Order>) { }
 
     public async getOrders(): Promise<Order[]> {
-        const getOrders = await this.orderRepository.find();
+        const getOrders: Order[] = await this.orderRepository.find();
 
         return getOrders;
     }
@@ -20,7 +20,7 @@ export class OrderService {
     public async getOrderById(id: number): Promise<Order[]> {
         const order: UpdateOrderModel = {};
         order.id = id;
-        const foundOrder = await this.orderRepository.find({
+        const foundOrder: Order[] = await this.orderRepository.find({
             select: ['description', 'userId', 'date', 'paymentId'],
             where: [{ id: order.id }],
         });
@@ -34,7 +34,7 @@ export class OrderService {
         order.userId = createOrder.userId;
         order.date = createOrder.date;
         order.paymentId = createOrder.paymentId;
-        const savedOrder = await this.orderRepository.save(order);
+        const savedOrder: Order = await this.orderRepository.save(order);
 
         return(savedOrder.id);
     }
@@ -52,7 +52,7 @@ export class OrderService {
         toUpdate.date = order.date;
         toUpdate.paymentId = order.paymentId;
 
-        const savedOrder = await this.orderRepository.save(toUpdate);
+        const savedOrder: Order = await this.orderRepository.save(toUpdate);
 
         return savedOrder;
       }
@@ -60,7 +60,7 @@ export class OrderService {
     public async deleteOrder(orderId: number): Promise<DeleteResult> {
         const order: Order = {} as Order;
         order.id = orderId;
-        const result = this.orderRepository.delete(order);
+        const result: Promise<DeleteResult> = this.orderRepository.delete(order);
 
         return result;
     }

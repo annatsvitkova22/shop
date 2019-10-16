@@ -1,8 +1,11 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
+import { DeleteResult } from 'typeorm';
+
 import { OrderItemService } from 'src/services';
 import { CreateOrderItemModel, UpdateOrderItemModel } from 'src/models';
+import { OrderItem } from 'src/entity';
 
 @ApiUseTags('Order Items table')
 @Controller('orderItem')
@@ -14,40 +17,41 @@ export class OrderItemsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order item by id'})
-    get(@Param() params) {
-        const orderItem = this.orderItemService.getOrderItemById(params.id);
+    public get(@Param() params): Promise<OrderItem[]> {
+        const orderItem: Promise<OrderItem[]> = this.orderItemService.getOrderItemById(params.id);
 
         return orderItem;
     }
 
     @Get()
     @ApiOperation({ title: 'Search all order items'})
-    getAll() {
-        const orderItem = this.orderItemService.getOrderItems();
+    public getAll(): Promise<OrderItem[]> {
+        const orderItem: Promise<OrderItem[]> = this.orderItemService.getOrderItems();
 
         return orderItem;
     }
 
     @Post()
     @ApiOperation({ title: 'Create order item'})
-    create(@Body() orderItem: CreateOrderItemModel) {
-        const createOrderItem = this.orderItemService.createOrderItem(orderItem);
+    public create(@Body() orderItem: CreateOrderItemModel): Promise<number> {
+        const createOrderItem: Promise<number> = this.orderItemService.createOrderItem(orderItem);
 
         return createOrderItem;
     }
 
     @Put()
     @ApiOperation({ title: 'Update order item by id'})
-    update(@Body() orderItem: UpdateOrderItemModel) {
-        const updateOrderItem = this.orderItemService.updateOrderItem(orderItem);
+    public update(@Body() orderItem: UpdateOrderItemModel): Promise<OrderItem> {
+        const updateOrderItem: Promise<OrderItem> = this.orderItemService.updateOrderItem(orderItem);
 
         return updateOrderItem;
     }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete order item by id'})
-    delete(@Param() params) {
+    public delete(@Param() params): Promise<DeleteResult> {
+        const deleted: Promise<DeleteResult> = this.orderItemService.deleteOrderItem(params.id);
 
-        return this.orderItemService.deleteOrderItem(params.id);
+        return deleted;
     }
 }

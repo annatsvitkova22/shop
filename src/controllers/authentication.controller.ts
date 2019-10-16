@@ -18,7 +18,7 @@ export class AuthenticationController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: User })
-  public async login(@Body() req, @Request() requ) {
+  public async login(@Body() req, @Request() requ): Promise<Token> {
     const getAccessToken = this.authService.getToken(requ.user);
     const getRefreshToken = this.authService.getRefresh(requ.user);
     const myToken: Token = {
@@ -33,7 +33,7 @@ export class AuthenticationController {
   @Get('me')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: Token })
   @Roles('user')
-  getProfile(@Body() req, @Request() requ) {
+  getProfile(@Body() req, @Request() requ): string {
 
     return requ.user;
   }

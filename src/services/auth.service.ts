@@ -2,7 +2,6 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import * as jsonwebtoken from 'jsonwebtoken';
 
 import { User } from 'src/entity';
@@ -28,9 +27,9 @@ export class AuthService {
       return null;
     }
 
-    const getPassword = await this.hashHelper.compareHash(password, user.passwordHash);
+    const isPasswordValid = await this.hashHelper.compareHash(password, user.passwordHash);
 
-    if ( getPassword) {
+    if ( isPasswordValid) {
         const result: ValidateUser = {};
         result.firstName = user.firstName;
         result.userId = user.id;

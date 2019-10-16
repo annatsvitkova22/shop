@@ -12,7 +12,7 @@ export class RoleService {
     constructor( @InjectRepository(Role) private roleRepository: Repository<Role>) { }
 
     public async getRoles(): Promise<Role[]> {
-        const getRoles = await this.roleRepository.find();
+        const getRoles: Role[] = await this.roleRepository.find();
 
         return getRoles;
     }
@@ -20,7 +20,7 @@ export class RoleService {
     public async getRoleById(id: number): Promise<Role[]> {
         const role: UpdateRoleModel = {};
         role.id = id;
-        const foundRole = await this.roleRepository.find({
+        const foundRole: Role[] = await this.roleRepository.find({
             select: ['name'],
             where: [{ id: role.id }],
         });
@@ -31,7 +31,7 @@ export class RoleService {
     public async createRole(createRole: CreateRoleModel): Promise<number> {
         const role: Role = {} as Role;
         role.name = createRole.name;
-        const saveRole = await this.roleRepository.save(role);
+        const saveRole: Role = await this.roleRepository.save(role);
 
         return(saveRole.id);
     }
@@ -41,10 +41,10 @@ export class RoleService {
         role.id = updateRole.id;
         role.name = updateRole.name;
 
-        const toUpdate = await this.roleRepository.findOne(role.id);
+        const toUpdate: Role = await this.roleRepository.findOne(role.id);
         toUpdate.name = role.name;
 
-        const savedRole = await this.roleRepository.save(toUpdate);
+        const savedRole: Role = await this.roleRepository.save(toUpdate);
 
         return savedRole;
       }
@@ -52,7 +52,7 @@ export class RoleService {
     public async deleteRole(roleId: number): Promise<DeleteResult> {
         const role: Role = {} as Role;
         role.id = roleId;
-        const result = this.roleRepository.delete(role);
+        const result: Promise<DeleteResult> = this.roleRepository.delete(role);
 
         return result;
     }

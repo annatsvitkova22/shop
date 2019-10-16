@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { BookDocument } from 'src/document';
+import { BookDocument, AuthorDocument } from 'src/document';
 import { CreateBookModel, UpdateBookModel } from 'src/models';
 import { BookRepository } from 'src/repositories';
 
@@ -20,11 +20,14 @@ export class BooksService {
         createBook.type = book.type;
         createBook.author = book.author;
 
-        const author = await this.getAuthorById(createBook.author);
+        const author: BookDocument = await this.getAuthorById(createBook.author);
+
         if (!author) {
             createBook.author = null;
         }
-        const savedBook = await this.bookRepository.createBook(createBook);
+
+        const savedBook: BookDocument = await this.bookRepository.createBook(createBook);
+
         return savedBook;
     }
 
@@ -45,9 +48,9 @@ export class BooksService {
     }
 
     public async getBookById(bookId: string) {
-        const book = await this.findBook(bookId);
+        const book: BookDocument = await this.findBook(bookId);
         const authorId = book.author;
-        const author = await this.getAuthorById(authorId);
+        const author: BookDocument = await this.getAuthorById(authorId);
         const allResult = {
             book,
             author,
@@ -55,13 +58,13 @@ export class BooksService {
         return allResult;
     }
 
-    public async getBookByAuthor(authorId: string) {
-        const bookByAuthor = await this.findBookByAuthor(authorId);
+    public async getBookByAuthor(authorId: string): Promise<BookDocument> {
+        const bookByAuthor: BookDocument = await this.findBookByAuthor(authorId);
 
         return bookByAuthor;
     }
 
-    public async updateBook(book: UpdateBookModel) {
+    public async updateBook(book: UpdateBookModel): Promise<BookDocument> {
 
         const updateBook: BookDocument = {} as BookDocument;
         updateBook.id = book.id;
@@ -73,12 +76,12 @@ export class BooksService {
         updateBook.type = book.type;
         updateBook.author = book.author;
 
-        const author = await this.getAuthorById(updateBook.author);
+        const author: AuthorDocument = await this.getAuthorById(updateBook.author);
         if (!author) {
             updateBook.author = null;
         }
 
-        const updatedBook = await this.findBook(updateBook.id);
+        const updatedBook: BookDocument = await this.findBook(updateBook.id);
         if (updateBook.name) {
             updatedBook.name = updateBook.name;
         }
@@ -104,7 +107,7 @@ export class BooksService {
             updatedBook.author = null;
         }
 
-        const newBook = await this.bookRepository.updateBook(updatedBook);
+        const newBook: BookDocument = await this.bookRepository.updateBook(updatedBook);
 
         return newBook;
     }
@@ -123,42 +126,27 @@ export class BooksService {
     private async findBook(id: string): Promise<BookDocument> {
         const book: BookDocument = {} as BookDocument;
         book.id = id;
-        let foundBook;
-        try {
-            foundBook = await this.bookRepository.findBook(book);
-        } catch (error) {
-            throw new NotFoundException('Could not find book.');
-        }
-        if (!foundBook) {
-            throw new NotFoundException('Could not find book.');
-        }
+        const  foundBook: BookDocument = await this.bookRepository.findBook(book);
 
         return foundBook;
     }
 
     private async findBookByAuthor(authorId: string): Promise<BookDocument> {
-        let foundBookByAuthor;
-        try {
-            foundBookByAuthor = await this.bookRepository.findBookByAuthor(authorId);
-        } catch (error) {
-            throw new NotFoundException('Could not find book.');
-        }
-        if (!foundBookByAuthor) {
-            throw new NotFoundException('Could not find book.');
-        }
+        const foundBookByAuthor: BookDocument = await this.bookRepository.findBookByAuthor(authorId);
 
         return foundBookByAuthor;
     }
 
-    async getAuthorById(authorId: string): Promise<BookDocument> {
-        const authorById = await this.findAuthor(authorId);
+    public async getAuthorById(authorId: string): Promise<BookDocument> {
+        const authorById: BookDocument = await this.findAuthor(authorId);
 
         return authorById;
     }
 
     private async findAuthor(id: string): Promise<BookDocument> {
-        const foundAuthor = await this.bookRepository.findAuthor(id);
+        const foundAuthor: BookDocument = await this.bookRepository.findAuthor(id);
 
         return foundAuthor;
     }
+
 }

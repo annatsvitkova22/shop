@@ -14,13 +14,13 @@ export class AuthorRepository {
     }
 
     public async getAuthors(): Promise<Author[]> {
-        const getAuthors = await this.authorRepository.find();
+        const getAuthors: Author[] = await this.authorRepository.find();
 
         return getAuthors;
     }
 
     public async getAuthorsById(authorId: Author): Promise<Author[]> {
-        const findAuthor = await this.authorRepository.find({
+        const findAuthor: Author[] = await this.authorRepository.find({
             select: ['name'],
             where: [{ id: authorId.id }],
         });
@@ -29,13 +29,13 @@ export class AuthorRepository {
     }
 
     public async getAuthorById(getAuthor: Author): Promise<Author> {
-        const findAuthor = await this.authorRepository.findOne(getAuthor.id);
+        const findAuthor: Author = await this.authorRepository.findOne(getAuthor.id);
 
         return findAuthor;
     }
 
     public async deleteAuthor(author: Author): Promise<DeleteResult> {
-        const result = this.authorRepository.delete(author);
+        const result: Promise<DeleteResult> = this.authorRepository.delete(author);
 
         return result;
     }

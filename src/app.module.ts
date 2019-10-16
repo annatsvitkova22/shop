@@ -6,7 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from 'src/app.controller';
-import { ControllersController, AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
+import { AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
   UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController,
   RoleInUserController, AuthorInBookController} from 'src/controllers';
 import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper, PaymentHelper } from 'src/common';
@@ -43,7 +43,7 @@ const myEnvitonment: Enviroment = getEnv();
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: myEnvitonment.tokenLife },
     })],
-  controllers: [AppController, ControllersController, AuthenticationController, BooksController, AuthorsMongoController, PrintingEditionsController,
+  controllers: [AppController, AuthenticationController, BooksController, AuthorsMongoController, PrintingEditionsController,
     UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController, RoleInUserController,
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,

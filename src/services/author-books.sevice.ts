@@ -12,7 +12,7 @@ export class AuthorInBookService {
     constructor( @InjectRepository(AuthorInBooks) private authorInBooksRepository: Repository<AuthorInBooks>) { }
 
     public async getAuthorInBooks(): Promise<AuthorInBooks[]> {
-        const getAuthorInBooks = await this.authorInBooksRepository.find();
+        const getAuthorInBooks: AuthorInBooks[] = await this.authorInBooksRepository.find();
 
         return getAuthorInBooks;
     }
@@ -20,7 +20,7 @@ export class AuthorInBookService {
     public async getAuthorInBooksById(id: number): Promise<AuthorInBooks[]> {
         const AuthorInBookId: UpdateAuthorInBooksModel = {};
         AuthorInBookId.id = id;
-        const authorInBook = await this.authorInBooksRepository.find({
+        const authorInBook: AuthorInBooks[] = await this.authorInBooksRepository.find({
             select: ['authorId', 'bookId'],
             where: [{ id: AuthorInBookId.id }],
         });
@@ -33,7 +33,7 @@ export class AuthorInBookService {
         createdAuthorInBook.authorId = authorInBook.authorId;
         createdAuthorInBook.bookId = authorInBook.bookId;
 
-        const savedAuthorInBook = await this.authorInBooksRepository.save(createdAuthorInBook);
+        const savedAuthorInBook: AuthorInBooks = await this.authorInBooksRepository.save(createdAuthorInBook);
 
         return(savedAuthorInBook.id);
     }
@@ -44,12 +44,12 @@ export class AuthorInBookService {
         updateAuthorInBook.authorId = authorInBook.authorId;
         updateAuthorInBook.bookId = authorInBook.bookId;
 
-        const toUpdate = await this.authorInBooksRepository.findOne(updateAuthorInBook.id);
+        const toUpdate: AuthorInBooks = await this.authorInBooksRepository.findOne(updateAuthorInBook.id);
 
         toUpdate.authorId = updateAuthorInBook.authorId;
         toUpdate.bookId = updateAuthorInBook.bookId;
 
-        const savedAuthorInBook = await this.authorInBooksRepository.save(toUpdate);
+        const savedAuthorInBook: AuthorInBooks = await this.authorInBooksRepository.save(toUpdate);
 
         return savedAuthorInBook;
       }
@@ -58,7 +58,7 @@ export class AuthorInBookService {
         const authorInBook: AuthorInBooks = {};
         authorInBook.id = authorInBookId;
 
-        const result = this.authorInBooksRepository.delete(authorInBook);
+        const result: Promise<DeleteResult> = this.authorInBooksRepository.delete(authorInBook);
 
         return result;
     }

@@ -8,19 +8,19 @@ export class UserRepository {
     constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
 
     public async createUser(createUser: User): Promise<User> {
-        const user = await this.userRepository.save(createUser);
+        const user: User = await this.userRepository.save(createUser);
 
         return user;
     }
 
     public async getUsers(): Promise<User[]> {
-        const getUsers = await this.userRepository.find();
+        const getUsers: User[] = await this.userRepository.find();
 
         return getUsers;
     }
 
     public async getUsersById(userId: User): Promise<User[]> {
-        const findUser = await this.userRepository.find({
+        const findUser: User[] = await this.userRepository.find({
             select: ['firstName', 'lastName', 'passwordHash', 'email'],
             where: [{ id: userId.id }],
         });
@@ -29,13 +29,13 @@ export class UserRepository {
     }
 
     public async getUserById(getUser: User): Promise<User> {
-        const findUser = await this.userRepository.findOne(getUser.id);
+        const findUser: User = await this.userRepository.findOne(getUser.id);
 
         return findUser;
     }
 
     public async deleteUser(user: User): Promise<DeleteResult> {
-        const result = this.userRepository.delete(user);
+        const result: Promise<DeleteResult> = this.userRepository.delete(user);
 
         return result;
     }

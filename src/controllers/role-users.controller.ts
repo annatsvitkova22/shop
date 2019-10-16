@@ -1,8 +1,11 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
+import { DeleteResult } from 'typeorm';
+
 import { RoleInUsersService } from 'src/services';
 import { CreateRoleInUsersModel, UpdateRoleInUsersModel } from 'src/models';
+import { UserInRoles } from 'src/entity';
 
 @ApiUseTags('Role in users table')
 @Controller('role-user')
@@ -14,40 +17,41 @@ export class RoleInUserController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search role in user by id'})
-    get(@Param() params) {
-        const roleInUser = this.roleInUserService.getRoleInUsersById(params.id);
+    public get(@Param() params): Promise<UserInRoles[]> {
+        const roleInUser: Promise<UserInRoles[]> = this.roleInUserService.getRoleInUsersById(params.id);
 
         return roleInUser;
     }
 
     @Get()
     @ApiOperation({ title: 'Search all roles in users'})
-    getAll() {
-    const roleInUser = this.roleInUserService.getRoleInUsers();
+    public getAll(): Promise<UserInRoles[]> {
+    const roleInUser: Promise<UserInRoles[]> = this.roleInUserService.getRoleInUsers();
 
     return roleInUser;
   }
 
     @Post()
     @ApiOperation({ title: 'Create role in user'})
-    create(@Body() roleInUser: CreateRoleInUsersModel) {
-        const createRoleInUser = this.roleInUserService.createRoleInUser(roleInUser);
+    public create(@Body() roleInUser: CreateRoleInUsersModel): Promise<number> {
+        const createRoleInUser: Promise<number> = this.roleInUserService.createRoleInUser(roleInUser);
 
         return createRoleInUser;
     }
 
     @Put()
     @ApiOperation({ title: 'Update role in user by id'})
-    update(@Body() roleInUser: UpdateRoleInUsersModel) {
-        const updateRoleInUser = this.roleInUserService.updateRoleInUser(roleInUser);
+    public update(@Body() roleInUser: UpdateRoleInUsersModel): Promise<UserInRoles> {
+        const updateRoleInUser: Promise<UserInRoles> = this.roleInUserService.updateRoleInUser(roleInUser);
 
         return updateRoleInUser;
     }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete role in user by id'})
-    delete(@Param() params) {
+    public delete(@Param() params): Promise<DeleteResult> {
+        const deleted: Promise<DeleteResult> = this.roleInUserService.deleteRole(params.id);
 
-        return this.roleInUserService.deleteRole(params.id);
+        return deleted;
     }
 }

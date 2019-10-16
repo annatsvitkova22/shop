@@ -17,7 +17,7 @@ export class HashHelper {
         return result;
     }
 
-    public async compareHash(password: string|undefined, hash: string|undefined): Promise<boolean> {
+    public async compareHash(password: string, hash: string): Promise<boolean> {
         const result = bcrypt.compare(password, hash);
 
         return result;

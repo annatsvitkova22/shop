@@ -12,7 +12,7 @@ export class OrderItemService {
     constructor( @InjectRepository(OrderItem) private orderItemRepository: Repository<OrderItem>) { }
 
     public async getOrderItems(): Promise<OrderItem[]> {
-        const getOrderItems = await this.orderItemRepository.find();
+        const getOrderItems: OrderItem[] = await this.orderItemRepository.find();
 
         return getOrderItems;
     }
@@ -20,7 +20,7 @@ export class OrderItemService {
     public async getOrderItemById(id: number): Promise<OrderItem[]> {
         const orderItem: UpdateOrderItemModel = {};
         orderItem.id = id;
-        const foundOrderItem = await this.orderItemRepository.find({
+        const foundOrderItem: OrderItem[] = await this.orderItemRepository.find({
             select: ['pritingEditionId', 'count'],
             where: [{ id: orderItem.id }],
         });
@@ -32,7 +32,7 @@ export class OrderItemService {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.pritingEditionId = createOrderItem.pritingEditionId;
         orderItem.count = createOrderItem.count;
-        const savedOrderItem = await this.orderItemRepository.save(orderItem);
+        const savedOrderItem: OrderItem = await this.orderItemRepository.save(orderItem);
 
         return(savedOrderItem.id);
     }
@@ -43,11 +43,11 @@ export class OrderItemService {
         orderItem.pritingEditionId = updateOrderItem.pritingEditionId;
         orderItem.count = updateOrderItem.count;
 
-        const toUpdate = await this.orderItemRepository.findOne(orderItem.id);
+        const toUpdate: OrderItem = await this.orderItemRepository.findOne(orderItem.id);
         toUpdate.pritingEditionId = orderItem.pritingEditionId;
         toUpdate.count = orderItem.count;
 
-        const sevedOrderItem = await this.orderItemRepository.save(toUpdate);
+        const sevedOrderItem: OrderItem = await this.orderItemRepository.save(toUpdate);
 
         return sevedOrderItem;
       }
@@ -55,7 +55,7 @@ export class OrderItemService {
     public async deleteOrderItem(orderItemId: number): Promise<DeleteResult> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = orderItemId;
-        const result = this.orderItemRepository.delete(orderItem);
+        const result: Promise<DeleteResult> = this.orderItemRepository.delete(orderItem);
 
         return result;
     }

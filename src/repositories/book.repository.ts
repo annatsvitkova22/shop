@@ -12,7 +12,7 @@ export class BookRepository {
     ) {}
     public async createBook(createBook: BookDocument): Promise<BookDocument> {
 
-        const newBook = new this.bookModel(
+        const newBook: BookDocument = new this.bookModel(
             createBook,
         );
         const result = await newBook.save();
@@ -21,13 +21,13 @@ export class BookRepository {
     }
 
     public async getBook(): Promise<BookDocument[]> {
-        const books = await this.bookModel.find().exec();
+        const books: BookDocument[] = await this.bookModel.find().exec();
 
         return books;
     }
 
     public async updateBook(updateBook: BookDocument): Promise<BookDocument> {
-        const result = updateBook.save();
+        const result: Promise<BookDocument> = updateBook.save();
 
         return result;
     }
@@ -39,19 +39,19 @@ export class BookRepository {
     }
 
     public async findBook(idBook: BookDocument): Promise<BookDocument> {
-        const book = await this.bookModel.findById(idBook.id).exec();
+        const book: BookDocument = await this.bookModel.findById(idBook.id).exec();
 
         return book;
     }
 
     public async findBookByAuthor(authorId: string): Promise<BookDocument> {
-        const book = await this.bookModel.findOneAndUpdate({author: authorId}, {$set: {author: null}});
+        const book: BookDocument = await this.bookModel.findOneAndUpdate({author: authorId}, {$set: {author: null}});
 
         return book;
     }
 
     public async findAuthor(id: string): Promise<BookDocument> {
-       const author = await this.authorModel.findById(id);
+       const author: BookDocument = await this.authorModel.findById(id);
 
        return author;
     }

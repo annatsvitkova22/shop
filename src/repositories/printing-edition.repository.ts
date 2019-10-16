@@ -8,19 +8,19 @@ export class PrintingEditionRepository {
     constructor(@InjectRepository(PrintingEdition) private printingEditionRepository: Repository<PrintingEdition>) { }
 
     public async createPrintingEdition(createEdition: PrintingEdition): Promise<PrintingEdition> {
-        const edition = await this.printingEditionRepository.save(createEdition);
+        const edition: PrintingEdition = await this.printingEditionRepository.save(createEdition);
 
         return edition;
     }
 
     public async getPrintinEditions(): Promise<PrintingEdition[]> {
-        const getEdition = await this.printingEditionRepository.find();
+        const getEdition: PrintingEdition[] = await this.printingEditionRepository.find();
 
         return getEdition;
     }
 
     public async getPrintingEditionById(editionId: PrintingEdition): Promise<PrintingEdition[]> {
-        const findPrintingEdition = await this.printingEditionRepository.find({
+        const findPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.find({
             select: ['name', 'description', 'price', 'isRemoved', 'status', 'currency', 'type'],
             where: [{ id: editionId.id }],
         });
@@ -29,13 +29,13 @@ export class PrintingEditionRepository {
     }
 
     public async getEditionById(getEdition: PrintingEdition): Promise<PrintingEdition> {
-        const findEdition = await this.printingEditionRepository.findOne(getEdition.id);
+        const findEdition: PrintingEdition = await this.printingEditionRepository.findOne(getEdition.id);
 
         return findEdition;
     }
 
     public async deletePrintingEdition(printingEdition: PrintingEdition): Promise<DeleteResult> {
-        const result = this.printingEditionRepository.delete(printingEdition);
+        const result: Promise<DeleteResult> = this.printingEditionRepository.delete(printingEdition);
 
         return result;
     }

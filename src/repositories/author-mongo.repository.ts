@@ -12,7 +12,7 @@ export class AuthorMongoRepository {
     ) { }
 
     public async createAuthor(createAuthor: AuthorDocument): Promise<AuthorDocument> {
-        const newAuthor = new this.authorModel(
+        const newAuthor: AuthorDocument = new this.authorModel(
             createAuthor,
         );
         const result = await newAuthor.save();
@@ -21,13 +21,13 @@ export class AuthorMongoRepository {
     }
 
     public async getAuthors(): Promise<AuthorDocument[]>  {
-        const authors = await this.authorModel.find().exec();
+        const authors: AuthorDocument[] = await this.authorModel.find().exec();
 
         return authors;
     }
 
     public async updateAuthor(updatedAuthor: AuthorDocument): Promise<AuthorDocument>  {
-        const result = updatedAuthor.save();
+        const result: Promise<AuthorDocument> = updatedAuthor.save();
 
         return result;
     }
@@ -39,13 +39,13 @@ export class AuthorMongoRepository {
     }
 
     public async findAuthorById(idAuthor: AuthorDocument): Promise<AuthorDocument>  {
-        const author = await this.authorModel.findById(idAuthor.id);
+        const author: AuthorDocument = await this.authorModel.findById(idAuthor.id);
 
         return author;
     }
 
     public async findBookByAuthor(idAuthor: AuthorDocument): Promise<AuthorDocument> {
-        const book = await this.bookModel.findOneAndUpdate({ author: idAuthor.id }, { $set: { author: null } });
+        const book: AuthorDocument = await this.bookModel.findOneAndUpdate({ author: idAuthor.id }, { $set: { author: null } });
 
         return book;
     }

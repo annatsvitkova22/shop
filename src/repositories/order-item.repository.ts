@@ -8,19 +8,19 @@ export class OrderItemRepository {
     constructor(@InjectRepository(OrderItem) private orderItemRepository: Repository<OrderItem>) { }
 
     public async createOrderItem(createOrderItem: OrderItem): Promise<OrderItem> {
-        const orderItem = await this.orderItemRepository.save(createOrderItem);
+        const orderItem: OrderItem = await this.orderItemRepository.save(createOrderItem);
 
         return orderItem;
     }
 
     public async getOrderItems(): Promise<OrderItem[]> {
-        const getOrderItems = await this.orderItemRepository.find();
+        const getOrderItems: OrderItem[] = await this.orderItemRepository.find();
 
         return getOrderItems;
     }
 
     public async getOrderItemsById(orderItemId: OrderItem): Promise<OrderItem[]> {
-        const findOrderItem = await this.orderItemRepository.find({
+        const findOrderItem: OrderItem[] = await this.orderItemRepository.find({
             select: ['pritingEditionId', 'count'],
             where: [{ id: orderItemId.id }],
         });
@@ -29,13 +29,13 @@ export class OrderItemRepository {
     }
 
     public async getOrderItemById(getOrderItem: OrderItem): Promise<OrderItem> {
-        const findOrderItem = await this.orderItemRepository.findOne(getOrderItem.id);
+        const findOrderItem: OrderItem = await this.orderItemRepository.findOne(getOrderItem.id);
 
         return findOrderItem;
     }
 
     public async deleteOrderItem(orderItem: OrderItem): Promise<DeleteResult> {
-        const result = this.orderItemRepository.delete(orderItem);
+        const result: Promise<DeleteResult> = this.orderItemRepository.delete(orderItem);
 
         return result;
     }

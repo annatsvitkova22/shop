@@ -3,6 +3,7 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { AuthorsMongoService } from 'src/services/authors-mongo.service';
 import { CreateAuthorModel, UpdateAuthorMongoModel } from 'src/models';
+import { AuthorDocument } from 'src/document';
 
 @ApiUseTags('Author document in Mongo')
 @Controller('authorsMongo')
@@ -13,15 +14,15 @@ export class AuthorsMongoController {
 
   @Post()
   @ApiOperation({ title: 'Create author'})
-  public async createAuthors(@Body() createAuthor: CreateAuthorModel) {
-    const getAuthor = await this.authorsService.createAuthor(createAuthor);
+  public async create(@Body() createAuthor: CreateAuthorModel): Promise<AuthorDocument> {
+    const getAuthor: AuthorDocument = await this.authorsService.createAuthor(createAuthor);
 
-    return { getAuthor };
+    return  getAuthor;
   }
 
   @Get()
   @ApiOperation({ title: 'Search all authors by id'})
-  public async getAllAuthors() {
+  public async getAll() {
     const authors = await this.authorsService.getAuthors();
 
     return authors;
@@ -29,16 +30,16 @@ export class AuthorsMongoController {
 
   @Get(':id')
   @ApiOperation({ title: 'Search authors by id'})
-  public async getBook(@Param('id') authorId: string) {
-    const author = await this.authorsService.getAuthorById(authorId);
+  public async get(@Param('id') authorId: string): Promise<AuthorDocument> {
+    const author: AuthorDocument = await this.authorsService.getAuthorById(authorId);
 
     return author;
   }
 
   @Patch()
   @ApiOperation({ title: 'Update author by id'})
-  public async updateAuthor(
-    @Body() updateAuthor: UpdateAuthorMongoModel) {
+  public async update(
+    @Body() updateAuthor: UpdateAuthorMongoModel): Promise<boolean> {
     await this.authorsService.updateAuthor(updateAuthor);
 
     return true;
@@ -46,7 +47,7 @@ export class AuthorsMongoController {
 
   @Delete(':id')
   @ApiOperation({ title: 'Delete author by id'})
-  public async removeAuthor(@Param('id') authorId: string) {
+  public async delete(@Param('id') authorId: string): Promise<boolean> {
     await this.authorsService.deleteAuthor(authorId);
 
     return true;

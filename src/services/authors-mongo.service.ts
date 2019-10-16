@@ -13,7 +13,7 @@ export class AuthorsMongoService {
   public async createAuthor(author: CreateAuthorModel): Promise<AuthorDocument> {
     const createAuthor: AuthorDocument = {} as AuthorDocument;
     createAuthor.name = author.name;
-    const createdAuthor = await this.authorRepository.createAuthor(createAuthor);
+    const createdAuthor: AuthorDocument = await this.authorRepository.createAuthor(createAuthor);
 
     return createdAuthor;
   }
@@ -29,7 +29,7 @@ export class AuthorsMongoService {
   }
 
   public async getAuthorById(authorId: string): Promise<AuthorDocument> {
-    const author = await this.findAuthor(authorId);
+    const author: AuthorDocument = await this.findAuthor(authorId);
 
     return author;
   }
@@ -38,12 +38,12 @@ export class AuthorsMongoService {
     const updateAuthor: AuthorDocument = {} as AuthorDocument;
     updateAuthor.id = author.id;
     updateAuthor.name = author.name;
-    const updatedAuthor = await this.findAuthor(updateAuthor.id);
+    const updatedAuthor: AuthorDocument = await this.findAuthor(updateAuthor.id);
     if (updateAuthor.name) {
       updatedAuthor.name = updateAuthor.name;
     }
 
-    const result = await this.authorRepository.updateAuthor(updatedAuthor);
+    const result: AuthorDocument = await this.authorRepository.updateAuthor(updatedAuthor);
 
     return result;
   }
@@ -53,22 +53,24 @@ export class AuthorsMongoService {
     author.id = authorId;
     const result = await this.authorRepository.deleteAuthor(author);
     await this.getBookByAuthor(author.id);
+
     if (result.n === 0) {
       throw new NotFoundException('Could not find author.');
     }
+
     return result;
   }
 
   private async findAuthor(id: string): Promise<AuthorDocument> {
     const author: AuthorDocument = {} as AuthorDocument;
     author.id = id;
-    const authorById = await this.authorRepository.findAuthorById(author);
+    const authorById: AuthorDocument = await this.authorRepository.findAuthorById(author);
 
     return authorById;
   }
 
   public async getBookByAuthor(authorId: string): Promise<BookDocument> {
-    const bookByAuthor = await this.findBookByAuthor(authorId);
+    const bookByAuthor: AuthorDocument = await this.findBookByAuthor(authorId);
 
     return bookByAuthor;
   }
@@ -76,7 +78,7 @@ export class AuthorsMongoService {
   private async findBookByAuthor(authorId: string): Promise<BookDocument> {
     const author: AuthorDocument = {} as AuthorDocument;
     author.id = authorId;
-    let bookByAuthor;
+    let bookByAuthor: AuthorDocument;
     try {
       bookByAuthor = await this.authorRepository.findBookByAuthor(author);
     } catch (error) {

@@ -12,7 +12,7 @@ export class RoleInUsersService {
     constructor( @InjectRepository(UserInRoles) private roleInUsersRepository: Repository<UserInRoles>) { }
 
     public async getRoleInUsers(): Promise<UserInRoles[]> {
-        const getRoleInUsers = await this.roleInUsersRepository.find();
+        const getRoleInUsers: UserInRoles[] = await this.roleInUsersRepository.find();
 
         return getRoleInUsers;
     }
@@ -20,7 +20,7 @@ export class RoleInUsersService {
     public async getRoleInUsersById(id: number): Promise<UserInRoles[]> {
         const role: UpdateRoleInUsersModel = {};
         role.id = id;
-        const foundRoleInUser = await this.roleInUsersRepository.find({
+        const foundRoleInUser: UserInRoles[] = await this.roleInUsersRepository.find({
             select: ['roleId', 'userId'],
             where: [{ id: role.id }],
         });
@@ -32,7 +32,7 @@ export class RoleInUsersService {
         const role: UserInRoles = {} as UserInRoles;
         role.roleId = createRole.roleId;
         role.userId = createRole.userId;
-        const savedRole = await this.roleInUsersRepository.save(role);
+        const savedRole: UserInRoles = await this.roleInUsersRepository.save(role);
 
         return(savedRole.id);
     }
@@ -43,11 +43,11 @@ export class RoleInUsersService {
         roleInUser.roleId = updateRole.roleId;
         roleInUser.userId = updateRole.userId;
 
-        const toUpdate = await this.roleInUsersRepository.findOne(roleInUser.id);
+        const toUpdate: UserInRoles = await this.roleInUsersRepository.findOne(roleInUser.id);
         toUpdate.roleId = roleInUser.roleId;
         toUpdate.userId = roleInUser.userId;
 
-        const savedRoleInUser = await this.roleInUsersRepository.save(toUpdate);
+        const savedRoleInUser: UserInRoles = await this.roleInUsersRepository.save(toUpdate);
 
         return savedRoleInUser;
       }
@@ -55,7 +55,7 @@ export class RoleInUsersService {
     public async deleteRole(roleId: number): Promise<DeleteResult> {
         const roleInUser: UserInRoles = {} as UserInRoles;
         roleInUser.id = roleId;
-        const result = this.roleInUsersRepository.delete(roleInUser);
+        const result: Promise<DeleteResult> = this.roleInUsersRepository.delete(roleInUser);
 
         return result;
     }
