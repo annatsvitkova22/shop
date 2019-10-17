@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards, Post, Body, UseFilters, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse } from '@nestjs/swagger';
 
 import { AuthService } from 'src/services';
 import { RolesGuard, Roles, AllExceptionsFilter } from 'src/common';

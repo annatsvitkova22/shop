@@ -5,7 +5,6 @@ import { Repository, DeleteResult } from 'typeorm';
 
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
-import { throwStatement } from '@babel/types';
 
 @Injectable()
 export class PrintingEditionService {
@@ -29,46 +28,43 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    public async printingEditionsFilter(printingEdition: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
-        let foundPrintingEdition;
-        console.log(printingEdition);
-        if (printingEdition.name == null && printingEdition.status != null && printingEdition.priceMin != null && printingEdition.priceMax != null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE status = ? AND price > ? AND price < ?',
-                [printingEdition.status, printingEdition.priceMin, printingEdition.priceMax]);
+    public async getFiltered(printingEdition: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
+        let query: string = 'SELECT * FROM printing_edition WHERE';
+
+        if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
+            query += ' name = \'' + printingEdition.name + '\' AND';
         }
-        if (printingEdition.name != null && printingEdition.status == null && printingEdition.priceMin != null && printingEdition.priceMax != null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE name = ? AND price > ? AND price < ?',
-                [printingEdition.name, printingEdition.priceMin, printingEdition.priceMax]);
+        if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
+            query += ' name = \'' + printingEdition.name + '\'';
         }
-        if (printingEdition.name != null && printingEdition.status != null && printingEdition.priceMin != null && printingEdition.priceMax == null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE name = ? AND status = ? AND price > ?',
-                [printingEdition.name, printingEdition.status, printingEdition.priceMin]);
+        if ( printingEdition.status  && (printingEdition.priceMax || printingEdition.priceMin)) {
+            query += ' status = \'' + printingEdition.status + '\' AND';
         }
-        if (printingEdition.name != null && printingEdition.status != null && printingEdition.priceMin == null && printingEdition.priceMax != null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE name = ? AND status = ? AND price < ?',
-                [printingEdition.name, printingEdition.status, printingEdition.priceMax]);
+        if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status ) {
+            query += ' status = \'' + printingEdition.status + '\'';
         }
-        if (printingEdition.name == null && printingEdition.status == null && printingEdition.priceMin != null && printingEdition.priceMax != null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE price > ? AND price < ?',
-                [printingEdition.priceMin, printingEdition.priceMax]);
+        if (printingEdition.priceMin && printingEdition.priceMax ) {
+            query += ' price > ' + printingEdition.priceMin + ' AND';
         }
-        if (printingEdition.name != null && printingEdition.status != null && printingEdition.priceMin == null && printingEdition.priceMax == null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE name = ? AND status = ?',
-                [printingEdition.name, printingEdition.status]);
+        if (printingEdition.priceMin && !printingEdition.priceMax ) {
+            query += ' price > ' + printingEdition.priceMin ;
         }
-        if (printingEdition.name != null && printingEdition.status != null && printingEdition.priceMin != null && printingEdition.priceMax != null) {
-            foundPrintingEdition = await this.printingEditionRepository.query(
-                'SELECT * FROM printing_edition WHERE name = ? AND status = ? AND price > ? AND price < ?',
-                [printingEdition.name, printingEdition.status, printingEdition.priceMin, printingEdition.priceMax]);
+        if (printingEdition.priceMax ) {
+            query += ' price < ' + printingEdition.priceMax ;
         }
 
+        const foundPrintingEdition: Promise<PrintingEdition[]> = await this.printingEditionRepository.query(query);
+
         return foundPrintingEdition;
+    }
+
+    public async getPaging(take: number, skip: number) {
+        const printingEditions = await this.printingEditionRepository.find({
+            take,
+            skip,
+        });
+
+        return printingEditions;
     }
 
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<number> {

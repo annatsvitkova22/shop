@@ -8,7 +8,7 @@ export class CreatePrintingEditionModel {
     @ApiModelProperty()
     price?: number;
     @ApiModelProperty()
-    isRemoved?: string;
+    isRemoved?: boolean;
     @ApiModelProperty()
     status?: string;
     @ApiModelProperty()

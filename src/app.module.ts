@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 
 import { AppController } from 'src/app.controller';
 import { AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
@@ -42,7 +43,8 @@ const myEnvitonment: Enviroment = getEnv();
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: myEnvitonment.tokenLife },
-    })],
+    }),
+  ],
   controllers: [AppController, AuthenticationController, BooksController, AuthorsMongoController, PrintingEditionsController,
     UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController, RoleInUserController,
     AuthorInBookController],

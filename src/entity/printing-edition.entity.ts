@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { OrderItem, AuthorInBooks } from 'src/entity';
 
 @Entity()
@@ -12,7 +12,7 @@ export class PrintingEdition {
     @Column()
     price?: number;
     @Column()
-    isRemoved?: string;
+    isRemoved?: boolean;
     @Column()
     status?: string;
     @Column()

@@ -1,4 +1,5 @@
-import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
+import { ApiModelProperty } from '@nestjs/swagger';
+import { IsEmail } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne } from 'typeorm';
 import { Order, UserInRoles } from 'src/entity';
 
@@ -17,6 +18,7 @@ export class User {
     @Column()
     passwordHash?: string;
     @ApiModelProperty()
+    @IsEmail()
     @Column()
     email?: string;
     @ApiModelProperty()

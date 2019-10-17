@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, Query } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { DeleteResult } from 'typeorm';
@@ -13,18 +13,26 @@ export class PrintingEditionsController {
 
     constructor(
         private printingEditionService: PrintingEditionService,
-        ) { }
+    ) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search printing edition by id'})
-    public get(@Param() params): Promise<PrintingEdition[]> {
+    @Get('id/:id')
+    @ApiOperation({ title: 'Search printing edition by id' })
+    public get(@Param() params){
         const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPrintingEditionsById(params.id);
 
         return printingEdition;
     }
 
-    @Get()
-    @ApiOperation({ title: 'Search all printing editions'})
+    @Get('pagination')
+    @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
+    public getPaging(@Query('take') take: number, @Query('skip') skip: number): Promise<PrintingEdition[]>  {
+        const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPaging(take, skip);
+
+        return printingEdition;
+    }
+
+    @Get('all')
+    @ApiOperation({ title: 'Search all printing editions' })
     public getAll(): Promise<PrintingEdition[]> {
         const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPrintingEditions();
 
@@ -32,7 +40,7 @@ export class PrintingEditionsController {
     }
 
     @Post()
-    @ApiOperation({ title: 'Create printing edition'})
+    @ApiOperation({ title: 'Create printing edition' })
     public create(@Body() printingEdition: CreatePrintingEditionModel): Promise<number> {
         const createEdition: Promise<number> = this.printingEditionService.createPrintingEdition(printingEdition);
 
@@ -40,15 +48,15 @@ export class PrintingEditionsController {
     }
 
     @Post('filter')
-    @ApiOperation({ title: 'Filter by name, status, price'})
+    @ApiOperation({ title: 'Filter by name, status, price' })
     public filter(@Body() printingEdition: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
-        const filteredEdition = this.printingEditionService.printingEditionsFilter(printingEdition);
+        const filteredEdition = this.printingEditionService.getFiltered(printingEdition);
 
         return filteredEdition;
     }
 
     @Put()
-    @ApiOperation({ title: 'Update printing edition by id'})
+    @ApiOperation({ title: 'Update printing edition by id' })
     public update(@Body() printingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
         const updateEdition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(printingEdition);
 
@@ -56,7 +64,7 @@ export class PrintingEditionsController {
     }
 
     @Delete(':id')
-    @ApiOperation({ title: 'Delete printing edition by id'})
+    @ApiOperation({ title: 'Delete printing edition by id' })
     public delete(@Param() params): Promise<DeleteResult> {
         const deleted: Promise<DeleteResult> = this.printingEditionService.deletePrintingEdition(params.id);
 
