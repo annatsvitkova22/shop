@@ -65,6 +65,14 @@ export class UsersController {
         return user;
     }
 
+    @Post('validateForgotPassword')
+    @ApiOperation({ title: 'Forgot password' })
+    public async validateForgotPassword(@Query('mail') mail: string, @Body() forgotPassword: ForgotPassword): Promise<string | User> {
+        const user: string | User = await this.userService.validateForgotPassword(forgotPassword, mail);
+
+        return user;
+    }
+
     @Put()
     @ApiOperation({ title: 'Update user by id' })
     public async update(@Body() user: UpdateUserModel): Promise<User> {

@@ -121,8 +121,31 @@ export class UserService {
         return savedUser.emailConfirmed;
     }
 
-    public async forgotPassword(forgotPassword: ForgotPassword): Promise<string|User> {
+    public async forgotPassword(forgotPassword: ForgotPassword): Promise<string | User> {
         const user = await this.findByEmail(forgotPassword.email);
+
+        const saltForEmail: string = await this.emailHelper.sendEmail(user.email);
+        user.saltForEmail = saltForEmail;
+        user.emailConfirmed = false;
+
+        const savedUser: User = await this.userRepository.save(user);
+
+        if (!user) {
+            const messegeError = 'Sorry, email not found';
+
+            return messegeError;
+        }
+
+        return savedUser;
+    }
+
+    public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<User | string> {
+        const user = await this.findByEmail(email);
+        if (user.emailConfirmed !== true) {
+            const messegeError: string = 'sorry, password not verified';
+
+            return messegeError;
+        }
         if (forgotPassword.password === forgotPassword.repeatPassword) {
             const randomSalt: string = await this.hashHelper.getRandomSalt();
             user.salt = randomSalt;
@@ -130,19 +153,11 @@ export class UserService {
             const pass: string = await this.hashHelper.getHash(forgotPassword.password, randomSalt);
             user.passwordHash = pass;
 
-            const saltForEmail: string = await this.emailHelper.sendEmail(user.email);
-            user.saltForEmail = saltForEmail;
-            user.emailConfirmed = false;
             const savedUser: User = await this.userRepository.save(user);
 
             return savedUser;
         }
-        if (!user) {
-            const messegeError = 'Sorry, email not found';
-
-            return messegeError;
-        }
-        const messege = 'Passwords do not match';
+        const messege: string = 'Passwords do not match';
 
         return messege;
     }

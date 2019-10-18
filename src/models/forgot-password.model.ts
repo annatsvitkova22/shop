@@ -3,9 +3,9 @@ import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
 export class ForgotPassword {
     @ApiModelProperty()
     @ApiProduces()
-    email: string;
+    email?: string;
     @ApiModelProperty()
-    password: string;
+    password?: string;
     @ApiModelProperty()
-    repeatPassword: string;
+    repeatPassword?: string;
 }
