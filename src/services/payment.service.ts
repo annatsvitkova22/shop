@@ -49,11 +49,15 @@ export class PaymentService {
         return savedPayment;
       }
 
-    public async deletePayment(paymentId: number): Promise<DeleteResult> {
+    public async deletePayment(paymentId: number): Promise<boolean|string> {
         const payment: Payment = {};
         payment.id = paymentId;
         const result: Promise<DeleteResult> = this.paymentRepository.delete(payment);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+        return true;
     }
 }

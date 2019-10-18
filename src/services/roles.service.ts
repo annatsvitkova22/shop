@@ -5,6 +5,8 @@ import { Repository, DeleteResult } from 'typeorm';
 
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
+import { newExpression } from 'babel-types';
+import { AllExceptionsFilter } from 'src/common';
 
 @Injectable()
 export class RoleService {
@@ -49,11 +51,16 @@ export class RoleService {
         return savedRole;
       }
 
-    public async deleteRole(roleId: number): Promise<DeleteResult> {
+    public async deleteRole(roleId: number): Promise<boolean|string> {
         const role: Role = {} as Role;
         role.id = roleId;
         const result: Promise<DeleteResult> = this.roleRepository.delete(role);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }

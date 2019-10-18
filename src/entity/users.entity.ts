@@ -24,6 +24,12 @@ export class User {
     @ApiModelProperty()
     @Column()
     salt?: string;
+    @ApiModelProperty()
+    @Column()
+    saltForEmail?: string;
+    @ApiModelProperty()
+    @Column()
+    emailConfirmed?: boolean;
 
     @OneToMany(() => Order, order => order.userId)
     userConnection?: Promise<Order[]>;

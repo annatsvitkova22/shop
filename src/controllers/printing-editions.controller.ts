@@ -1,8 +1,6 @@
 import { Controller, Post, Body, Get, Put, Delete, Param, Query } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { DeleteResult } from 'typeorm';
-
 import { PrintingEditionService } from 'src/services';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
@@ -17,7 +15,7 @@ export class PrintingEditionsController {
 
     @Get('id/:id')
     @ApiOperation({ title: 'Search printing edition by id' })
-    public get(@Param() params){
+    public get(@Param() params) {
         const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPrintingEditionsById(params.id);
 
         return printingEdition;
@@ -25,7 +23,7 @@ export class PrintingEditionsController {
 
     @Get('pagination')
     @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
-    public getPaging(@Query('take') take: number, @Query('skip') skip: number): Promise<PrintingEdition[]>  {
+    public getPaging(@Query('take') take: number, @Query('skip') skip: number): Promise<PrintingEdition[]> {
         const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPaging(take, skip);
 
         return printingEdition;
@@ -65,8 +63,8 @@ export class PrintingEditionsController {
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete printing edition by id' })
-    public delete(@Param() params): Promise<DeleteResult> {
-        const deleted: Promise<DeleteResult> = this.printingEditionService.deletePrintingEdition(params.id);
+    public delete(@Param() params): Promise<boolean | string> {
+        const deleted: Promise<boolean | string> = this.printingEditionService.deletePrintingEdition(params.id);
 
         return deleted;
     }

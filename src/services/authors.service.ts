@@ -47,11 +47,16 @@ export class AuthorService {
         return savedAuthor;
       }
 
-    public async deleteAuthor(authorId: number): Promise<DeleteResult> {
+    public async deleteAuthor(authorId: number): Promise<boolean|string> {
         const author: Author = {};
         author.id = authorId;
         const result: Promise<DeleteResult> = this.authorRepository.delete(author);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }

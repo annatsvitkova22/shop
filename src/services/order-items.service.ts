@@ -52,11 +52,16 @@ export class OrderItemService {
         return sevedOrderItem;
       }
 
-    public async deleteOrderItem(orderItemId: number): Promise<DeleteResult> {
+    public async deleteOrderItem(orderItemId: number): Promise<boolean|string> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = orderItemId;
         const result: Promise<DeleteResult> = this.orderItemRepository.delete(orderItem);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }

@@ -49,8 +49,8 @@ export class OrdersController {
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete order by id'})
-    public delete(@Param() params): Promise<DeleteResult> {
-        const deleted: Promise<DeleteResult> = this.orderService.deleteOrder(params.id);
+    public delete(@Param() params): Promise<boolean|string>  {
+        const deleted: Promise<boolean|string>  = this.orderService.deleteOrder(params.id);
 
         return deleted;
     }

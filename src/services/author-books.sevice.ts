@@ -54,12 +54,17 @@ export class AuthorInBookService {
         return savedAuthorInBook;
       }
 
-      public async deleteAuthorInBook(authorInBookId: number): Promise<DeleteResult> {
+      public async deleteAuthorInBook(authorInBookId: number): Promise<boolean|string> {
         const authorInBook: AuthorInBooks = {};
         authorInBook.id = authorInBookId;
 
         const result: Promise<DeleteResult> = this.authorInBooksRepository.delete(authorInBook);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }

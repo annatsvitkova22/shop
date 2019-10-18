@@ -49,8 +49,8 @@ export class RoleInUserController {
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete role in user by id'})
-    public delete(@Param() params): Promise<DeleteResult> {
-        const deleted: Promise<DeleteResult> = this.roleInUserService.deleteRole(params.id);
+    public delete(@Param() params): Promise<boolean|string> {
+        const deleted: Promise<boolean|string>  = this.roleInUserService.deleteRole(params.id);
 
         return deleted;
     }

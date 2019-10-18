@@ -48,8 +48,8 @@ export class AuthorsController {
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete author by id'})
-    public delete(@Param() params): Promise<DeleteResult> {
-        const deleted: Promise<DeleteResult> = this.authorService.deleteAuthor(params.id);
+    public delete(@Param() params): Promise<boolean|string>  {
+        const deleted: Promise<boolean|string>  = this.authorService.deleteAuthor(params.id);
 
         return deleted;
     }

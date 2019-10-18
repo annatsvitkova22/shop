@@ -17,6 +17,7 @@ import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository} from 'src/repositories';
 import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
+import { MailerHelper } from './common/email.helper';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -50,7 +51,7 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, PaymentHelper,
+    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

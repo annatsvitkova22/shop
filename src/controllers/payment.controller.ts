@@ -49,8 +49,8 @@ export class PaymentsController {
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete payment by id'})
-    public delete(@Param() params): Promise<DeleteResult> {
-        const deleted: Promise<DeleteResult> = this.paymentService.deletePayment(params.id);
+    public delete(@Param() params): Promise<boolean|string>  {
+        const deleted: Promise<boolean|string>  = this.paymentService.deletePayment(params.id);
 
         return deleted;
     }

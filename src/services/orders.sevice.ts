@@ -57,11 +57,16 @@ export class OrderService {
         return savedOrder;
       }
 
-    public async deleteOrder(orderId: number): Promise<DeleteResult> {
+    public async deleteOrder(orderId: number): Promise<boolean|string> {
         const order: Order = {} as Order;
         order.id = orderId;
         const result: Promise<DeleteResult> = this.orderRepository.delete(order);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }

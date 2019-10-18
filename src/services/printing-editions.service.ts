@@ -106,11 +106,16 @@ export class PrintingEditionService {
         return savedEdition;
     }
 
-    public async deletePrintingEdition(printingEditionId: number): Promise<DeleteResult> {
+    public async deletePrintingEdition(printingEditionId: number): Promise<boolean|string> {
         const printingEdition: PrintingEdition = {} as PrintingEdition;
         printingEdition.id = printingEditionId;
         const result: Promise<DeleteResult> = this.printingEditionRepository.delete(printingEdition);
+        if (!result) {
+            const messege: string = 'id not found';
 
-        return result;
+            return messege;
+        }
+
+        return true;
     }
 }
