@@ -28,7 +28,7 @@ export class MailerHelper {
       from: 'tsvitkova.work@gmail.com',
       to: email,
       subject: 'IT works',
-      text: `Hello my friend. many texts \n https://192.168.0.104:443/user/validateCode/mail=${email}&token=${token} \n its good gdefgbdfhdfghdfhglhmgslk`,
+      text: `\n https://192.168.0.104:443/user/validateCode?mail=${email}&token=${token} \n`,
     };
 
     transporter.sendMail(mailOptions);
@@ -36,4 +36,27 @@ export class MailerHelper {
     return token;
   }
 
+  // public async sendEmailForRenamePassword(email: string): Promise<string> {
+  //   const transporter = nodemailer.createTransport({
+  //     service: 'gmail',
+  //     port: 587,
+  //     secure: false,
+  //     auth: {
+  //       user: 'tsvitkova.work@gmail.com',
+  //       pass: 'elofon7302',
+  //     },
+  //   });
+  //   const token = await this.hashHelper.getRandomSalt();
+
+  //   const mailOptions = {
+  //     from: 'tsvitkova.work@gmail.com',
+  //     to: email,
+  //     subject: 'IT works',
+  //     text: `\n https://192.168.0.104:443/user/forgotPassport?mail=${email}&token=${token} \n`,
+  //   };
+
+  //   transporter.sendMail(mailOptions);
+
+  //   return token;
+  // }
 }

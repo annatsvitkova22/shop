@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Put, Delete, Param, Query } from '@nestjs/
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { UserService } from 'src/services';
-import { CreateUserModel, UpdateUserModel } from 'src/models';
+import { CreateUserModel, UpdateUserModel, ForgotPassword } from 'src/models';
 import { User } from 'src/entity';
 import { MailerHelper } from 'src/common/email.helper';
 
@@ -14,7 +14,7 @@ export class UsersController {
         private mailerHelper: MailerHelper,
     ) { }
 
-    @Get(':id')
+    @Get('id/:id')
     @ApiOperation({ title: 'Search user by id' })
     public async get(@Param() params): Promise<User[]> {
         const user: User[] = await this.userService.getUserById(params.id);
@@ -22,7 +22,7 @@ export class UsersController {
         return user;
     }
 
-    @Get()
+    @Get('all')
     @ApiOperation({ title: 'Search all users' })
     public async getAll(): Promise<User[]> {
         const user: User[] = await this.userService.getUsers();
@@ -33,19 +33,36 @@ export class UsersController {
     @Get('validateCode')
     @ApiOperation({ title: 'Email confirmation' })
     public async validate(@Query('mail') mail: string, @Query('token') token: string): Promise<string | boolean> {
-        console.log("dfs");
         const user: User = await this.userService.findByEmail(mail);
         const validate = await this.userService.validateToken(token, user);
 
         return validate;
     }
 
-    @Post()
+    // @Get('forgotPassport')
+    // @ApiOperation({ title: 'Email confirmation' })
+    // public async forgotPassport(@Query('mail') mail: string, @Query('token') token: string): Promise<string | boolean> {
+    //     const user: User = await this.userService.findByEmail(mail);
+    //     const validate = await this.userService.validateToken(token, user);
+    //     const v = await this.userService.(validate);
+
+    //     return pa;
+    // }
+
+    @Post('create')
     @ApiOperation({ title: 'Create user' })
     public async create(@Body() user: CreateUserModel): Promise<string | User> {
         const createUser: string | User = await this.userService.createUser(user);
 
         return createUser;
+    }
+
+    @Post('forgotPassword')
+    @ApiOperation({ title: 'Forgot password' })
+    public async forgotPassword(@Body() forgotPassword: ForgotPassword): Promise<string | User> {
+        const user: string | User = await this.userService.forgotPassword(forgotPassword);
+
+        return user;
     }
 
     @Put()
