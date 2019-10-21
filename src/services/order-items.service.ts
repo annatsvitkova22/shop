@@ -21,7 +21,6 @@ export class OrderItemService {
         const orderItem: UpdateOrderItemModel = {};
         orderItem.id = id;
         const foundOrderItem: OrderItem[] = await this.orderItemRepository.find({
-            select: ['pritingEditionId', 'count'],
             where: [{ id: orderItem.id }],
         });
 
@@ -31,6 +30,8 @@ export class OrderItemService {
     public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<number> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.pritingEditionId = createOrderItem.pritingEditionId;
+        orderItem.amount = createOrderItem.amount;
+        orderItem.currency = createOrderItem.currency;
         orderItem.count = createOrderItem.count;
         const savedOrderItem: OrderItem = await this.orderItemRepository.save(orderItem);
 
@@ -41,10 +42,14 @@ export class OrderItemService {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = updateOrderItem.id;
         orderItem.pritingEditionId = updateOrderItem.pritingEditionId;
+        orderItem.amount = updateOrderItem.amount;
+        orderItem.currency = updateOrderItem.currency;
         orderItem.count = updateOrderItem.count;
 
         const toUpdate: OrderItem = await this.orderItemRepository.findOne(orderItem.id);
         toUpdate.pritingEditionId = orderItem.pritingEditionId;
+        toUpdate.amount = orderItem.amount;
+        toUpdate.currency = orderItem.currency;
         toUpdate.count = orderItem.count;
 
         const sevedOrderItem: OrderItem = await this.orderItemRepository.save(toUpdate);

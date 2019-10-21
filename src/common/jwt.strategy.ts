@@ -24,4 +24,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
     return  user;
   }
+
+  public async validateExpiredToken(user): Promise<boolean> {
+    let isExpiredToken = false;
+
+    const dateNow = new Date();
+
+    if (user.exp < dateNow.getTime() / 1000) {
+      isExpiredToken = true;
+
+      return isExpiredToken;
+    }
+  }
 }

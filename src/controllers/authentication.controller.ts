@@ -1,9 +1,9 @@
-import { Controller, Get, UseGuards, Post, Body, UseFilters, Request, Param, Res, Inject, forwardRef } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, UseFilters, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse } from '@nestjs/swagger';
 
 import { AuthService } from 'src/services';
-import { RolesGuard, Roles, AllExceptionsFilter } from 'src/common';
+import { Roles, AllExceptionsFilter } from 'src/common';
 import { User } from 'src/entity';
 import { Token, ValidateUser } from 'src/models';
 import { JwtHelper } from 'src/common/jwt.helper';
@@ -32,6 +32,7 @@ export class AuthenticationController {
     return myToken;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('me')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: Token })
   @Roles('user')
