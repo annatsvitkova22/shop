@@ -2,9 +2,9 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UpdateRoleInUsersModel {
     @ApiModelProperty()
-    id?: number;
+    id?: string;
     @ApiModelProperty()
-    roleId?: number;
+    roleId?: string;
     @ApiModelProperty()
-    userId?: number;
+    userId?: string;
 }

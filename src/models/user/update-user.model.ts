@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UpdateUserModel {
     @ApiModelProperty()
-    id?: number;
+    id?: string;
     @ApiModelProperty()
     firstName?: string;
     @ApiModelProperty()

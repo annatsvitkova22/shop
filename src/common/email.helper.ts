@@ -2,8 +2,10 @@ import { Injectable, Inject, forwardRef} from '@nestjs/common';
 
 import { HashHelper } from 'src/entity';
 import { UserService } from 'src/services';
+import * as nodemailer from 'nodemailer';
+import { Enviroment, getEnv } from 'src/environment/environment';
 
-const nodemailer = require('nodemailer');
+const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class MailerHelper {
@@ -14,18 +16,18 @@ export class MailerHelper {
 
   public async sendEmail(email: string, url: string): Promise<string> {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: 587,
-      secure: false,
+      service: myEnvitonment.secureMail,
+      port: myEnvitonment.portMail,
+      secure: myEnvitonment.secureMail,
       auth: {
-        user: 'tsvitkova.work@gmail.com',
-        pass: 'elofon7302',
+        user: myEnvitonment.userMail,
+        pass: myEnvitonment.passMail,
       },
     });
     const token = await this.hashHelper.getRandomSalt();
 
     const mailOptions = {
-      from: 'tsvitkova.work@gmail.com',
+      from: myEnvitonment.userMail,
       to: email,
       subject: 'IT works',
       text: `\n ${url}/user/validateCode?mail=${email}&token=${token} \n`,

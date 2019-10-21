@@ -1,8 +1,6 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { DeleteResult } from 'typeorm';
-
 import { RoleInUsersService } from 'src/services';
 import { CreateRoleInUsersModel, UpdateRoleInUsersModel } from 'src/models';
 import { UserInRoles } from 'src/entity';
@@ -11,9 +9,7 @@ import { UserInRoles } from 'src/entity';
 @Controller('role-user')
 export class RoleInUserController {
 
-    constructor(
-        private roleInUserService: RoleInUsersService,
-        ) { }
+    constructor(private roleInUserService: RoleInUsersService) { }
 
     @Get(':id')
     @ApiOperation({ title: 'Search role in user by id'})
@@ -33,8 +29,8 @@ export class RoleInUserController {
 
     @Post()
     @ApiOperation({ title: 'Create role in user'})
-    public create(@Body() roleInUser: CreateRoleInUsersModel): Promise<number> {
-        const createRoleInUser: Promise<number> = this.roleInUserService.createRoleInUser(roleInUser);
+    public create(@Body() roleInUser: CreateRoleInUsersModel): Promise<string> {
+        const createRoleInUser: Promise<string> = this.roleInUserService.createRoleInUser(roleInUser);
 
         return createRoleInUser;
     }

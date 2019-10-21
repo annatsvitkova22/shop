@@ -4,7 +4,7 @@ export class CreateOrderModel {
     @ApiModelProperty()
     description?: string;
     @ApiModelProperty()
-    userId?: number;
+    userId?: string;
     @ApiModelProperty({
         example: new Date(Date.now()),
         type: String,
@@ -12,5 +12,5 @@ export class CreateOrderModel {
     })
     date?: Date;
     @ApiModelProperty()
-    paymentId?: number;
+    paymentId?: string;
 }

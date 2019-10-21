@@ -1,6 +1,9 @@
 import { CreatePaymentModel } from 'src/models';
+import { Enviroment, getEnv } from 'src/environment/environment';
 
-const keySecret = 'sk_test_4kwhS3Jsc0uRQZow1C7Q7b6I002UgJ1GHf';
+const myEnvitonment: Enviroment = getEnv();
+
+const keySecret = myEnvitonment.keySecretPayment;
 const stripe = require('stripe')(keySecret);
 const status = 'succeeded';
 

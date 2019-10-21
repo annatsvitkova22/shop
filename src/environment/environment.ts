@@ -15,6 +15,12 @@ export class Enviroment {
     databaseUsername?: string;
     databasePassword?: string;
     database?: string;
+    serviceMail?: string;
+    portMail?: number;
+    secureMail?: boolean;
+    userMail?: string;
+    passMail?: string;
+    keySecretPayment?: string;
 }
 
 export const getEnv = (): Enviroment => {

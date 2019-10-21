@@ -3,12 +3,12 @@ import { User, Role } from 'src/entity';
 
 @Entity()
 export class UserInRoles {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @Column({name: 'role_id'})
-    roleId?: number;
+    roleId?: string;
     @Column({name: 'user_id'})
-    userId?: number;
+    userId?: string;
 
     @OneToOne(() => User,  user => user.userRoleConnection, {primary:
         true})

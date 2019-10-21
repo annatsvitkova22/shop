@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from 'src/entity';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { ValidateUser } from 'src/models';
 
@@ -23,17 +22,5 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
     return  user;
-  }
-
-  public async validateExpiredToken(user): Promise<boolean> {
-    let isExpiredToken = false;
-
-    const dateNow = new Date();
-
-    if (user.exp < dateNow.getTime() / 1000) {
-      isExpiredToken = true;
-
-      return isExpiredToken;
-    }
   }
 }

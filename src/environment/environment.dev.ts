@@ -15,5 +15,11 @@ export const environmentDev: Enviroment = {
   databasePort: 3306,
   databaseUsername: 'root',
   databasePassword: '1111',
-  database: 'book-shop',
+  database: 'shop',
+  serviceMail: 'gmail',
+  portMail: 587,
+  secureMail: false,
+  userMail: 'tsvitkova.work@gmail.com',
+  passMail: 'elofon7302',
+  keySecretPayment: 'sk_test_4kwhS3Jsc0uRQZow1C7Q7b6I002UgJ1GHf',
 };

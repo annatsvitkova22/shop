@@ -4,15 +4,12 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import { AuthorService } from 'src/services';
 import { CreateAuthorModel, UpdateAuthorModel } from 'src/models';
 import { Author } from 'src/entity';
-import { DeleteResult } from 'typeorm';
 
 @ApiUseTags('Authors table')
 @Controller('author')
 export class AuthorsController {
 
-    constructor(
-        private authorService: AuthorService,
-        ) { }
+    constructor(private authorService: AuthorService) { }
 
     @Get(':id')
     @ApiOperation({ title: 'Search author by id'})
@@ -32,8 +29,8 @@ export class AuthorsController {
 
     @Post()
     @ApiOperation({ title: 'Create author'})
-    public create(@Body() author: CreateAuthorModel): Promise<number> {
-        const createAuthor: Promise<number> = this.authorService.createAuthor(author);
+    public create(@Body() author: CreateAuthorModel): Promise<string> {
+        const createAuthor: Promise<string> = this.authorService.createAuthor(author);
 
         return createAuthor;
     }

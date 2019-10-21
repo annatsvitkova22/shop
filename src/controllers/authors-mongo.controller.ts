@@ -8,9 +8,7 @@ import { AuthorDocument } from 'src/document';
 @ApiUseTags('Author document in Mongo')
 @Controller('authorsMongo')
 export class AuthorsMongoController {
-  constructor(
-    private readonly authorsService: AuthorsMongoService,
-  ) { }
+  constructor(private readonly authorsService: AuthorsMongoService) { }
 
   @Post()
   @ApiOperation({ title: 'Create author'})
@@ -38,8 +36,7 @@ export class AuthorsMongoController {
 
   @Patch()
   @ApiOperation({ title: 'Update author by id'})
-  public async update(
-    @Body() updateAuthor: UpdateAuthorMongoModel): Promise<boolean> {
+  public async update(@Body() updateAuthor: UpdateAuthorMongoModel): Promise<boolean> {
     await this.authorsService.updateAuthor(updateAuthor);
 
     return true;

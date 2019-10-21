@@ -6,8 +6,8 @@ import { Order, UserInRoles } from 'src/entity';
 @Entity()
 export class User {
     @ApiModelProperty()
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @ApiModelProperty()
     @Column({ length: 25 })
     firstName?: string;

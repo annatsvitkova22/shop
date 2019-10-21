@@ -1,17 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, OneToMany} from 'typeorm';
 import { User, Payment, OrderItem } from 'src/entity';
+
 @Entity()
 export class Order {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @Column()
     description?: string;
     @Column({name: 'user_id'})
-    userId?: number;
+    userId?: string;
     @Column()
     date?: Date;
     @Column({name: 'payment_id'})
-    paymentId?: number;
+    paymentId?: string;
 
     @ManyToOne(() => User,  user => user.userConnection, {primary:
         true})

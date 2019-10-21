@@ -9,9 +9,7 @@ import { PrintingEdition } from 'src/entity';
 @Controller('printingEdition')
 export class PrintingEditionsController {
 
-    constructor(
-        private printingEditionService: PrintingEditionService,
-    ) { }
+    constructor(private printingEditionService: PrintingEditionService) { }
 
     @Get('id/:id')
     @ApiOperation({ title: 'Search printing edition by id' })
@@ -39,8 +37,8 @@ export class PrintingEditionsController {
 
     @Post()
     @ApiOperation({ title: 'Create printing edition' })
-    public create(@Body() printingEdition: CreatePrintingEditionModel): Promise<number> {
-        const createEdition: Promise<number> = this.printingEditionService.createPrintingEdition(printingEdition);
+    public create(@Body() printingEdition: CreatePrintingEditionModel): Promise<string> {
+        const createEdition: Promise<string> = this.printingEditionService.createPrintingEdition(printingEdition);
 
         return createEdition;
     }

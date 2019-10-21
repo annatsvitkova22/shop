@@ -4,16 +4,11 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import { UserService } from 'src/services';
 import { CreateUserModel, UpdateUserModel, ForgotPassword } from 'src/models';
 import { User } from 'src/entity';
-import { MailerHelper } from 'src/common/email.helper';
-import { request } from 'https';
 
 @ApiUseTags('Users table')
 @Controller('user')
 export class UsersController {
-    constructor(
-        private userService: UserService,
-        private mailerHelper: MailerHelper,
-    ) { }
+    constructor(private userService: UserService) { }
 
     @Get('id/:id')
     @ApiOperation({ title: 'Search user by id' })

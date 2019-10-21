@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UpdatePrintingEditionModel {
     @ApiModelProperty()
-    id?: number;
+    id?: string;
     @ApiModelProperty()
     name?: string;
     @ApiModelProperty()

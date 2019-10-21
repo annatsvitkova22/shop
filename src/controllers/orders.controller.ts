@@ -1,8 +1,6 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { DeleteResult } from 'typeorm';
-
 import { OrderService } from 'src/services';
 import { CreateOrderModel, UpdateOrderModel } from 'src/models';
 import { Order } from 'src/entity';
@@ -33,8 +31,8 @@ export class OrdersController {
 
     @Post()
     @ApiOperation({ title: 'Create order by id'})
-    public create(@Body() order: CreateOrderModel): Promise<number> {
-        const createOrder: Promise<number> = this.orderService.createOrder(order);
+    public create(@Body() order: CreateOrderModel): Promise<string> {
+        const createOrder: Promise<string> = this.orderService.createOrder(order);
 
         return createOrder;
     }

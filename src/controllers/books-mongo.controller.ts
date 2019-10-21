@@ -7,9 +7,7 @@ import { CreateBookModel, UpdateBookModel } from 'src/models';
 @ApiUseTags('Books table')
 @Controller('books')
 export class BooksController {
-  constructor(
-    private readonly booksService: BooksService,
-  ) { }
+  constructor(private readonly booksService: BooksService) { }
 
   @Post()
   @ApiOperation({ title: 'Create book'})

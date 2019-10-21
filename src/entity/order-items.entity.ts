@@ -3,16 +3,16 @@ import { PrintingEdition, Order } from 'src/entity';
 
 @Entity()
 export class OrderItem {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @Column()
     amount?: number;
     @Column()
     currency?: string;
     @Column({name: 'printing-edition_id'})
-    pritingEditionId?: number;
+    pritingEditionId?: string;
     @Column({name: 'order_id'})
-    orderId?: number;
+    orderId?: string;
     @Column()
     count?: number;
 

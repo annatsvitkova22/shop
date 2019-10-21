@@ -16,7 +16,7 @@ export class AuthorService {
         return gotAuthors;
     }
 
-    public async getAuthorById(id: number): Promise<Author[]> {
+    public async getAuthorById(id: string): Promise<Author[]> {
         const author: UpdateAuthorModel = {};
         author.id = id;
         const foundAuthor: Author[] = await this.authorRepository.find({
@@ -26,7 +26,7 @@ export class AuthorService {
         return foundAuthor;
     }
 
-    public async createAuthor(author: CreateAuthorModel): Promise<number> {
+    public async createAuthor(author: CreateAuthorModel): Promise<string> {
         const createAuthor: Author = {};
         const validateName = await this.validateName(author.name);
         createAuthor.name = validateName;
@@ -48,7 +48,7 @@ export class AuthorService {
         return savedAuthor;
       }
 
-    public async deleteAuthor(authorId: number): Promise<boolean|string> {
+    public async deleteAuthor(authorId: string): Promise<boolean|string> {
         const author: Author = {};
         author.id = authorId;
         const result: DeleteResult = await this.authorRepository.delete(author);

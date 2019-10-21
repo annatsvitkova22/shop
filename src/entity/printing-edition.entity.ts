@@ -3,8 +3,8 @@ import { OrderItem, AuthorInBooks } from 'src/entity';
 
 @Entity()
 export class PrintingEdition {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @Column({ length: 25 })
     name?: string;
     @Column()

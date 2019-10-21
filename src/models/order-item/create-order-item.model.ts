@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateOrderItemModel {
     @ApiModelProperty()
-    pritingEditionId?: number;
+    pritingEditionId?: string;
     @ApiModelProperty()
     amount?: number;
     @ApiModelProperty()

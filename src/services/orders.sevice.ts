@@ -17,7 +17,7 @@ export class OrderService {
         return getOrders;
     }
 
-    public async getOrderById(id: number): Promise<Order[]> {
+    public async getOrderById(id: string): Promise<Order[]> {
         const order: UpdateOrderModel = {};
         order.id = id;
         const foundOrder: Order[] = await this.orderRepository.find({
@@ -28,7 +28,7 @@ export class OrderService {
         return foundOrder;
     }
 
-    public async createOrder(createOrder: CreateOrderModel): Promise<number> {
+    public async createOrder(createOrder: CreateOrderModel): Promise<string> {
         const order: Order = {} as Order;
         order.description = createOrder.description;
         order.userId = createOrder.userId;
@@ -57,7 +57,7 @@ export class OrderService {
         return savedOrder;
       }
 
-    public async deleteOrder(orderId: number): Promise<boolean|string> {
+    public async deleteOrder(orderId: string): Promise<boolean|string> {
         const order: Order = {} as Order;
         order.id = orderId;
         const result: DeleteResult = await this.orderRepository.delete(order);

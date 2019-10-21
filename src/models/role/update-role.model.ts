@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class UpdateRoleModel {
     @ApiModelProperty()
-    id?: number;
+    id?: string;
     @ApiModelProperty()
     name?: string;
 }

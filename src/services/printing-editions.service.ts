@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, DeleteResult } from 'typeorm';
@@ -17,7 +17,7 @@ export class PrintingEditionService {
         return getEditions;
     }
 
-    public async getPrintingEditionsById(id: number): Promise<PrintingEdition[]> {
+    public async getPrintingEditionsById(id: string): Promise<PrintingEdition[]> {
         const edition: UpdatePrintingEditionModel = {};
         edition.id = id;
         const foundPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.find({
@@ -67,7 +67,7 @@ export class PrintingEditionService {
         return printingEditions;
     }
 
-    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<number> {
+    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<string> {
         const edition: PrintingEdition = {} as PrintingEdition;
         edition.name = createPrintingEdition.name;
         edition.description = createPrintingEdition.description;
@@ -106,7 +106,7 @@ export class PrintingEditionService {
         return savedEdition;
     }
 
-    public async deletePrintingEdition(printingEditionId: number): Promise<boolean|string> {
+    public async deletePrintingEdition(printingEditionId: string): Promise<boolean|string> {
         const printingEdition: PrintingEdition = {} as PrintingEdition;
         printingEdition.id = printingEditionId;
         const result: DeleteResult = await this.printingEditionRepository.delete(printingEdition);

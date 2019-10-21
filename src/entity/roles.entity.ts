@@ -1,9 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { UserInRoles } from 'src/entity';
+
 @Entity()
 export class Role {
-    @PrimaryGeneratedColumn()
-    id?: number;
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
     @Column({ length: 25 })
     name?: string;
 

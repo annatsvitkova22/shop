@@ -17,7 +17,7 @@ export class OrderItemService {
         return getOrderItems;
     }
 
-    public async getOrderItemById(id: number): Promise<OrderItem[]> {
+    public async getOrderItemById(id: string): Promise<OrderItem[]> {
         const orderItem: UpdateOrderItemModel = {};
         orderItem.id = id;
         const foundOrderItem: OrderItem[] = await this.orderItemRepository.find({
@@ -27,7 +27,7 @@ export class OrderItemService {
         return foundOrderItem;
     }
 
-    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<number> {
+    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<string> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.pritingEditionId = createOrderItem.pritingEditionId;
         orderItem.amount = createOrderItem.amount;
@@ -57,7 +57,7 @@ export class OrderItemService {
         return sevedOrderItem;
       }
 
-    public async deleteOrderItem(orderItemId: number): Promise<boolean|string> {
+    public async deleteOrderItem(orderItemId: string): Promise<boolean|string> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = orderItemId;
         const result: DeleteResult = await this.orderItemRepository.delete(orderItem);

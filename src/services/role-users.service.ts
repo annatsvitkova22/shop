@@ -17,7 +17,7 @@ export class RoleInUsersService {
         return getRoleInUsers;
     }
 
-    public async getRoleInUsersById(id: number): Promise<UserInRoles[]> {
+    public async getRoleInUsersById(id: string): Promise<UserInRoles[]> {
         const role: UpdateRoleInUsersModel = {};
         role.id = id;
         const foundRoleInUser: UserInRoles[] = await this.roleInUsersRepository.find({
@@ -28,7 +28,7 @@ export class RoleInUsersService {
         return foundRoleInUser;
     }
 
-    public async createRoleInUser(createRole: CreateRoleInUsersModel): Promise<number> {
+    public async createRoleInUser(createRole: CreateRoleInUsersModel): Promise<string> {
         const role: UserInRoles = {} as UserInRoles;
         role.roleId = createRole.roleId;
         role.userId = createRole.userId;
@@ -52,7 +52,7 @@ export class RoleInUsersService {
         return savedRoleInUser;
       }
 
-    public async deleteRole(roleId: number): Promise<boolean|string> {
+    public async deleteRole(roleId: string): Promise<boolean|string> {
         const roleInUser: UserInRoles = {} as UserInRoles;
         roleInUser.id = roleId;
         const result: DeleteResult = await this.roleInUsersRepository.delete(roleInUser);

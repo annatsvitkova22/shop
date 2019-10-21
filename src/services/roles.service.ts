@@ -5,8 +5,6 @@ import { Repository, DeleteResult } from 'typeorm';
 
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
-import { newExpression } from 'babel-types';
-import { AllExceptionsFilter } from 'src/common';
 
 @Injectable()
 export class RoleService {
@@ -19,7 +17,7 @@ export class RoleService {
         return getRoles;
     }
 
-    public async getRoleById(id: number): Promise<Role[]> {
+    public async getRoleById(id: string): Promise<Role[]> {
         const role: UpdateRoleModel = {};
         role.id = id;
         const foundRole: Role[] = await this.roleRepository.find({
@@ -30,7 +28,7 @@ export class RoleService {
         return foundRole;
     }
 
-    public async createRole(createRole: CreateRoleModel): Promise<number> {
+    public async createRole(createRole: CreateRoleModel): Promise<string> {
         const role: Role = {} as Role;
         role.name = createRole.name;
         const saveRole: Role = await this.roleRepository.save(role);
@@ -51,7 +49,7 @@ export class RoleService {
         return savedRole;
       }
 
-    public async deleteRole(roleId: number): Promise<boolean|string> {
+    public async deleteRole(roleId: string): Promise<boolean|string> {
         const role: Role = {} as Role;
         role.id = roleId;
         const result: DeleteResult = await this.roleRepository.delete(role);

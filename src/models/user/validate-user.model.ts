@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class ValidateUser {
     @ApiModelProperty()
-    userId?: number;
+    userId?: string;
     @ApiModelProperty()
     username?: string;
     @ApiModelProperty()

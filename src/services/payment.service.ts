@@ -20,7 +20,7 @@ export class PaymentService {
         return getPayments;
     }
 
-    public async getUPaymentById(id: number): Promise<Payment> {
+    public async getUPaymentById(id: string): Promise<Payment> {
         const payment: UpdatePaymentModel = {};
         payment.id = id;
         const foundPayment: Payment = await this.paymentRepository.findOne({id: payment.id });
@@ -28,7 +28,7 @@ export class PaymentService {
         return foundPayment;
     }
 
-    public async createPayment(createPayment: CreatePaymentModel): Promise<number> {
+    public async createPayment(createPayment: CreatePaymentModel): Promise<string> {
         const payment: Payment = {};
         const transactionId: string = await this.paymentHelper.charge(createPayment);
         payment.transactionId = transactionId;
@@ -49,7 +49,7 @@ export class PaymentService {
         return savedPayment;
       }
 
-    public async deletePayment(paymentId: number): Promise<boolean|string> {
+    public async deletePayment(paymentId: string): Promise<boolean|string> {
         const payment: Payment = {};
         payment.id = paymentId;
         const result: DeleteResult = await this.paymentRepository.delete(payment);

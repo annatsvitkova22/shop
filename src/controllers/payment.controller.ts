@@ -1,8 +1,6 @@
 import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { DeleteResult } from 'typeorm';
-
 import { PaymentService } from 'src/services';
 import { CreatePaymentModel, UpdatePaymentModel } from 'src/models';
 import { Payment } from 'src/entity';
@@ -11,9 +9,7 @@ import { Payment } from 'src/entity';
 @Controller('payment')
 export class PaymentsController {
 
-    constructor(
-        private paymentService: PaymentService,
-        ) { }
+    constructor(private paymentService: PaymentService) { }
 
     @Get(':id')
     @ApiOperation({ title: 'Search payment by id'})
@@ -33,8 +29,8 @@ export class PaymentsController {
 
     @Post()
     @ApiOperation({ title: 'Create payment by id'})
-    public create(@Body() payment: CreatePaymentModel): Promise<number> {
-        const createPayment: Promise<number> = this.paymentService.createPayment(payment);
+    public create(@Body() payment: CreatePaymentModel): Promise<string> {
+        const createPayment: Promise<string> = this.paymentService.createPayment(payment);
 
         return createPayment;
     }

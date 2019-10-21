@@ -6,7 +6,6 @@ import { Repository, DeleteResult } from 'typeorm';
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel, ForgotPassword } from 'src/models';
 import { HashHelper, MailerHelper } from 'src/common/';
-import request = require('superagent');
 
 @Injectable()
 export class UserService {
@@ -23,7 +22,7 @@ export class UserService {
         return getUsers;
     }
 
-    public async getUserById(id: number): Promise<User[]> {
+    public async getUserById(id: string): Promise<User[]> {
         const user: UpdateUserModel = {};
         user.id = id;
         const foundUser: User[] = await this.userRepository.find({
@@ -88,7 +87,7 @@ export class UserService {
         return savedUser;
     }
 
-    public async deleteUser(userId: number): Promise<boolean | string> {
+    public async deleteUser(userId: string): Promise<boolean | string> {
         const user: User = {} as User;
         user.id = userId;
         const result: DeleteResult = await this.userRepository.delete(user);
