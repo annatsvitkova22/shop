@@ -6,5 +6,9 @@ export class UpdateOrderItemModel {
     @ApiModelProperty()
     pritingEditionId?: number;
     @ApiModelProperty()
+    amount?: number;
+    @ApiModelProperty()
+    currency?: string;
+    @ApiModelProperty()
     count?: number;
 }

@@ -18,6 +18,7 @@ import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository} from 'src/repositories';
 import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
 import { MailerHelper } from './common/email.helper';
+import { JwtHelper } from './common/jwt.helper';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -51,7 +52,7 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper,
+    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper, JwtHelper,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
@@ -66,6 +67,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RequestMiddleware)
-      .forRoutes(AuthenticationController, AppController);
+      .forRoutes(AuthenticationController, AppController, UsersController, MailerHelper);
   }
 }

@@ -5,6 +5,10 @@ import { PrintingEdition, Order } from 'src/entity';
 export class OrderItem {
     @PrimaryGeneratedColumn()
     id?: number;
+    @Column()
+    amount?: number;
+    @Column()
+    currency?: string;
     @Column({name: 'printing-edition_id'})
     pritingEditionId?: number;
     @Column({name: 'order_id'})

@@ -109,8 +109,8 @@ export class PrintingEditionService {
     public async deletePrintingEdition(printingEditionId: number): Promise<boolean|string> {
         const printingEdition: PrintingEdition = {} as PrintingEdition;
         printingEdition.id = printingEditionId;
-        const result: Promise<DeleteResult> = this.printingEditionRepository.delete(printingEdition);
-        if (!result) {
+        const result: DeleteResult = await this.printingEditionRepository.delete(printingEdition);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;

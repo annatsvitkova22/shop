@@ -3,6 +3,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { User } from 'src/entity';
 import { Enviroment, getEnv } from 'src/environment/environment';
+import { ValidateUser } from 'src/models';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -16,8 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  public async validate(payload: User) {
-    const user = { userId: payload.id, username: payload.lastName };
+  public async validate(payload): Promise<ValidateUser> {
+    const user: ValidateUser = await { userId: payload.userId, username: payload.firstName, role: payload.role };
     if (!user) {
       throw new UnauthorizedException();
     }

@@ -21,18 +21,20 @@ export class AuthService {
   ) {}
 
   public async validateUser(username: string, password: string): Promise<ValidateUser> {
-    const user = await this.userRepository.findOne({ email: username });
+    const user = await this.userRepository.query('SELECT user.*, role.name FROM user_in_roles INNER JOIN role ON user_in_roles.role_id = role.id INNER JOIN user ON user_in_roles.user_id = user.id WHERE user.email = ?', [username]);
+
     if (!user) {
 
       return null;
     }
 
-    const isPasswordValid = await this.hashHelper.compareHash(password, user.passwordHash);
+    const isPasswordValid = await this.hashHelper.compareHash(password, user[0].passwordHash);
 
     if ( isPasswordValid) {
         const result: ValidateUser = {};
-        result.firstName = user.firstName;
-        result.userId = user.id;
+        result.firstName = user[0].firstName;
+        result.userId = user[0].id;
+        result.role = user[0].name;
 
         return result;
     }
@@ -46,12 +48,7 @@ export class AuthService {
     return accessToken;
   }
 
-  public getRefresh(payload: User): string {
-    const user = {
-      role: payload.userRoleConnection,
-      userId: payload.lastName,
-      username: payload.firstName,
-    };
+  public getRefresh(user: User): string {
     const refreshToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
 
     return refreshToken;

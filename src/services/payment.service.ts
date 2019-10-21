@@ -52,8 +52,8 @@ export class PaymentService {
     public async deletePayment(paymentId: number): Promise<boolean|string> {
         const payment: Payment = {};
         payment.id = paymentId;
-        const result: Promise<DeleteResult> = this.paymentRepository.delete(payment);
-        if (!result) {
+        const result: DeleteResult = await this.paymentRepository.delete(payment);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;

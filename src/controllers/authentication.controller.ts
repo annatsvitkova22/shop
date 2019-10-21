@@ -1,11 +1,12 @@
-import { Controller, Get, UseGuards, Post, Body, UseFilters, Request, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, Post, Body, UseFilters, Request, Param, Res, Inject, forwardRef } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiUseTags, ApiCreatedResponse } from '@nestjs/swagger';
 
 import { AuthService } from 'src/services';
 import { RolesGuard, Roles, AllExceptionsFilter } from 'src/common';
 import { User } from 'src/entity';
-import { Token } from 'src/models';
+import { Token, ValidateUser } from 'src/models';
+import { JwtHelper } from 'src/common/jwt.helper';
 
 @ApiBearerAuth()
 @ApiUseTags('Authentication')
@@ -13,12 +14,14 @@ import { Token } from 'src/models';
 export class AuthenticationController {
   constructor(
     private readonly authService: AuthService,
+    public jwtHelper: JwtHelper,
     ) { }
   @UseFilters(new AllExceptionsFilter())
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: User })
-  public async login(@Body() req, @Request() requ): Promise<Token> {
+  public async login(@Request() requ): Promise<Token> {
+
     const getAccessToken = this.authService.getToken(requ.user);
     const getRefreshToken = this.authService.getRefresh(requ.user);
     const myToken: Token = {
@@ -29,12 +32,12 @@ export class AuthenticationController {
     return myToken;
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('me')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: Token })
   @Roles('user')
-  getProfile(@Body() req, @Request() requ): string {
+  public async getProfile(@Request() req): Promise<ValidateUser> {
+    const user: ValidateUser = await this.jwtHelper.hasUser(req);
 
-    return requ.user;
+    return user;
   }
 }

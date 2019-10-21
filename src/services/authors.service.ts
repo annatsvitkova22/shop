@@ -28,7 +28,8 @@ export class AuthorService {
 
     public async createAuthor(author: CreateAuthorModel): Promise<number> {
         const createAuthor: Author = {};
-        createAuthor.name = author.name;
+        const validateName = await this.validateName(author.name);
+        createAuthor.name = validateName;
         const savedAuthor: Author = await this.authorRepository.save(createAuthor);
 
         return(savedAuthor.id);
@@ -50,13 +51,20 @@ export class AuthorService {
     public async deleteAuthor(authorId: number): Promise<boolean|string> {
         const author: Author = {};
         author.id = authorId;
-        const result: Promise<DeleteResult> = this.authorRepository.delete(author);
-        if (!result) {
+        const result: DeleteResult = await this.authorRepository.delete(author);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;
         }
 
         return true;
+    }
+
+    public validateName(name: string): string {
+        let validateName: string = name.replace(/\s+/g,' ').trim();
+        validateName = validateName[0].toUpperCase() + validateName.substring(1, validateName.length).toLowerCase();
+
+        return validateName;
     }
 }

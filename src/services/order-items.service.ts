@@ -55,8 +55,8 @@ export class OrderItemService {
     public async deleteOrderItem(orderItemId: number): Promise<boolean|string> {
         const orderItem: OrderItem = {} as OrderItem;
         orderItem.id = orderItemId;
-        const result: Promise<DeleteResult> = this.orderItemRepository.delete(orderItem);
-        if (!result) {
+        const result: DeleteResult = await this.orderItemRepository.delete(orderItem);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;

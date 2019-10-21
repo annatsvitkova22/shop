@@ -6,6 +6,7 @@ import { Repository, DeleteResult } from 'typeorm';
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel, ForgotPassword } from 'src/models';
 import { HashHelper, MailerHelper } from 'src/common/';
+import request = require('superagent');
 
 @Injectable()
 export class UserService {
@@ -33,13 +34,14 @@ export class UserService {
         return foundUser;
     }
 
-    public async createUser(createUser: CreateUserModel): Promise<User | string> {
+    public async createUser(createUser: CreateUserModel, req): Promise<User | string> {
+        const url: string = req.protocol + '://' + req.hostname;
         const user: User = {};
         user.firstName = createUser.firstName;
         user.lastName = createUser.lastName;
         user.email = createUser.email;
 
-        const foundUser: User = await this.userRepository.findOne({ email: user.email });
+        const foundUser: User = await this.findByEmail(user.email);
         if (foundUser) {
             const message: string = 'user with this email already exists';
 
@@ -57,7 +59,7 @@ export class UserService {
         const savedUser: User = await this.userRepository.save(user);
 
         if (savedUser) {
-            const saltForEmail: string = await this.emailHelper.sendEmail(user.email);
+            const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
             savedUser.saltForEmail = saltForEmail;
             const savedUserWithSaltEmail: User = await this.userRepository.save(user);
 
@@ -121,10 +123,11 @@ export class UserService {
         return savedUser.emailConfirmed;
     }
 
-    public async forgotPassword(forgotPassword: ForgotPassword): Promise<string | User> {
+    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<string | User> {
+        const url = req.protocol + '://' + req.hostname + req.url;
         const user = await this.findByEmail(forgotPassword.email);
 
-        const saltForEmail: string = await this.emailHelper.sendEmail(user.email);
+        const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
         user.saltForEmail = saltForEmail;
         user.emailConfirmed = false;
 

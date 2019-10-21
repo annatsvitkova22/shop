@@ -54,8 +54,8 @@ export class RoleService {
     public async deleteRole(roleId: number): Promise<boolean|string> {
         const role: Role = {} as Role;
         role.id = roleId;
-        const result: Promise<DeleteResult> = this.roleRepository.delete(role);
-        if (!result) {
+        const result: DeleteResult = await this.roleRepository.delete(role);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;

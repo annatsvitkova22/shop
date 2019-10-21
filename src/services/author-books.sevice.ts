@@ -58,8 +58,8 @@ export class AuthorInBookService {
         const authorInBook: AuthorInBooks = {};
         authorInBook.id = authorInBookId;
 
-        const result: Promise<DeleteResult> = this.authorInBooksRepository.delete(authorInBook);
-        if (!result) {
+        const result: DeleteResult = await this.authorInBooksRepository.delete(authorInBook);
+        if (result.affected === 0) {
             const messege: string = 'id not found';
 
             return messege;
