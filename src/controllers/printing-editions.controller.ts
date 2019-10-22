@@ -13,8 +13,8 @@ export class PrintingEditionsController {
 
     @Get('id/:id')
     @ApiOperation({ title: 'Search printing edition by id' })
-    public get(@Param() params) {
-        const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPrintingEditionsById(params.id);
+    public get(id: string) {
+        const printingEdition: Promise<PrintingEdition> = this.printingEditionService.getPrintingEditionsById(id);
 
         return printingEdition;
     }

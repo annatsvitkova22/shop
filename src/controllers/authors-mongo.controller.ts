@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { AuthorsMongoService } from 'src/services/authors-mongo.service';
@@ -34,7 +34,7 @@ export class AuthorsMongoController {
     return author;
   }
 
-  @Patch()
+  @Put()
   @ApiOperation({ title: 'Update author by id'})
   public async update(@Body() updateAuthor: UpdateAuthorMongoModel): Promise<boolean> {
     await this.authorsService.updateAuthor(updateAuthor);

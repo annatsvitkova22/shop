@@ -11,13 +11,13 @@ export class AuthorsController {
 
     constructor(private authorService: AuthorService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search author by id'})
-    public get(@Param() params): Promise<Author[]> {
-        const author: Promise<Author[]> = this.authorService.getAuthorById(params.id);
+    // @Get(':id')
+    // @ApiOperation({ title: 'Search author by id'})
+    // public get(id: string): Promise<Author> {
+    //     const author: Promise<Author> = this.authorService.getAuthorById(id);
 
-        return author;
-    }
+    //     return author;
+    // }
 
     @Get()
     @ApiOperation({ title: 'Search all authors by id'})
@@ -35,19 +35,19 @@ export class AuthorsController {
         return createAuthor;
     }
 
-    @Put()
-    @ApiOperation({ title: 'Update author by id'})
-    public update(@Body() author: UpdateAuthorModel): Promise<Author> {
-        const updateAuthor: Promise<Author> = this.authorService.updateAuthor(author);
+    // @Put()
+    // @ApiOperation({ title: 'Update author by id'})
+    // public update(@Body() author: UpdateAuthorModel): Promise<Author> {
+    //     const updateAuthor: Promise<Author> = this.authorService.updateAuthor(author);
 
-        return updateAuthor;
-    }
+    //     return updateAuthor;
+    // }
 
-    @Delete(':id')
-    @ApiOperation({ title: 'Delete author by id'})
-    public delete(@Param() params): Promise<boolean|string>  {
-        const deleted: Promise<boolean|string>  = this.authorService.deleteAuthor(params.id);
+    // @Delete(':id')
+    // @ApiOperation({ title: 'Delete author by id'})
+    // public delete(@Param() params): Promise<boolean|string>  {
+    //     const deleted: Promise<boolean|string>  = this.authorService.deleteAuthor(params.id);
 
-        return deleted;
-    }
+    //     return deleted;
+    // }
 }

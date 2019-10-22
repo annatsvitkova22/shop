@@ -17,13 +17,10 @@ export class OrderService {
         return getOrders;
     }
 
-    public async getOrderById(id: string): Promise<Order[]> {
+    public async getOrderById(id: string): Promise<Order> {
         const order: UpdateOrderModel = {};
         order.id = id;
-        const foundOrder: Order[] = await this.orderRepository.find({
-            select: ['description', 'userId', 'date', 'paymentId'],
-            where: [{ id: order.id }],
-        });
+        const foundOrder: Order = await this.orderRepository.findOne(order.id);
 
         return foundOrder;
     }

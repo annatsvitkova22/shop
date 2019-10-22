@@ -13,8 +13,8 @@ export class PaymentsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search payment by id'})
-    public get(@Param() params): Promise<Payment> {
-        const payment: Promise<Payment> = this.paymentService.getUPaymentById(params.id);
+    public get(id: string): Promise<Payment> {
+        const payment: Promise<Payment> = this.paymentService.getUPaymentById(id);
 
         return payment;
     }

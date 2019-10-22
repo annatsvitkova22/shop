@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 
 import { AppController } from 'src/app.controller';
 import { AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
@@ -15,7 +14,7 @@ import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService,
   AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
-import { AuthorMongoRepository, BookRepository} from 'src/repositories';
+import { AuthorMongoRepository, BookRepository, AuthorRepository} from 'src/repositories';
 import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
 import { MailerHelper } from './common/email.helper';
 import { JwtHelper } from './common/jwt.helper';
@@ -41,7 +40,7 @@ const myEnvitonment: Enviroment = getEnv();
       entities: [PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks]),
+    TypeOrmModule.forFeature([PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks, AuthorRepository]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: myEnvitonment.tokenLife },
@@ -52,7 +51,7 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper, JwtHelper,
+    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper, JwtHelper, AuthorRepository,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

@@ -13,8 +13,8 @@ export class OrderItemsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order item by id'})
-    public get(@Param() params): Promise<OrderItem[]> {
-        const orderItem: Promise<OrderItem[]> = this.orderItemService.getOrderItemById(params.id);
+    public get(id: string): Promise<OrderItem> {
+        const orderItem: Promise<OrderItem> = this.orderItemService.getOrderItemById(id);
 
         return orderItem;
     }

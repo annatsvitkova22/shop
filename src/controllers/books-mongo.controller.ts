@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { BooksService } from 'src/services/books.service';
@@ -33,7 +33,7 @@ export class BooksController {
     return { result };
   }
 
-  @Patch()
+  @Put()
   @ApiOperation({ title: 'Update book by id'})
   public async updateBook(
     @Body() updateBook: UpdateBookModel) {

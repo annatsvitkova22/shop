@@ -17,13 +17,10 @@ export class RoleService {
         return getRoles;
     }
 
-    public async getRoleById(id: string): Promise<Role[]> {
+    public async getRoleById(id: string): Promise<Role> {
         const role: UpdateRoleModel = {};
         role.id = id;
-        const foundRole: Role[] = await this.roleRepository.find({
-            select: ['name'],
-            where: [{ id: role.id }],
-        });
+        const foundRole: Role = await this.roleRepository.findOne(role.id);
 
         return foundRole;
     }

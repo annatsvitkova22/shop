@@ -45,7 +45,9 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "fastify-swagger": "^2.4.0",
+    "fs-extra": "^8.1.0",
     "helmet": "^3.21.0",
+    "js-yaml": "^3.13.1",
     "mongoose": "^5.7.3",
     "mysql": "^2.17.1",
     "nodemailer": "^6.3.1",
@@ -58,7 +60,8 @@
     "stripe": "^7.10.0",
     "swagger": "^0.7.5",
     "swagger-ui-express": "^4.1.1",
-    "typeorm": "^0.2.19"
+    "typeorm": "^0.2.19",
+    "yarm": "^0.4.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",

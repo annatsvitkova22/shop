@@ -22,13 +22,10 @@ export class UserService {
         return getUsers;
     }
 
-    public async getUserById(id: string): Promise<User[]> {
+    public async getUserById(id: string): Promise<User> {
         const user: UpdateUserModel = {};
         user.id = id;
-        const foundUser: User[] = await this.userRepository.find({
-            select: ['firstName', 'lastName', 'passwordHash', 'email'],
-            where: [{ id: user.id }],
-        });
+        const foundUser: User = await this.userRepository.findOne(user.id);
 
         return foundUser;
     }

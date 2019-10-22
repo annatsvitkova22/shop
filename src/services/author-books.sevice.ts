@@ -17,13 +17,10 @@ export class AuthorInBookService {
         return getAuthorInBooks;
     }
 
-    public async getAuthorInBooksById(id: string): Promise<AuthorInBooks[]> {
+    public async getAuthorInBooksById(id: string): Promise<AuthorInBooks> {
         const AuthorInBookId: UpdateAuthorInBooksModel = {};
         AuthorInBookId.id = id;
-        const authorInBook: AuthorInBooks[] = await this.authorInBooksRepository.find({
-            select: ['authorId', 'bookId'],
-            where: [{ id: AuthorInBookId.id }],
-        });
+        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.findOne(AuthorInBookId.id);
 
         return authorInBook;
     }

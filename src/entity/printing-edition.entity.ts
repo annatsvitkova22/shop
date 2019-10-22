@@ -19,6 +19,8 @@ export class PrintingEdition {
     currency?: string;
     @Column()
     type?: string;
+    @Column('blob')
+    image?: string;
 
     @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
     printingEditionConnection?: Promise<OrderItem[]>;

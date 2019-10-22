@@ -12,8 +12,8 @@ export class UsersController {
 
     @Get('id/:id')
     @ApiOperation({ title: 'Search user by id' })
-    public async get(@Param() params): Promise<User[]> {
-        const user: User[] = await this.userService.getUserById(params.id);
+    public async get(id: string): Promise<User> {
+        const user: User = await this.userService.getUserById(id);
 
         return user;
     }

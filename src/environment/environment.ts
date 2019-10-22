@@ -20,7 +20,7 @@ export class Enviroment {
     secureMail?: boolean;
     userMail?: string;
     passMail?: string;
-    keySecretPayment?: string;
+    stripeApiKey?: string;
 }
 
 export const getEnv = (): Enviroment => {

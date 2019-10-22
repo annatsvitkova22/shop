@@ -13,8 +13,8 @@ export class RolesController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search role by id'})
-    public get(@Param() params): Promise<Role[]> {
-        const role: Promise<Role[]> = this.roleService.getRoleById(params.id);
+    public get(id: string): Promise<Role> {
+        const role: Promise<Role> = this.roleService.getRoleById(id);
 
         return role;
     }

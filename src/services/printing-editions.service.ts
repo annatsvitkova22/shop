@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository, DeleteResult } from 'typeorm';
+import * as yaml from 'js-yaml'
 
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
@@ -17,13 +18,10 @@ export class PrintingEditionService {
         return getEditions;
     }
 
-    public async getPrintingEditionsById(id: string): Promise<PrintingEdition[]> {
+    public async getPrintingEditionsById(id: string): Promise<PrintingEdition> {
         const edition: UpdatePrintingEditionModel = {};
         edition.id = id;
-        const foundPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.find({
-            select: ['name', 'description', 'price', 'isRemoved', 'status', 'currency', 'type'],
-            where: [{ id: edition.id }],
-        });
+        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.findOne(edition.id);
 
         return foundPrintingEdition;
     }
@@ -68,6 +66,8 @@ export class PrintingEditionService {
     }
 
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<string> {
+        const fs = require('fs');
+        console.log(createPrintingEdition);
         const edition: PrintingEdition = {} as PrintingEdition;
         edition.name = createPrintingEdition.name;
         edition.description = createPrintingEdition.description;
@@ -76,6 +76,9 @@ export class PrintingEditionService {
         edition.status = createPrintingEdition.status;
         edition.currency = createPrintingEdition.currency;
         edition.type = createPrintingEdition.type;
+        edition.image = yaml.safeLoad(fs.readFileSync('C:\\Users\Anuitex-7\My_projects\my_shop\shop\src\image\camera.png'));
+     
+        console.log(edition.image);
         const savedEdition: PrintingEdition = await this.printingEditionRepository.save(edition);
 
         return (savedEdition.id);

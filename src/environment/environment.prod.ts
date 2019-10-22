@@ -21,5 +21,5 @@ export const environmentProd: Enviroment = {
   secureMail: false,
   userMail: 'tsvitkova.work@gmail.com',
   passMail: 'elofon7302',
-  keySecretPayment: 'sk_test_4kwhS3Jsc0uRQZow1C7Q7b6I002UgJ1GHf',
+  stripeApiKey: 'sk_test_4kwhS3Jsc0uRQZow1C7Q7b6I002UgJ1GHf',
 };

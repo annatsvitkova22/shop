@@ -23,7 +23,7 @@ export class PaymentService {
     public async getUPaymentById(id: string): Promise<Payment> {
         const payment: UpdatePaymentModel = {};
         payment.id = id;
-        const foundPayment: Payment = await this.paymentRepository.findOne({id: payment.id });
+        const foundPayment: Payment = await this.paymentRepository.findOne(payment.id);
 
         return foundPayment;
     }

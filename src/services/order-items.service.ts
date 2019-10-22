@@ -17,12 +17,10 @@ export class OrderItemService {
         return getOrderItems;
     }
 
-    public async getOrderItemById(id: string): Promise<OrderItem[]> {
+    public async getOrderItemById(id: string): Promise<OrderItem> {
         const orderItem: UpdateOrderItemModel = {};
         orderItem.id = id;
-        const foundOrderItem: OrderItem[] = await this.orderItemRepository.find({
-            where: [{ id: orderItem.id }],
-        });
+        const foundOrderItem: OrderItem = await this.orderItemRepository.findOne(orderItem.id);
 
         return foundOrderItem;
     }

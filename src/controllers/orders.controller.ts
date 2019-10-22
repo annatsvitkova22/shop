@@ -15,8 +15,8 @@ export class OrdersController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order by id'})
-    public get(@Param() params): Promise<Order[]> {
-        const order: Promise<Order[]> = this.orderService.getOrderById(params.id);
+    public get(id: string): Promise<Order> {
+        const order: Promise<Order> = this.orderService.getOrderById(id);
 
         return order;
     }
