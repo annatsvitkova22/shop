@@ -5,7 +5,7 @@ import { PrintingEditionService } from 'src/services';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
 
-@ApiUseTags('Printing editions table')
+@ApiUseTags('Printing edition')
 @Controller('printingEdition')
 export class PrintingEditionsController {
 

@@ -5,13 +5,14 @@ import { Repository, DeleteResult } from 'typeorm';
 
 import { Payment } from 'src/entity';
 import { UpdatePaymentModel, CreatePaymentModel } from 'src/models';
-import { PaymentHelper } from 'src/common';
+import { Enviroment, getEnv } from 'src/environment/environment';
+
+const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class PaymentService {
 
     constructor(
-        @Inject(forwardRef(() => PaymentHelper)) public paymentHelper: PaymentHelper,
         @InjectRepository(Payment) private paymentRepository: Repository<Payment>) { }
 
     public async getPayments(): Promise<Payment[]> {
@@ -30,7 +31,7 @@ export class PaymentService {
 
     public async createPayment(createPayment: CreatePaymentModel): Promise<string> {
         const payment: Payment = {};
-        const transactionId: string = await this.paymentHelper.charge(createPayment);
+        const transactionId: string = await this.charge(createPayment);
         payment.transactionId = transactionId;
         const savedPayment: Payment = await this.paymentRepository.save(payment);
 
@@ -60,4 +61,28 @@ export class PaymentService {
         }
         return true;
     }
+
+    public async charge(payment: CreatePaymentModel): Promise<string> {
+        const status = 'succeeded';
+        const messege = 'Error';
+        const stripe = require('stripe')(myEnvitonment.stripeApiKey);
+        const customer = await stripe.customers.create({
+          email: payment.email,
+          source: payment.source,
+        });
+        const charge = await stripe.charges.create({
+          amount: payment.amount,
+          description: payment.description,
+          currency: payment.currency,
+          customer: customer.id,
+        });
+
+        if (charge.status === status) {
+          const balanceTransactionId: string = charge.id;
+
+          return balanceTransactionId;
+        }
+
+        return messege;
+      }
 }

@@ -1,11 +1,12 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { AuthenticatedUserModel } from 'src/models';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) { }
 
-  public canActivate(context: ExecutionContext) {
+  public canActivate(context: ExecutionContext): boolean {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
 
     if (!roles) {
@@ -16,8 +17,8 @@ export class RolesGuard implements CanActivate {
     let token = request.headers.authorization;
     token = token.substring(6, token.length).trim();
     const jwt = require('jsonwebtoken');
-    const user = jwt.decode(token);
-    const hasRole = roles.includes(user.role);
+    const user: AuthenticatedUserModel = jwt.decode(token);
+    const hasRole: boolean = roles.includes(user.role);
 
     return hasRole;
   }

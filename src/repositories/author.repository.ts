@@ -5,36 +5,36 @@ import { Repository, DeleteResult, EntityRepository, AbstractRepository } from '
 
 @EntityRepository(Author)
 @Injectable()
-export class AuthorRepository extends AbstractRepository<Author> {
+export class AuthorRepository  {
+    constructor(@InjectRepository(Author) private authorRepository: Repository<Author>) { }
 
     public async createAuthor(createAuthor: Author): Promise<Author>  {
-        console.log(createAuthor);
-        const author = await this.repository.save(createAuthor);
-        console.log(author);
+        const author = await this.authorRepository.save(createAuthor);
+
         return author;
     }
 
     public async getAuthors(): Promise<Author[]> {
-        const getAuthors: Author[] = await this.repository.find();
+        const getAuthors: Author[] = await this.authorRepository.find();
 
         return getAuthors;
     }
 
-    // public async getAuthorsById(authorId: Author): Promise<Author[]> {
-    //     const findAuthor: Author[] = await this.find({ id: authorId.id });
+    public async getAuthorsById(authorId: Author): Promise<Author[]> {
+        const findAuthor: Author[] = await this.authorRepository.find({ id: authorId.id });
 
-    //     return findAuthor;
-    // }
+        return findAuthor;
+    }
 
-    // public async getAuthorById(getAuthor: Author): Promise<Author> {
-    //     const findAuthor: Author = await this.findOne(getAuthor.id);
+    public async getAuthorById(getAuthor: Author): Promise<Author> {
+        const findAuthor: Author = await this.authorRepository.findOne(getAuthor.id);
 
-    //     return findAuthor;
-    // }
+        return findAuthor;
+    }
 
-    // public async deleteAuthor(author: Author): Promise<DeleteResult> {
-    //     const result: Promise<DeleteResult> = this.delete(author);
+    public async deleteAuthor(author: Author): Promise<DeleteResult> {
+        const result: Promise<DeleteResult> = this.authorRepository.delete(author);
 
-    //     return result;
-    // }
+        return result;
+    }
 }

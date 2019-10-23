@@ -5,7 +5,7 @@ import { OrderService } from 'src/services';
 import { CreateOrderModel, UpdateOrderModel } from 'src/models';
 import { Order } from 'src/entity';
 
-@ApiUseTags('Orders table')
+@ApiUseTags('Order')
 @Controller('order')
 export class OrdersController {
 
@@ -30,7 +30,7 @@ export class OrdersController {
     }
 
     @Post()
-    @ApiOperation({ title: 'Create order by id'})
+    @ApiOperation({ title: 'Create order'})
     public create(@Body() order: CreateOrderModel): Promise<string> {
         const createOrder: Promise<string> = this.orderService.createOrder(order);
 

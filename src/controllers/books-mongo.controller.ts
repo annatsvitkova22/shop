@@ -3,23 +3,16 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { BooksService } from 'src/services/books.service';
 import { CreateBookModel, UpdateBookModel } from 'src/models';
+import { BookDocument } from 'src/document';
 
-@ApiUseTags('Books table')
+@ApiUseTags('Book in Mongo')
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
 
-  @Post()
-  @ApiOperation({ title: 'Create book'})
-  public async createBook(@Body() createBook: CreateBookModel) {
-    const getBook = await this.booksService.createBook(createBook);
-
-    return { getBook };
-  }
-
   @Get()
   @ApiOperation({ title: 'Search all books'})
-  public async getAllBooks() {
+  public async getAllBooks()  {
     const books = await this.booksService.getBooks();
 
     return books;
@@ -33,18 +26,26 @@ export class BooksController {
     return { result };
   }
 
+  @Post()
+  @ApiOperation({ title: 'Create book'})
+  public async createBook(@Body() createBook: CreateBookModel): Promise<BookDocument>  {
+    const getBook: BookDocument = await this.booksService.createBook(createBook);
+
+    return getBook ;
+  }
+
   @Put()
   @ApiOperation({ title: 'Update book by id'})
   public async updateBook(
-    @Body() updateBook: UpdateBookModel) {
-    await this.booksService.updateBook(updateBook);
+    @Body() updateBook: UpdateBookModel): Promise<BookDocument>  {
+    const book: BookDocument = await this.booksService.updateBook(updateBook);
 
-    return true;
+    return book;
   }
 
   @Delete(':id')
   @ApiOperation({ title: 'Delete book by id'})
-  public async removeBook(@Param('id') bookId: string) {
+  public async removeBook(@Param('id') bookId: string): Promise<boolean> {
     await this.booksService.deleteBook(bookId);
 
     return true;

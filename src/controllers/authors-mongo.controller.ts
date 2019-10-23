@@ -5,18 +5,10 @@ import { AuthorsMongoService } from 'src/services/authors-mongo.service';
 import { CreateAuthorModel, UpdateAuthorMongoModel } from 'src/models';
 import { AuthorDocument } from 'src/document';
 
-@ApiUseTags('Author document in Mongo')
+@ApiUseTags('Author in Mongo')
 @Controller('authorsMongo')
 export class AuthorsMongoController {
   constructor(private readonly authorsService: AuthorsMongoService) { }
-
-  @Post()
-  @ApiOperation({ title: 'Create author'})
-  public async create(@Body() createAuthor: CreateAuthorModel): Promise<AuthorDocument> {
-    const getAuthor: AuthorDocument = await this.authorsService.createAuthor(createAuthor);
-
-    return  getAuthor;
-  }
 
   @Get()
   @ApiOperation({ title: 'Search all authors by id'})
@@ -34,12 +26,20 @@ export class AuthorsMongoController {
     return author;
   }
 
+  @Post()
+  @ApiOperation({ title: 'Create author'})
+  public async create(@Body() createAuthor: CreateAuthorModel): Promise<AuthorDocument> {
+    const getAuthor: AuthorDocument = await this.authorsService.createAuthor(createAuthor);
+
+    return  getAuthor;
+  }
+
   @Put()
   @ApiOperation({ title: 'Update author by id'})
-  public async update(@Body() updateAuthor: UpdateAuthorMongoModel): Promise<boolean> {
-    await this.authorsService.updateAuthor(updateAuthor);
+  public async update(@Body() updateAuthor: UpdateAuthorMongoModel): Promise<AuthorDocument> {
+    const author: AuthorDocument = await this.authorsService.updateAuthor(updateAuthor);
 
-    return true;
+    return author;
   }
 
   @Delete(':id')

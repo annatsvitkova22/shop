@@ -5,7 +5,7 @@ import { OrderItemService } from 'src/services';
 import { CreateOrderItemModel, UpdateOrderItemModel } from 'src/models';
 import { OrderItem } from 'src/entity';
 
-@ApiUseTags('Order Items table')
+@ApiUseTags('Order Item')
 @Controller('orderItem')
 export class OrderItemsController {
 

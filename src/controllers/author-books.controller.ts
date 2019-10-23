@@ -5,7 +5,7 @@ import { AuthorInBookService } from 'src/services';
 import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
 import { AuthorInBooks } from 'src/entity';
 
-@ApiUseTags('Author in books table')
+@ApiUseTags('Author in book')
 @Controller('author-book')
 export class AuthorInBookController {
 

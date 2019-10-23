@@ -1,6 +1,6 @@
 import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
 
-export class Token {
+export class TokenModel {
     @ApiModelProperty()
     @ApiProduces()
     accessToken: string;

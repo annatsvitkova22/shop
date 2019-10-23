@@ -9,7 +9,6 @@ import { AllExceptionsFilter } from 'src/common/';
 export class AppController {
 
   @UseFilters(new AllExceptionsFilter())
-
   @Get()
   getEnvironment(): boolean {
     const viewEnvironment: Enviroment = getEnv();

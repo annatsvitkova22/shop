@@ -5,7 +5,7 @@ import { PaymentService } from 'src/services';
 import { CreatePaymentModel, UpdatePaymentModel } from 'src/models';
 import { Payment } from 'src/entity';
 
-@ApiUseTags('Users table')
+@ApiUseTags('Payment')
 @Controller('payment')
 export class PaymentsController {
 

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import * as jsonwebtoken from 'jsonwebtoken';
 
 import { User } from 'src/entity';
-import { ValidateUser } from 'src/models';
+import { AuthenticatedUserModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
 
@@ -20,7 +20,7 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  public async validateUser(username: string, password: string): Promise<ValidateUser> {
+  public async validateUser(username: string, password: string): Promise<AuthenticatedUserModel> {
     const user = await this.userRepository.query('SELECT user.*, role.name FROM user_in_roles INNER JOIN role ON user_in_roles.role_id = role.id INNER JOIN user ON user_in_roles.user_id = user.id WHERE user.email = ?', [username]);
 
     if (!user) {
@@ -31,7 +31,7 @@ export class AuthService {
     const isPasswordValid = await this.hashHelper.compareHash(password, user[0].passwordHash);
 
     if ( isPasswordValid) {
-        const result: ValidateUser = {};
+        const result: AuthenticatedUserModel = {};
         result.firstName = user[0].firstName;
         result.userId = user[0].id;
         result.role = user[0].name;

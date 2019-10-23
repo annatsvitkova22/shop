@@ -77,7 +77,7 @@ export class PrintingEditionService {
         edition.currency = createPrintingEdition.currency;
         edition.type = createPrintingEdition.type;
         edition.image = yaml.safeLoad(fs.readFileSync('C:\\Users\Anuitex-7\My_projects\my_shop\shop\src\image\camera.png'));
-     
+
         console.log(edition.image);
         const savedEdition: PrintingEdition = await this.printingEditionRepository.save(edition);
 

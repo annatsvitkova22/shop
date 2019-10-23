@@ -1,42 +1,91 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, createConnection } from 'typeorm';
+
+
+import { User } from 'src/entity';
+import { Enviroment, getEnv } from 'src/environment/environment';
+
+const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class UserRepository {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+    public async createUser(createUser: User) {
+        let user;
+        createConnection({
+            type: 'mysql',
+            host: myEnvitonment.databaseHost,
+            port: myEnvitonment.databasePort,
+            username: myEnvitonment.databaseUsername,
+            password: myEnvitonment.databasePassword,
+            database: myEnvitonment.database,
+            entities: [User],
+            synchronize: true,
+            logging: false,
+        }).then(async connection => {
+            user = await connection.manager.save(createUser);
 
-    public async createUser(createUser: User): Promise<User> {
-        const user: User = await this.userRepository.save(createUser);
+        }).catch(error => console.log(error));
 
         return user;
     }
 
-    public async getUsers(): Promise<User[]> {
-        const getUsers: User[] = await this.userRepository.find();
+    // public async getUsers(): Promise<User[]> {
+    //     const getUsers: User[] = await this.userRepository.find();
 
-        return getUsers;
-    }
+    //     return getUsers;
+    // }
 
-    public async getUsersById(userId: User): Promise<User[]> {
-        const findUser: User[] = await this.userRepository.find({
-            select: ['firstName', 'lastName', 'passwordHash', 'email'],
-            where: [{ id: userId.id }],
-        });
+    // public async getUsersById(userId: User): Promise<User[]> {
+    //     const findUser: User[] = await this.userRepository.find({
+    //         select: ['firstName', 'lastName', 'passwordHash', 'email'],
+    //         where: [{ id: userId.id }],
+    //     });
 
-        return findUser;
-    }
+    //     return findUser;
+    // }
 
     public async getUserById(getUser: User): Promise<User> {
-        const findUser: User = await this.userRepository.findOne(getUser.id);
+        let findUser;
+        createConnection({
+            type: 'mysql',
+            host: myEnvitonment.databaseHost,
+            port: myEnvitonment.databasePort,
+            username: myEnvitonment.databaseUsername,
+            password: myEnvitonment.databasePassword,
+            database: myEnvitonment.database,
+            entities: [User],
+            synchronize: true,
+            logging: false,
+        }).then(async connection => {
+            findUser = await connection.manager.findOne(getUser.id);
+        }).catch(error => console.log(error));
 
         return findUser;
     }
 
-    public async deleteUser(user: User): Promise<DeleteResult> {
-        const result: Promise<DeleteResult> = this.userRepository.delete(user);
+    public async getUserByEmail(email: string): Promise<User> {
+        let findUser;
+        createConnection({
+            type: 'mysql',
+            host: myEnvitonment.databaseHost,
+            port: myEnvitonment.databasePort,
+            username: myEnvitonment.databaseUsername,
+            password: myEnvitonment.databasePassword,
+            database: myEnvitonment.database,
+            entities: [User],
+            synchronize: true,
+            logging: false,
+        }).then(async connection => {
+            findUser = await connection.manager.findOne(email);
+        }).catch(error => console.log(error));
 
-        return result;
+        return findUser;
     }
+
+    // public async deleteUser(user: User): Promise<DeleteResult> {
+    //     const result: Promise<DeleteResult> = this.userRepository.delete(user);
+
+    //     return result;
+    // }
 }

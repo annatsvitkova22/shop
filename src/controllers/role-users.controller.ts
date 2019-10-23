@@ -5,7 +5,7 @@ import { RoleInUsersService } from 'src/services';
 import { CreateRoleInUsersModel, UpdateRoleInUsersModel } from 'src/models';
 import { UserInRoles } from 'src/entity';
 
-@ApiUseTags('Role in users table')
+@ApiUseTags('Role in user')
 @Controller('role-user')
 export class RoleInUserController {
 
