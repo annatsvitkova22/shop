@@ -6,52 +6,30 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from 'src/app.controller';
-import { AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
-  UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController,
-  RoleInUserController, AuthorInBookController} from 'src/controllers';
-import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper, PaymentHelper } from 'src/common';
-import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService, UserService, OrderService, OrderItemService,
-  AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
+
+import { JwtStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper } from 'src/common';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
-import { AuthorMongoRepository, BookRepository, AuthorRepository} from 'src/repositories';
-import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
-import { MailerHelper } from './common/email.helper';
+
 import { JwtHelper } from './common/jwt.helper';
+import { Test } from './entity/test.entity';
+import { TestRepository } from './repositories/test.repository';
+import { TestService } from './services/test.service';
+import { TestController } from './controllers/test.controller';
 
 const myEnvitonment: Enviroment = getEnv();
 
 @Module({
   imports: [
     PassportModule,
-    MongooseModule.forRoot(myEnvitonment.mongoConnection, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }),
-    MongooseModule.forFeature([{ name: 'Book', schema: BookSchema }]),
-    MongooseModule.forFeature([{ name: 'Author', schema: AuthorSchema }]),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: myEnvitonment.databaseHost,
-      port: myEnvitonment.databasePort,
-      username: myEnvitonment.databaseUsername,
-      password: myEnvitonment.databasePassword,
-      database: myEnvitonment.database,
-      entities: [PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks],
-      synchronize: true,
-    }),
-    TypeOrmModule.forFeature([PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks, AuthorRepository]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: myEnvitonment.tokenLife },
     }),
   ],
-  controllers: [AppController, AuthenticationController, BooksController, AuthorsMongoController, PrintingEditionsController,
-    UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController, RoleInUserController,
-    AuthorInBookController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
-    PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, PaymentHelper, MailerHelper, JwtHelper, AuthorRepository,
+  controllers: [AppController, TestController],
+  providers: [ JwtStrategy,
+  HashHelper, JwtHelper, TestRepository, TestService,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
@@ -66,6 +44,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(RequestMiddleware)
-      .forRoutes(AuthenticationController, AppController, UsersController, MailerHelper);
+      .forRoutes( AppController);
   }
 }

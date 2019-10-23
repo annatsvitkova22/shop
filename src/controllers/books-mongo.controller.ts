@@ -1,52 +1,53 @@
-import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
-import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+// import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
+// import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { BooksService } from 'src/services/books.service';
-import { CreateBookModel, UpdateBookModel } from 'src/models';
+// import { BooksService } from 'src/services/books.service';
+// import { CreateBookModel, UpdateBookModel } from 'src/models';
+// import { BookDocument } from 'src/document';
 
-@ApiUseTags('Books table')
-@Controller('books')
-export class BooksController {
-  constructor(private readonly booksService: BooksService) { }
+// @ApiUseTags('Book in Mongo')
+// @Controller('books')
+// export class BooksController {
+//   constructor(private readonly booksService: BooksService) { }
 
-  @Post()
-  @ApiOperation({ title: 'Create book'})
-  public async createBook(@Body() createBook: CreateBookModel) {
-    const getBook = await this.booksService.createBook(createBook);
+//   @Get()
+//   @ApiOperation({ title: 'Search all books'})
+//   public async getAllBooks()  {
+//     const books = await this.booksService.getBooks();
 
-    return { getBook };
-  }
+//     return books;
+//   }
 
-  @Get()
-  @ApiOperation({ title: 'Search all books'})
-  public async getAllBooks() {
-    const books = await this.booksService.getBooks();
+//   @Get(':id')
+//   @ApiOperation({ title: 'Search books by id'})
+//   public async getBook(@Param('id') bookId: string) {
+//     const result = await this.booksService.getBookById(bookId);
 
-    return books;
-  }
+//     return { result };
+//   }
 
-  @Get(':id')
-  @ApiOperation({ title: 'Search books by id'})
-  public async getBook(@Param('id') bookId: string) {
-    const result = await this.booksService.getBookById(bookId);
+//   @Post()
+//   @ApiOperation({ title: 'Create book'})
+//   public async createBook(@Body() createBook: CreateBookModel): Promise<BookDocument>  {
+//     const getBook: BookDocument = await this.booksService.createBook(createBook);
 
-    return { result };
-  }
+//     return getBook ;
+//   }
 
-  @Put()
-  @ApiOperation({ title: 'Update book by id'})
-  public async updateBook(
-    @Body() updateBook: UpdateBookModel) {
-    await this.booksService.updateBook(updateBook);
+//   @Put()
+//   @ApiOperation({ title: 'Update book by id'})
+//   public async updateBook(
+//     @Body() updateBook: UpdateBookModel): Promise<BookDocument>  {
+//     const book: BookDocument = await this.booksService.updateBook(updateBook);
 
-    return true;
-  }
+//     return book;
+//   }
 
-  @Delete(':id')
-  @ApiOperation({ title: 'Delete book by id'})
-  public async removeBook(@Param('id') bookId: string) {
-    await this.booksService.deleteBook(bookId);
+//   @Delete(':id')
+//   @ApiOperation({ title: 'Delete book by id'})
+//   public async removeBook(@Param('id') bookId: string): Promise<boolean> {
+//     await this.booksService.deleteBook(bookId);
 
-    return true;
-  }
-}
+//     return true;
+//   }
+// }
