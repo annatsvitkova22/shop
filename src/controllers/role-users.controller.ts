@@ -11,26 +11,26 @@ export class RoleInUserController {
 
     constructor(private roleInUserService: RoleInUsersService) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search role in user by id'})
-    // public get(id: string): Promise<UserInRoles> {
-    //     const roleInUser: Promise<UserInRoles> = this.roleInUserService.getRoleInUsersById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search role in user by id'})
+    public async get(id: string): Promise<UserInRoles> {
+        const roleInUser: UserInRoles = await this.roleInUserService.getRoleInUsersById(id);
 
-    //     return roleInUser;
-    // }
+        return roleInUser;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all roles in users'})
-    public getAll(): Promise<UserInRoles[]> {
-    const roleInUser: Promise<UserInRoles[]> = this.roleInUserService.getRoleInUsers();
+    public async getAll(): Promise<UserInRoles[]> {
+    const roleInUser: UserInRoles[] = await this.roleInUserService.getRoleInUsers();
 
     return roleInUser;
   }
 
     @Post()
     @ApiOperation({ title: 'Create role in user'})
-    public create(@Body() roleInUser: CreateRoleInUsersModel): Promise<string> {
-        const createRoleInUser: Promise<string> = this.roleInUserService.createRoleInUser(roleInUser);
+    public async create(@Body() roleInUser: CreateRoleInUsersModel): Promise<string> {
+        const createRoleInUser: string = await this.roleInUserService.createRoleInUser(roleInUser);
 
         return createRoleInUser;
     }
@@ -43,11 +43,11 @@ export class RoleInUserController {
     //     return updateRoleInUser;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete role in user by id'})
-    // public delete(@Param() params): Promise<boolean|string> {
-    //     const deleted: Promise<boolean|string>  = this.roleInUserService.deleteRole(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete role in user by id'})
+    public async delete(@Param() params): Promise<number> {
+        const deleted: number  = await this.roleInUserService.deleteRole(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

@@ -13,26 +13,26 @@ export class OrdersController {
         private orderService: OrderService,
         ) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search order by id'})
-    // public get(id: string): Promise<Order> {
-    //     const order: Promise<Order> = this.orderService.getOrderById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search order by id'})
+    public async get(id: string): Promise<Order> {
+        const order: Order = await this.orderService.getOrderById(id);
 
-    //     return order;
-    // }
+        return order;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all orders'})
-    public getAll(): Promise<Order[]> {
-        const order: Promise<Order[]> = this.orderService.getOrders();
+    public async getAll(): Promise<Order[]> {
+        const order: Order[] = await this.orderService.getOrders();
 
         return order;
     }
 
     @Post()
     @ApiOperation({ title: 'Create order'})
-    public create(@Body() order: CreateOrderModel): Promise<string> {
-        const createOrder: Promise<string> = this.orderService.createOrder(order);
+    public async create(@Body() order: CreateOrderModel): Promise<string> {
+        const createOrder: string = await this.orderService.createOrder(order);
 
         return createOrder;
     }
@@ -45,11 +45,11 @@ export class OrdersController {
     //     return updateOrder;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete order by id'})
-    // public delete(@Param() params): Promise<boolean|string>  {
-    //     const deleted: Promise<boolean|string>  = this.orderService.deleteOrder(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete order by id'})
+    public async delete(@Param() params): Promise<number>  {
+        const deleted: number  = await this.orderService.deleteOrder(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

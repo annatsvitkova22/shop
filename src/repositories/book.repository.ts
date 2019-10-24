@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { BookDocument } from 'src/document/books.model';
+import { BookDocument } from 'src/document/book.model';
 import { Model } from 'mongoose';
-import { AuthorDocument } from 'src/document/authors.model';
+import { AuthorDocument } from 'src/document/author.model';
 
 @Injectable()
 export class BookRepository {

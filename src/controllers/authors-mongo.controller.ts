@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { AuthorsMongoService } from 'src/services/authors-mongo.service';
+import { AuthorsMongoService } from 'src/services/author-mongo.service';
 import { CreateAuthorModel, UpdateAuthorMongoModel } from 'src/models';
 import { AuthorDocument } from 'src/document';
 

@@ -12,22 +12,29 @@ export class PrintingEdition extends Model<PrintingEdition> {
         defaultValue: uuid(),
     })
     id?: string;
+
     @Column({ allowNull: false })
     name?: string;
+
     @Column({ allowNull: true })
     description?: string;
+
     @Column({ allowNull: false })
     price?: number;
+
     @Default(false)
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
     })
     isRemoved?: boolean;
+
     @Column({ allowNull: false })
     status?: string;
+
     @Column({ allowNull: false })
     currency?: string;
+
     @Column({ allowNull: false })
     type?: string;
 

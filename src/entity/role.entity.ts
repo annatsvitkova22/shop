@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
 import { UserInRoles, User } from 'src/entity';
+import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class Role extends Model<Role> {
@@ -8,8 +9,10 @@ export class Role extends Model<Role> {
         unique: true,
         allowNull: false,
         primaryKey: true,
+        defaultValue: uuid(),
     })
     id?: string;
+
     @Column({ allowNull: false })
     name?: string;
 

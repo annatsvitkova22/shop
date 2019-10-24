@@ -11,26 +11,26 @@ export class AuthorInBookController {
 
     constructor( private authorInBookService: AuthorInBookService ) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search author in book by id'})
-    // public get(id: string): Promise<AuthorInBooks> {
-    //     const authorInBook: Promise<AuthorInBooks> = this.authorInBookService.getAuthorInBooksById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search author in book by id'})
+    public async get(id: string): Promise<AuthorInBooks> {
+        const authorInBook: AuthorInBooks = await this.authorInBookService.getAuthorInBooksById(id);
 
-    //     return authorInBook;
-    // }
+        return authorInBook;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all author in books'})
-    public getAll(): Promise<AuthorInBooks[]> {
-        const authorInBook: Promise<AuthorInBooks[]> = this.authorInBookService.getAuthorInBooks();
+    public async getAll(): Promise<AuthorInBooks[]> {
+        const authorInBook: AuthorInBooks[] = await this.authorInBookService.getAuthorInBooks();
 
         return authorInBook;
   }
 
     @Post()
     @ApiOperation({ title: 'Create author in book'})
-    public create(@Body() authorInBook: CreateAuthorInBooksModel): Promise<string> {
-        const createAuthorInBook: Promise<string> = this.authorInBookService.createAuthorInBook(authorInBook);
+    public async create(@Body() authorInBook: CreateAuthorInBooksModel): Promise<string> {
+        const createAuthorInBook: string = await this.authorInBookService.createAuthorInBook(authorInBook);
 
         return createAuthorInBook;
     }
@@ -43,11 +43,11 @@ export class AuthorInBookController {
     //     return updateAuthorInBook;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete author in book by id'})
-    // public delete(@Param() params): Promise<boolean|string>  {
-    //     const deleted: Promise<boolean|string>  = this.authorInBookService.deleteAuthorInBook(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete author in book by id'})
+    public async delete(@Param() params): Promise<number>  {
+        const deleted: number  = await this.authorInBookService.deleteAuthorInBook(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

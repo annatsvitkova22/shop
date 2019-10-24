@@ -1,2 +1,2 @@
-export * from 'src/document/authors.model';
-export * from 'src/document/books.model';
+export * from 'src/document/author.model';
+export * from 'src/document/book.model';

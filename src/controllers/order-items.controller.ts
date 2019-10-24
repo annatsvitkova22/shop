@@ -11,26 +11,26 @@ export class OrderItemsController {
 
     constructor(private orderItemService: OrderItemService) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search order item by id'})
-    // public get(id: string): Promise<OrderItem> {
-    //     const orderItem: Promise<OrderItem> = this.orderItemService.getOrderItemById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search order item by id'})
+    public async get(id: string): Promise<OrderItem> {
+        const orderItem: OrderItem = await this.orderItemService.getOrderItemById(id);
 
-    //     return orderItem;
-    // }
+        return orderItem;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all order items'})
-    public getAll(): Promise<OrderItem[]> {
-        const orderItem: Promise<OrderItem[]> = this.orderItemService.getOrderItems();
+    public async getAll(): Promise<OrderItem[]> {
+        const orderItem: OrderItem[] = await this.orderItemService.getOrderItems();
 
         return orderItem;
     }
 
     @Post()
     @ApiOperation({ title: 'Create order item'})
-    public create(@Body() orderItem: CreateOrderItemModel): Promise<string> {
-        const createOrderItem: Promise<string> = this.orderItemService.createOrderItem(orderItem);
+    public async create(@Body() orderItem: CreateOrderItemModel): Promise<string> {
+        const createOrderItem: string = await this.orderItemService.createOrderItem(orderItem);
 
         return createOrderItem;
     }
@@ -43,11 +43,11 @@ export class OrderItemsController {
     //     return updateOrderItem;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete order item by id'})
-    // public delete(@Param() params): Promise<boolean|string>  {
-    //     const deleted: Promise<boolean|string>  = this.orderItemService.deleteOrderItem(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete order item by id'})
+    public async delete(@Param() params): Promise<number>  {
+        const deleted: number  = await this.orderItemService.deleteOrderItem(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

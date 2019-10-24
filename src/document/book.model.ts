@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { AuthorSchema } from 'src/document/authors.model';
+import { AuthorSchema } from 'src/document/author.model';
 
 export const BookSchema = new mongoose.Schema({
     name: { type: String, required: true},

@@ -11,26 +11,26 @@ export class PaymentsController {
 
     constructor(private paymentService: PaymentService) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search payment by id'})
-    // public get(id: string): Promise<Payment> {
-    //     const payment: Promise<Payment> = this.paymentService.getUPaymentById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search payment by id'})
+    public async get(id: string): Promise<Payment> {
+        const payment: Payment = await this.paymentService.getUPaymentById(id);
 
-    //     return payment;
-    // }
+        return payment;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all payments'})
-    public getAll(): Promise<Payment[]> {
-        const payment: Promise<Payment[]> = this.paymentService.getPayments();
+    public async getAll(): Promise<Payment[]> {
+        const payment: Payment[] = await this.paymentService.getPayments();
 
         return payment;
     }
 
     @Post()
     @ApiOperation({ title: 'Create payment by id'})
-    public create(@Body() payment: CreatePaymentModel): Promise<string> {
-        const createPayment: Promise<string> = this.paymentService.createPayment(payment);
+    public async create(@Body() payment: CreatePaymentModel): Promise<string> {
+        const createPayment: string = await this.paymentService.createPayment(payment);
 
         return createPayment;
     }
@@ -43,11 +43,11 @@ export class PaymentsController {
     //     return updatePayment;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete payment by id'})
-    // public delete(@Param() params): Promise<boolean|string>  {
-    //     const deleted: Promise<boolean|string>  = this.paymentService.deletePayment(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete payment by id'})
+    public async delete(@Param() params): Promise<number>  {
+        const deleted: number  = await this.paymentService.deletePayment(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

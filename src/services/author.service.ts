@@ -1,7 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
 
 import { Author } from 'src/entity';
 import { UpdateAuthorModel, CreateAuthorModel } from 'src/models';
@@ -19,13 +16,15 @@ export class AuthorService {
         return gotAuthors;
     }
 
-    // public async getAuthorById(id: string): Promise<Author> {
-    //     const author = new UpdateAuthorModel();
-    //     author.id = id;
-    //     const foundAuthor: Author = await this.authorRepository.findOne<Author>(author.id)
+    public async getAuthorById(id: string): Promise<Author> {
+        const author = new UpdateAuthorModel();
+        author.id = id;
+        const foundAuthor: Author = await this.authorRepository.findOne({
+            where: {id: author.id},
+          });
 
-    //     return foundAuthor;
-    // }
+        return foundAuthor;
+    }
 
     public async createAuthor(CreateAuthor: CreateAuthorModel): Promise<string> {
         const author = new Author();

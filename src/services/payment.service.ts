@@ -1,7 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
 
 import { Payment } from 'src/entity';
 import { UpdatePaymentModel, CreatePaymentModel } from 'src/models';
@@ -20,13 +17,15 @@ export class PaymentService {
         return getPayments;
     }
 
-    // public async getUPaymentById(id: string): Promise<Payment> {
-    //     const payment: UpdatePaymentModel = {};
-    //     payment.id = id;
-    //     const foundPayment: Payment = await this.paymentRepository.findOne(payment.id);
+    public async getUPaymentById(id: string): Promise<Payment> {
+        const payment = new UpdatePaymentModel();
+        payment.id = id;
+        const foundPayment: Payment = await this.paymentRepository.findOne({
+          where: {id: payment.id},
+        });
 
-    //     return foundPayment;
-    // }
+        return foundPayment;
+    }
 
     public async createPayment(createPayment: CreatePaymentModel): Promise<string> {
         const payment = new Payment();
@@ -49,17 +48,13 @@ export class PaymentService {
     //     return savedPayment;
     //   }
 
-    // public async deletePayment(paymentId: string): Promise<boolean|string> {
-    //     const payment: Payment = {};
-    //     payment.id = paymentId;
-    //     const result: DeleteResult = await this.paymentRepository.delete(payment);
-    //     if (result.affected === 0) {
-    //         const messege: string = 'id not found';
+    public async deletePayment(paymentId: string): Promise<number> {
+        const result: number = await this.paymentRepository.destroy({
+          where: { id: paymentId },
+        });
 
-    //         return messege;
-    //     }
-    //     return true;
-    // }
+        return result;
+    }
 
     public async charge(payment: CreatePaymentModel): Promise<string> {
         const status = 'succeeded';

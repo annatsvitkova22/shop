@@ -1,7 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
 
 import { OrderItem } from 'src/entity';
 import { UpdateOrderItemModel, CreateOrderItemModel } from 'src/models';
@@ -17,13 +14,15 @@ export class OrderItemService {
         return getOrderItems;
     }
 
-    // public async getOrderItemById(id: string): Promise<OrderItem> {
-    //     const orderItem: UpdateOrderItemModel = {};
-    //     orderItem.id = id;
-    //     const foundOrderItem: OrderItem = await this.orderItemRepository.findOne(orderItem.id);
+    public async getOrderItemById(id: string): Promise<OrderItem> {
+        const orderItem = new UpdateOrderItemModel();
+        orderItem.id = id;
+        const foundOrderItem: OrderItem = await this.orderItemRepository.findOne({
+            where: {id: orderItem.id},
+          });
 
-    //     return foundOrderItem;
-    // }
+        return foundOrderItem;
+    }
 
     public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<string> {
         const orderItem = new OrderItem();
@@ -56,16 +55,11 @@ export class OrderItemService {
     //     return sevedOrderItem;
     //   }
 
-    // public async deleteOrderItem(orderItemId: string): Promise<boolean|string> {
-    //     const orderItem: OrderItem = {} as OrderItem;
-    //     orderItem.id = orderItemId;
-    //     const result: DeleteResult = await this.orderItemRepository.delete(orderItem);
-    //     if (result.affected === 0) {
-    //         const messege: string = 'id not found';
+    public async deleteOrderItem(orderItemId: string): Promise<number> {
+        const result: number = await this.orderItemRepository.destroy({
+            where: { id: orderItemId },
+          });
 
-    //         return messege;
-    //     }
-
-    //     return true;
-    // }
+        return result;
+    }
 }

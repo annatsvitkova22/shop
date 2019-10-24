@@ -1,7 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
 
 import { AuthorInBooks } from 'src/entity';
 import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
@@ -17,13 +14,15 @@ export class AuthorInBookService {
         return getAuthorInBooks;
     }
 
-    // public async getAuthorInBooksById(id: string): Promise<AuthorInBooks> {
-    //     const AuthorInBookId: UpdateAuthorInBooksModel = {};
-    //     AuthorInBookId.id = id;
-    //     const authorInBook: AuthorInBooks = await this.authorInBooksRepository.findOne(AuthorInBookId.id);
+    public async getAuthorInBooksById(id: string): Promise<AuthorInBooks> {
+        const AuthorInBookId = new UpdateAuthorInBooksModel();
+        AuthorInBookId.id = id;
+        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.findOne({
+            where: {id: AuthorInBookId.id},
+          });
 
-    //     return authorInBook;
-    // }
+        return authorInBook;
+    }
 
     public async createAuthorInBook(authorInBook: CreateAuthorInBooksModel): Promise<string> {
         const createdAuthorInBook = new AuthorInBooks();
@@ -51,17 +50,11 @@ export class AuthorInBookService {
     //     return savedAuthorInBook;
     //   }
 
-    //   public async deleteAuthorInBook(authorInBookId: string): Promise<boolean|string> {
-    //     const authorInBook: AuthorInBooks = {};
-    //     authorInBook.id = authorInBookId;
+      public async deleteAuthorInBook(authorInBookId: string): Promise<number> {
+        const result: number = await this.authorInBooksRepository.destroy({
+            where: { id: authorInBookId },
+          });
 
-    //     const result: DeleteResult = await this.authorInBooksRepository.delete(authorInBook);
-    //     if (result.affected === 0) {
-    //         const messege: string = 'id not found';
-
-    //         return messege;
-    //     }
-
-    //     return true;
-    // }
+        return result;
+    }
 }

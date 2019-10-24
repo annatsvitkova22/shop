@@ -1,12 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
-import * as yaml from 'js-yaml'
 
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
-import { description } from '@hapi/joi';
 
 @Injectable()
 export class PrintingEditionService {
@@ -82,7 +77,7 @@ export class PrintingEditionService {
         console.log(createPrintingEdition);
         console.log(edition);
         const savedEdition: PrintingEdition = await this.printingEditionRepository.create<PrintingEdition>(edition);
-        
+
         return (savedEdition.id);
     }
 

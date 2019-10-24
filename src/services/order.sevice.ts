@@ -1,7 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
 
 import { Order } from 'src/entity';
 import { UpdateOrderModel, CreateOrderModel } from 'src/models';
@@ -17,13 +14,15 @@ export class OrderService {
         return getOrders;
     }
 
-    // public async getOrderById(id: string): Promise<Order> {
-    //     const order: UpdateOrderModel = {};
-    //     order.id = id;
-    //     const foundOrder: Order = await this.orderRepository.findOne(order.id);
+    public async getOrderById(id: string): Promise<Order> {
+        const order = new UpdateOrderModel();
+        order.id = id;
+        const foundOrder: Order = await this.orderRepository.findOne({
+            where: {id: order.id},
+          });
 
-    //     return foundOrder;
-    // }
+        return foundOrder;
+    }
 
     public async createOrder(createOrder: CreateOrderModel): Promise<string> {
         const order = new Order();
@@ -54,16 +53,11 @@ export class OrderService {
     //     return savedOrder;
     //   }
 
-    // public async deleteOrder(orderId: string): Promise<boolean|string> {
-    //     const order: Order = {} as Order;
-    //     order.id = orderId;
-    //     const result: DeleteResult = await this.orderRepository.delete(order);
-    //     if (result.affected === 0) {
-    //         const messege: string = 'id not found';
+    public async deleteOrder(orderId: string): Promise<number> {
+        const result: number = await this.orderRepository.destroy({
+            where: { id: orderId },
+          });
 
-    //         return messege;
-    //     }
-
-    //     return true;
-    // }
+        return result;
+    }
 }

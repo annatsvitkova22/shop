@@ -12,6 +12,7 @@ export class Author extends Model<Author> {
         defaultValue: uuid(),
     })
     id?: string;
+
     @Column({
         allowNull: false})
     name?: string;

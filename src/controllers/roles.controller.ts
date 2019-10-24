@@ -11,26 +11,26 @@ export class RolesController {
 
     constructor(private roleService: RoleService) { }
 
-    // @Get(':id')
-    // @ApiOperation({ title: 'Search role by id'})
-    // public get(id: string): Promise<Role> {
-    //     const role: Promise<Role> = this.roleService.getRoleById(id);
+    @Get(':id')
+    @ApiOperation({ title: 'Search role by id'})
+    public async get(id: string): Promise<Role> {
+        const role: Role = await this.roleService.getRoleById(id);
 
-    //     return role;
-    // }
+        return role;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all roles'})
-    public getAll(): Promise<Role[]> {
-        const role: Promise<Role[]> = this.roleService.getRoles();
+    public async getAll(): Promise<Role[]> {
+        const role: Role[] = await this.roleService.getRoles();
 
         return role;
     }
 
     @Post()
     @ApiOperation({ title: 'Creste user'})
-    public create(@Body() role: CreateRoleModel): Promise<string> {
-        const createRole: Promise<string> = this.roleService.createRole(role);
+    public async create(@Body() role: CreateRoleModel): Promise<string> {
+        const createRole: string = await this.roleService.createRole(role);
 
         return createRole;
     }
@@ -43,11 +43,11 @@ export class RolesController {
     //     return updateRole;
     // }
 
-    // @Delete(':id')
-    // @ApiOperation({ title: 'Delete user by id'})
-    // public delete(@Param() params): Promise<boolean|string> {
-    //     const deleted: Promise<boolean|string> = this.roleService.deleteRole(params.id);
+    @Delete(':id')
+    @ApiOperation({ title: 'Delete user by id'})
+    public async delete(@Param() params): Promise<number> {
+        const deleted: number = await this.roleService.deleteRole(params.id);
 
-    //     return deleted;
-    // }
+        return deleted;
+    }
 }

@@ -1,24 +1,32 @@
 import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasOne, HasMany, IsUUID, PrimaryKey } from 'sequelize-typescript';
 import { User, Payment, OrderItem } from 'src/entity';
+import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class Order extends Model<Order> {
-    @IsUUID(4)
-    @PrimaryKey
-    @Column
-    id?: string;
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: uuid(),
+    })
+
     @Column({ allowNull: true })
     description?: string;
+
     @ForeignKey(() => User)
-    @Column({ allowNull: false })
+    @Column({ allowNull: true })
     userId?: string;
+
     @Column({
         type: DataType.DATE,
         allowNull: false,
     })
     date?: Date;
+
     @ForeignKey(() => Payment)
-    @Column({ allowNull: false })
+    @Column({ allowNull: true })
     paymentId?: string;
 
     // @HasOne(() => Payment)

@@ -15,7 +15,7 @@ export const environmentProd: Enviroment = {
   databasePort: 3306,
   databaseUsername: 'root',
   databasePassword: '1111',
-  database: 'new_test',
+  database: 'new_shop',
   serviceMail: 'gmail',
   portMail: 587,
   secureMail: false,

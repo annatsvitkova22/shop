@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
-import { BooksService } from 'src/services/books.service';
+import { BooksService } from 'src/services/book.service';
 import { CreateBookModel, UpdateBookModel } from 'src/models';
 import { BookDocument } from 'src/document';
 

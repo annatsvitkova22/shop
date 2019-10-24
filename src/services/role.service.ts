@@ -1,7 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { Repository, DeleteResult } from 'typeorm';
 
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
@@ -17,13 +14,15 @@ export class RoleService {
         return getRoles;
     }
 
-    // public async getRoleById(id: string): Promise<Role> {
-    //     const role = new UpdateRoleModel();
-    //     role.id = id;
-    //     const foundRole: Role = await this.roleRepository.findOne(role.id);
+    public async getRoleById(id: string): Promise<Role> {
+        const role = new UpdateRoleModel();
+        role.id = id;
+        const foundRole: Role = await this.roleRepository.findOne({
+            where: {id: role.id},
+          });
 
-    //     return foundRole;
-    // }
+        return foundRole;
+    }
 
     public async createRole(createRole: CreateRoleModel): Promise<string> {
         const role: Role = {} as Role;
@@ -46,16 +45,11 @@ export class RoleService {
     //     return savedRole;
     //   }
 
-    // public async deleteRole(roleId: string): Promise<boolean|string> {
-    //     const role: Role = {} as Role;
-    //     role.id = roleId;
-    //     const result: DeleteResult = await this.roleRepository.delete(role);
-    //     if (result.affected === 0) {
-    //         const messege: string = 'id not found';
+    public async deleteRole(roleId: string): Promise<number> {
+        const result: number = await this.roleRepository.destroy({
+            where: { id: roleId },
+          });
 
-    //         return messege;
-    //     }
-
-    //     return true;
-    // }
+        return result;
+    }
 }
