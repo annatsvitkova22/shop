@@ -1,29 +1,41 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, OneToMany} from 'typeorm';
+import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasOne, HasMany, IsUUID, PrimaryKey } from 'sequelize-typescript';
 import { User, Payment, OrderItem } from 'src/entity';
 
-@Entity()
-export class Order {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class Order extends Model<Order> {
+    @IsUUID(4)
+    @PrimaryKey
+    @Column
     id?: string;
-    @Column()
+    @Column({ allowNull: true })
     description?: string;
-    @Column({name: 'user_id'})
+    @ForeignKey(() => User)
+    @Column({ allowNull: false })
     userId?: string;
-    @Column()
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
     date?: Date;
-    @Column({name: 'payment_id'})
+    @ForeignKey(() => Payment)
+    @Column({ allowNull: false })
     paymentId?: string;
 
-    @ManyToOne(() => User,  user => user.userConnection, {primary:
-        true})
-    @JoinColumn({name: 'user_id'})
-    user?: User[];
+    // @HasOne(() => Payment)
+    // peyment: Payment;
+    // @BelongsTo(() => User)
+    // user: User;
 
-    @OneToOne(() => Payment,  payment => payment.paymentConnection, {primary:
-        true})
-    @JoinColumn({name: 'payment_id'})
-    payment?: Payment[];
+    // @ManyToOne(() => User,  user => user.userConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'user_id'})
+    // user?: User[];
 
-    @OneToMany(() => OrderItem, orderItem => orderItem.orderId)
-    orderItemConnection?: Promise<OrderItem[]>;
+    // @OneToOne(() => Payment,  payment => payment.paymentConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'payment_id'})
+    // payment?: Payment[];
+
+    // @OneToMany(() => OrderItem, orderItem => orderItem.orderId)
+    // orderItemConnection?: Promise<OrderItem[]>;
 }

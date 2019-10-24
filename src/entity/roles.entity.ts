@@ -1,13 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UserInRoles } from 'src/entity';
+import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
+import { UserInRoles, User } from 'src/entity';
 
-@Entity()
-export class Role {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class Role extends Model<Role> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+    })
     id?: string;
-    @Column({ length: 25 })
+    @Column({ allowNull: false })
     name?: string;
 
-    @OneToMany(() => UserInRoles, userInRoles => userInRoles.roleId)
-    roleConnection?: Promise<UserInRoles[]>;
+    @BelongsToMany(() => User, () => UserInRoles)
+    users: User[];
+
+    // @OneToMany(() => UserInRoles, userInRoles => userInRoles.roleId)
+    // roleConnection?: Promise<UserInRoles[]>;
 }

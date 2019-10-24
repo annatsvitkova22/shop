@@ -15,10 +15,18 @@ import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService,
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository } from 'src/repositories';
-import { PrintingEdition, User, Order, OrderItem, Author, Role, Payment, UserInRoles, AuthorInBooks } from 'src/entity';
 import { MailerHelper } from './common/email.helper';
 import { JwtHelper } from './common/jwt.helper';
-
+import { authorsProviders } from './common/author.providers';
+import { userInRolesProviders } from './common/role-in-user.providers';
+import { rolesProviders } from './common/role.providers';
+import { usersProviders } from './common/user.providers';
+import { printingEditionsProviders } from './common/printingEdition.providers';
+import { authorInBooksProviders } from './common/author-in- user.providers';
+import { paymentsProviders } from './common/payment.providers';
+import { orderItemsProviders } from './common/order-item.providers';
+import { ordersProviders } from './common/order.providers';
+import { databaseProviders } from './common/database.providers';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -31,17 +39,6 @@ const myEnvitonment: Enviroment = getEnv();
     }),
     MongooseModule.forFeature([{ name: 'Book', schema: BookSchema }]),
     MongooseModule.forFeature([{ name: 'Author', schema: AuthorSchema }]),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: myEnvitonment.databaseHost,
-      port: myEnvitonment.databasePort,
-      username: myEnvitonment.databaseUsername,
-      password: myEnvitonment.databasePassword,
-      database: myEnvitonment.database,
-      entities: [PrintingEdition, Order, OrderItem, Author, Role, User, Payment, UserInRoles, AuthorInBooks],
-      synchronize: true,
-    }),
-    TypeOrmModule.forFeature([PrintingEdition, Order, OrderItem, Author, Role, User, Payment, UserInRoles, AuthorInBooks]),
     JwtModule.register({
       secret: myEnvitonment.tokenSecret,
       signOptions: { expiresIn: myEnvitonment.tokenLife },
@@ -52,7 +49,8 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, MailerHelper, JwtHelper,
+    AuthorInBookService, HashHelper, MailerHelper, JwtHelper, ...authorsProviders, ...userInRolesProviders, ...rolesProviders, ...usersProviders,
+    ...printingEditionsProviders, ...authorInBooksProviders, ...paymentsProviders, ...orderItemsProviders, ...ordersProviders, ...databaseProviders,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

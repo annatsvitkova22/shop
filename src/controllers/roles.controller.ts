@@ -11,13 +11,13 @@ export class RolesController {
 
     constructor(private roleService: RoleService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search role by id'})
-    public get(id: string): Promise<Role> {
-        const role: Promise<Role> = this.roleService.getRoleById(id);
+    // @Get(':id')
+    // @ApiOperation({ title: 'Search role by id'})
+    // public get(id: string): Promise<Role> {
+    //     const role: Promise<Role> = this.roleService.getRoleById(id);
 
-        return role;
-    }
+    //     return role;
+    // }
 
     @Get()
     @ApiOperation({ title: 'Search all roles'})
@@ -35,19 +35,19 @@ export class RolesController {
         return createRole;
     }
 
-    @Put()
-    @ApiOperation({ title: 'Update user by id'})
-    public update(@Body() role: UpdateRoleModel): Promise<Role> {
-        const updateRole: Promise<Role> = this.roleService.updateRole(role);
+    // @Put()
+    // @ApiOperation({ title: 'Update user by id'})
+    // public update(@Body() role: UpdateRoleModel): Promise<Role> {
+    //     const updateRole: Promise<Role> = this.roleService.updateRole(role);
 
-        return updateRole;
-    }
+    //     return updateRole;
+    // }
 
-    @Delete(':id')
-    @ApiOperation({ title: 'Delete user by id'})
-    public delete(@Param() params): Promise<boolean|string> {
-        const deleted: Promise<boolean|string> = this.roleService.deleteRole(params.id);
+    // @Delete(':id')
+    // @ApiOperation({ title: 'Delete user by id'})
+    // public delete(@Param() params): Promise<boolean|string> {
+    //     const deleted: Promise<boolean|string> = this.roleService.deleteRole(params.id);
 
-        return deleted;
-    }
+    //     return deleted;
+    // }
 }

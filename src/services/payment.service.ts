@@ -12,55 +12,54 @@ const myEnvitonment: Enviroment = getEnv();
 @Injectable()
 export class PaymentService {
 
-    constructor(
-        @InjectRepository(Payment) private paymentRepository: Repository<Payment>) { }
+    constructor( @Inject('PaymentRepository') private readonly paymentRepository: typeof Payment) { }
 
     public async getPayments(): Promise<Payment[]> {
-        const getPayments: Payment[] = await this.paymentRepository.find();
+        const getPayments: Payment[] = await this.paymentRepository.findAll<Payment>();
 
         return getPayments;
     }
 
-    public async getUPaymentById(id: string): Promise<Payment> {
-        const payment: UpdatePaymentModel = {};
-        payment.id = id;
-        const foundPayment: Payment = await this.paymentRepository.findOne(payment.id);
+    // public async getUPaymentById(id: string): Promise<Payment> {
+    //     const payment: UpdatePaymentModel = {};
+    //     payment.id = id;
+    //     const foundPayment: Payment = await this.paymentRepository.findOne(payment.id);
 
-        return foundPayment;
-    }
+    //     return foundPayment;
+    // }
 
     public async createPayment(createPayment: CreatePaymentModel): Promise<string> {
-        const payment: Payment = {};
+        const payment = new Payment();
         const transactionId: string = await this.charge(createPayment);
         payment.transactionId = transactionId;
-        const savedPayment: Payment = await this.paymentRepository.save(payment);
+        const savedPayment: Payment = await this.paymentRepository.create<Payment>(payment);
 
         return(savedPayment.id);
     }
 
-    public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {
-        const payment: Payment = {};
-        payment.id = updatePayment.id;
-        payment.transactionId = updatePayment.transactionId;
-        const toUpdate: Payment = await this.paymentRepository.findOne(payment.id);
-        toUpdate.transactionId = payment.transactionId;
+    // public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {
+    //     const payment: Payment = {};
+    //     payment.id = updatePayment.id;
+    //     payment.transactionId = updatePayment.transactionId;
+    //     const toUpdate: Payment = await this.paymentRepository.findOne(payment.id);
+    //     toUpdate.transactionId = payment.transactionId;
 
-        const savedPayment: Payment = await this.paymentRepository.save(toUpdate);
+    //     const savedPayment: Payment = await this.paymentRepository.save(toUpdate);
 
-        return savedPayment;
-      }
+    //     return savedPayment;
+    //   }
 
-    public async deletePayment(paymentId: string): Promise<boolean|string> {
-        const payment: Payment = {};
-        payment.id = paymentId;
-        const result: DeleteResult = await this.paymentRepository.delete(payment);
-        if (result.affected === 0) {
-            const messege: string = 'id not found';
+    // public async deletePayment(paymentId: string): Promise<boolean|string> {
+    //     const payment: Payment = {};
+    //     payment.id = paymentId;
+    //     const result: DeleteResult = await this.paymentRepository.delete(payment);
+    //     if (result.affected === 0) {
+    //         const messege: string = 'id not found';
 
-            return messege;
-        }
-        return true;
-    }
+    //         return messege;
+    //     }
+    //     return true;
+    // }
 
     public async charge(payment: CreatePaymentModel): Promise<string> {
         const status = 'succeeded';

@@ -11,13 +11,13 @@ export class OrderItemsController {
 
     constructor(private orderItemService: OrderItemService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search order item by id'})
-    public get(id: string): Promise<OrderItem> {
-        const orderItem: Promise<OrderItem> = this.orderItemService.getOrderItemById(id);
+    // @Get(':id')
+    // @ApiOperation({ title: 'Search order item by id'})
+    // public get(id: string): Promise<OrderItem> {
+    //     const orderItem: Promise<OrderItem> = this.orderItemService.getOrderItemById(id);
 
-        return orderItem;
-    }
+    //     return orderItem;
+    // }
 
     @Get()
     @ApiOperation({ title: 'Search all order items'})
@@ -35,19 +35,19 @@ export class OrderItemsController {
         return createOrderItem;
     }
 
-    @Put()
-    @ApiOperation({ title: 'Update order item by id'})
-    public update(@Body() orderItem: UpdateOrderItemModel): Promise<OrderItem> {
-        const updateOrderItem: Promise<OrderItem> = this.orderItemService.updateOrderItem(orderItem);
+    // @Put()
+    // @ApiOperation({ title: 'Update order item by id'})
+    // public update(@Body() orderItem: UpdateOrderItemModel): Promise<OrderItem> {
+    //     const updateOrderItem: Promise<OrderItem> = this.orderItemService.updateOrderItem(orderItem);
 
-        return updateOrderItem;
-    }
+    //     return updateOrderItem;
+    // }
 
-    @Delete(':id')
-    @ApiOperation({ title: 'Delete order item by id'})
-    public delete(@Param() params): Promise<boolean|string>  {
-        const deleted: Promise<boolean|string>  = this.orderItemService.deleteOrderItem(params.id);
+    // @Delete(':id')
+    // @ApiOperation({ title: 'Delete order item by id'})
+    // public delete(@Param() params): Promise<boolean|string>  {
+    //     const deleted: Promise<boolean|string>  = this.orderItemService.deleteOrderItem(params.id);
 
-        return deleted;
-    }
+    //     return deleted;
+    // }
 }

@@ -1,28 +1,37 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { PrintingEdition, Order } from 'src/entity';
 
-@Entity()
-export class OrderItem {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class OrderItem extends Model<OrderItem> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+    })
     id?: string;
-    @Column()
+    @Column({ allowNull: false })
     amount?: number;
-    @Column()
+    @Column({ allowNull: false })
     currency?: string;
-    @Column({name: 'printing-edition_id'})
+    @ForeignKey(() => PrintingEdition)
+    @Column({allowNull: false})
     pritingEditionId?: string;
-    @Column({name: 'order_id'})
+    @ForeignKey(() => Order)
+    @Column({allowNull: false})
     orderId?: string;
-    @Column()
+    // @BelongsTo(() => Order)
+    // order: Order;
+    @Column({ allowNull: false })
     count?: number;
 
-    @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.printingEditionConnection, {primary:
-        true})
-    @JoinColumn({name: 'printing-edition_id'})
-    printingEdition?: PrintingEdition[];
+    // @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.printingEditionConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'printing-edition_id'})
+    // printingEdition?: PrintingEdition[];
 
-    @ManyToOne(() => Order,  order => order.orderItemConnection, {primary:
-        true})
-    @JoinColumn({name: 'order_id'})
-    orderItem?: OrderItem[];
+    // @ManyToOne(() => Order,  order => order.orderItemConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'order_id'})
+    // orderItem?: OrderItem[];
 }

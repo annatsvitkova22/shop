@@ -1,42 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { Payment } from 'src/entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+// import { Injectable } from '@nestjs/common';
+// import { Payment } from 'src/entity';
+// import { InjectRepository } from '@nestjs/typeorm';
+// import { Repository, DeleteResult } from 'typeorm';
 
-@Injectable()
-export class PaymentRepository {
-    constructor(@InjectRepository(Payment) private paymentRepository: Repository<Payment>) { }
+// @Injectable()
+// export class PaymentRepository {
+//     constructor(@InjectRepository(Payment) private paymentRepository: Repository<Payment>) { }
 
-    public async createPayment(createPayment: Payment): Promise<Payment> {
-        const payment: Payment = await this.paymentRepository.save(createPayment);
+//     public async createPayment(createPayment: Payment): Promise<Payment> {
+//         const payment: Payment = await this.paymentRepository.save(createPayment);
 
-        return payment;
-    }
+//         return payment;
+//     }
 
-    public async getPayments(): Promise<Payment[]> {
-        const getPayments: Payment[] = await this.paymentRepository.find();
+//     public async getPayments(): Promise<Payment[]> {
+//         const getPayments: Payment[] = await this.paymentRepository.find();
 
-        return getPayments;
-    }
+//         return getPayments;
+//     }
 
-    public async getPaymentsById(paymentId: Payment): Promise<Payment[]> {
-        const findPayment: Payment[] = await this.paymentRepository.find({
-            select: ['transactionId'],
-            where: [{ id: paymentId.id }],
-        });
+//     public async getPaymentsById(paymentId: Payment): Promise<Payment[]> {
+//         const findPayment: Payment[] = await this.paymentRepository.find({
+//             select: ['transactionId'],
+//             where: [{ id: paymentId.id }],
+//         });
 
-        return findPayment;
-    }
+//         return findPayment;
+//     }
 
-    public async getPaymentById(getPayment: Payment): Promise<Payment> {
-        const findPayment: Payment = await this.paymentRepository.findOne(getPayment.id);
+//     public async getPaymentById(getPayment: Payment): Promise<Payment> {
+//         const findPayment: Payment = await this.paymentRepository.findOne(getPayment.id);
 
-        return findPayment;
-    }
+//         return findPayment;
+//     }
 
-    public async deletePayment(payment: Payment): Promise<DeleteResult> {
-        const result: Promise<DeleteResult> = this.paymentRepository.delete(payment);
+//     public async deletePayment(payment: Payment): Promise<DeleteResult> {
+//         const result: Promise<DeleteResult> = this.paymentRepository.delete(payment);
 
-        return result;
-    }
-}
+//         return result;
+//     }
+// }

@@ -1,30 +1,45 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { OrderItem, AuthorInBooks } from 'src/entity';
+import { Table, Column, Model, DataType, BelongsToMany, BelongsTo, HasMany, PrimaryKey, Unique, Default } from 'sequelize-typescript';
+import { OrderItem, AuthorInBooks, Author } from 'src/entity';
+import uuid = require('uuid/v4');
 
-@Entity()
-export class PrintingEdition {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class PrintingEdition extends Model<PrintingEdition> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: uuid(),
+    })
     id?: string;
-    @Column({ length: 25 })
+    @Column({ allowNull: false })
     name?: string;
-    @Column()
+    @Column({ allowNull: true })
     description?: string;
-    @Column()
+    @Column({ allowNull: false })
     price?: number;
-    @Column()
+    @Default(false)
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+    })
     isRemoved?: boolean;
-    @Column()
+    @Column({ allowNull: false })
     status?: string;
-    @Column()
+    @Column({ allowNull: false })
     currency?: string;
-    @Column()
+    @Column({ allowNull: false })
     type?: string;
-    @Column('blob')
-    image?: string;
 
-    @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
-    printingEditionConnection?: Promise<OrderItem[]>;
+    @BelongsToMany(() => Author, () => AuthorInBooks)
+    authors: Author[];
 
-    @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
-    bookConnection?: Promise<AuthorInBooks[]>;
+    // @HasMany(() => OrderItem)
+    // orderItems: OrderItem[];
+
+    // @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
+    // printingEditionConnection?: Promise<OrderItem[]>;
+
+    // @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
+    // bookConnection?: Promise<AuthorInBooks[]>;
 }

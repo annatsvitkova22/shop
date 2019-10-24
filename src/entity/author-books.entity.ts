@@ -1,22 +1,29 @@
-import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Author, PrintingEdition } from 'src/entity';
+import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
 
-@Entity()
-export class AuthorInBooks {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class AuthorInBooks extends Model<AuthorInBooks> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+    })
     id?: string;
-    @Column({name: 'author_id'})
+    @ForeignKey(() => Author)
+    @Column({allowNull: false})
     authorId?: string;
-    @Column({name: 'book_id'})
+    @ForeignKey(() => PrintingEdition)
+    @Column({allowNull: false})
     bookId?: string;
 
-    @ManyToOne(() => Author,  author => author.authorConnection, {primary:
-        true})
-    @JoinColumn({name: 'author_id'})
-    author?: Author[];
+    // @ManyToOne(() => Author,  author => author.authorConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'author_id'})
+    // author?: Author[];
 
-    @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.bookConnection, {primary:
-        true})
-    @JoinColumn({name: 'book_id'})
-    printingEdition?: PrintingEdition[];
+    // @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.bookConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'book_id'})
+    // printingEdition?: PrintingEdition[];
 }

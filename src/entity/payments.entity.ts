@@ -1,13 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
-import { Order } from 'src/entity';
+import { Table, Column, Model, DataType, BelongsToMany, HasOne } from 'sequelize-typescript'; import { Order, UserInRoles } from 'src/entity';
 
-@Entity()
-export class Payment {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class Payment extends Model<Payment> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+    })
     id?: string;
-    @Column()
+    @Column({ allowNull: false })
     transactionId?: string;
 
-    @OneToOne(() => Order, order => order.paymentId)
-    paymentConnection?: Promise<Order[]>;
+    // @HasOne(() => Order)
+    // order: Order;
+
+    // @OneToOne(() => Order, order => order.paymentId)
+    // paymentConnection?: Promise<Order[]>;
 }

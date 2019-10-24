@@ -11,13 +11,13 @@ export class PaymentsController {
 
     constructor(private paymentService: PaymentService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search payment by id'})
-    public get(id: string): Promise<Payment> {
-        const payment: Promise<Payment> = this.paymentService.getUPaymentById(id);
+    // @Get(':id')
+    // @ApiOperation({ title: 'Search payment by id'})
+    // public get(id: string): Promise<Payment> {
+    //     const payment: Promise<Payment> = this.paymentService.getUPaymentById(id);
 
-        return payment;
-    }
+    //     return payment;
+    // }
 
     @Get()
     @ApiOperation({ title: 'Search all payments'})
@@ -35,19 +35,19 @@ export class PaymentsController {
         return createPayment;
     }
 
-    @Put()
-    @ApiOperation({ title: 'Update payment by id'})
-    public update(@Body() payment: UpdatePaymentModel): Promise<Payment> {
-        const updatePayment: Promise<Payment> = this.paymentService.updatePayment(payment);
+    // @Put()
+    // @ApiOperation({ title: 'Update payment by id'})
+    // public update(@Body() payment: UpdatePaymentModel): Promise<Payment> {
+    //     const updatePayment: Promise<Payment> = this.paymentService.updatePayment(payment);
 
-        return updatePayment;
-    }
+    //     return updatePayment;
+    // }
 
-    @Delete(':id')
-    @ApiOperation({ title: 'Delete payment by id'})
-    public delete(@Param() params): Promise<boolean|string>  {
-        const deleted: Promise<boolean|string>  = this.paymentService.deletePayment(params.id);
+    // @Delete(':id')
+    // @ApiOperation({ title: 'Delete payment by id'})
+    // public delete(@Param() params): Promise<boolean|string>  {
+    //     const deleted: Promise<boolean|string>  = this.paymentService.deletePayment(params.id);
 
-        return deleted;
-    }
+    //     return deleted;
+    // }
 }

@@ -1,22 +1,29 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
 import { User, Role } from 'src/entity';
 
-@Entity()
-export class UserInRoles {
-    @PrimaryGeneratedColumn('uuid')
+@Table({timestamps: false})
+export class UserInRoles extends Model<UserInRoles> {
+    @Column({
+        type: DataType.UUID,
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
+    })
     id?: string;
-    @Column({name: 'role_id'})
+    @ForeignKey(() => Role)
+    @Column({allowNull: false})
     roleId?: string;
-    @Column({name: 'user_id'})
+    @ForeignKey(() => User)
+    @Column({allowNull: false})
     userId?: string;
 
-    @OneToOne(() => User,  user => user.userRoleConnection, {primary:
-        true})
-    @JoinColumn({name: 'user_id'})
-    user?: User[];
+    // @OneToOne(() => User,  user => user.userRoleConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'user_id'})
+    // user?: User[];
 
-    @ManyToOne(() => Role,  role => role.roleConnection, {primary:
-        true})
-    @JoinColumn({name: 'role_id'})
-    role?: Role[];
+    // @ManyToOne(() => Role,  role => role.roleConnection, {primary:
+    //     true})
+    // @JoinColumn({name: 'role_id'})
+    // role?: Role[];
 }

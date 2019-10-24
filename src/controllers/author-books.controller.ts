@@ -11,13 +11,13 @@ export class AuthorInBookController {
 
     constructor( private authorInBookService: AuthorInBookService ) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search author in book by id'})
-    public get(id: string): Promise<AuthorInBooks> {
-        const authorInBook: Promise<AuthorInBooks> = this.authorInBookService.getAuthorInBooksById(id);
+    // @Get(':id')
+    // @ApiOperation({ title: 'Search author in book by id'})
+    // public get(id: string): Promise<AuthorInBooks> {
+    //     const authorInBook: Promise<AuthorInBooks> = this.authorInBookService.getAuthorInBooksById(id);
 
-        return authorInBook;
-    }
+    //     return authorInBook;
+    // }
 
     @Get()
     @ApiOperation({ title: 'Search all author in books'})
@@ -35,19 +35,19 @@ export class AuthorInBookController {
         return createAuthorInBook;
     }
 
-    @Put()
-    @ApiOperation({ title: 'Update author in books by id'})
-    public update(@Body() authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const updateAuthorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(authorInBook);
+    // @Put()
+    // @ApiOperation({ title: 'Update author in books by id'})
+    // public update(@Body() authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
+    //     const updateAuthorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(authorInBook);
 
-        return updateAuthorInBook;
-    }
+    //     return updateAuthorInBook;
+    // }
 
-    @Delete(':id')
-    @ApiOperation({ title: 'Delete author in book by id'})
-    public delete(@Param() params): Promise<boolean|string>  {
-        const deleted: Promise<boolean|string>  = this.authorInBookService.deleteAuthorInBook(params.id);
+    // @Delete(':id')
+    // @ApiOperation({ title: 'Delete author in book by id'})
+    // public delete(@Param() params): Promise<boolean|string>  {
+    //     const deleted: Promise<boolean|string>  = this.authorInBookService.deleteAuthorInBook(params.id);
 
-        return deleted;
-    }
+    //     return deleted;
+    // }
 }
