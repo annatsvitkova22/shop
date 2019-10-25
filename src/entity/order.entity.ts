@@ -1,6 +1,5 @@
 import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasOne, HasMany, IsUUID, PrimaryKey } from 'sequelize-typescript';
 import { User, Payment, OrderItem } from 'src/entity';
-import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class Order extends Model<Order> {
@@ -9,29 +8,31 @@ export class Order extends Model<Order> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
+    id: string;
 
     @Column({ allowNull: true })
-    description?: string;
+    description: string;
 
     @ForeignKey(() => User)
-    @Column({ allowNull: true })
-    userId?: string;
+    @Column
+    userId: string;
+    @BelongsTo(() => User, 'userId')
+    user: User;
 
     @Column({
         type: DataType.DATE,
         allowNull: false,
     })
-    date?: Date;
+    date: Date;
 
     @ForeignKey(() => Payment)
     @Column({ allowNull: true })
-    paymentId?: string;
+    paymentId: string;
 
-    // @HasOne(() => Payment)
+    // @HasOne(() => Payment, '')
     // peyment: Payment;
-    // @BelongsTo(() => User)
+    // @HasMany(() => User, 'userId')
     // user: User;
 
     // @ManyToOne(() => User,  user => user.userConnection, {primary:

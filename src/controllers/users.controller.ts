@@ -18,7 +18,7 @@ export class UsersController {
         return user;
     }
 
-    @Get()
+    @Get('all')
     @ApiOperation({ title: 'Search all users' })
     public async getAll(): Promise<User[]> {
         const user: User[] = await this.userService.getUsers();
@@ -59,13 +59,13 @@ export class UsersController {
         return user;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update user by id' })
-    // public async update(@Body() user: UpdateUserModel): Promise<User> {
-    //     const updateUser: User = await this.userService.updateUser(user);
+    @Put()
+    @ApiOperation({ title: 'Update user by id' })
+    public async update(@Body() user: UpdateUserModel): Promise<User> {
+        const updateUser: User = await this.userService.updateUser(user);
 
-    //     return updateUser;
-    // }
+        return updateUser;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete user by id' })

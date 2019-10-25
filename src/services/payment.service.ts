@@ -1,15 +1,19 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { Payment } from 'src/entity';
 import { UpdatePaymentModel, CreatePaymentModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
+import { UuidHelper } from 'src/common';
 
 const myEnvitonment: Enviroment = getEnv();
 
 @Injectable()
 export class PaymentService {
 
-    constructor( @Inject('PaymentRepository') private readonly paymentRepository: typeof Payment) { }
+    constructor(
+      @Inject('PaymentRepository') private readonly paymentRepository: typeof Payment,
+      @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
+      ) { }
 
     public async getPayments(): Promise<Payment[]> {
         const getPayments: Payment[] = await this.paymentRepository.findAll<Payment>();
@@ -31,22 +35,24 @@ export class PaymentService {
         const payment = new Payment();
         const transactionId: string = await this.charge(createPayment);
         payment.transactionId = transactionId;
-        const savedPayment: Payment = await this.paymentRepository.create<Payment>(payment);
+        payment.id = this.uuidHelper.uuidv4();
+
+        const savedPayment: Payment = await payment.save();
 
         return(savedPayment.id);
     }
 
-    // public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {
-    //     const payment: Payment = {};
-    //     payment.id = updatePayment.id;
-    //     payment.transactionId = updatePayment.transactionId;
-    //     const toUpdate: Payment = await this.paymentRepository.findOne(payment.id);
-    //     toUpdate.transactionId = payment.transactionId;
+    public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {
+        const payment = new Payment();
+        payment.id = updatePayment.id;
+        payment.transactionId = updatePayment.transactionId;
+        const toUpdate: Payment = await this.getUPaymentById(payment.id);
+        toUpdate.transactionId = payment.transactionId;
 
-    //     const savedPayment: Payment = await this.paymentRepository.save(toUpdate);
+        const savedPayment: Payment = await toUpdate.save();
 
-    //     return savedPayment;
-    //   }
+        return savedPayment;
+      }
 
     public async deletePayment(paymentId: string): Promise<number> {
         const result: number = await this.paymentRepository.destroy({

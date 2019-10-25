@@ -35,13 +35,13 @@ export class RolesController {
         return createRole;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update user by id'})
-    // public update(@Body() role: UpdateRoleModel): Promise<Role> {
-    //     const updateRole: Promise<Role> = this.roleService.updateRole(role);
+    @Put()
+    @ApiOperation({ title: 'Update user by id'})
+    public update(@Body() role: UpdateRoleModel): Promise<Role> {
+        const updateRole: Promise<Role> = this.roleService.updateRole(role);
 
-    //     return updateRole;
-    // }
+        return updateRole;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete user by id'})

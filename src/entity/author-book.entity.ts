@@ -1,6 +1,5 @@
 import { Author, PrintingEdition } from 'src/entity';
 import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
-import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class AuthorInBooks extends Model<AuthorInBooks> {
@@ -9,17 +8,16 @@ export class AuthorInBooks extends Model<AuthorInBooks> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
-    id?: string;
+    id: string;
 
     @ForeignKey(() => Author)
     @Column({allowNull: false})
-    authorId?: string;
+    authorId: string;
 
     @ForeignKey(() => PrintingEdition)
     @Column({allowNull: false})
-    bookId?: string;
+    bookId: string;
 
     // @ManyToOne(() => Author,  author => author.authorConnection, {primary:
     //     true})

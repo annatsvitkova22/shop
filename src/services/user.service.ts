@@ -2,7 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel, ForgotPassword } from 'src/models';
-import { HashHelper, MailerHelper } from 'src/common/';
+import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 
 @Injectable()
 export class UserService {
@@ -11,6 +11,7 @@ export class UserService {
         @Inject(forwardRef(() => MailerHelper)) public emailHelper: MailerHelper,
         public readonly hashHelper: HashHelper,
         @Inject('UserRepository') private readonly userRepository: typeof User,
+        @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
 
     public async getUsers(): Promise<User[]> {
@@ -35,8 +36,10 @@ export class UserService {
         user.firstName = createUser.firstName;
         user.lastName = createUser.lastName;
         user.email = createUser.email;
+        user.id = this.uuidHelper.uuidv4();
 
         const foundUser: User = await this.findByEmail(user.email);
+
         if (foundUser) {
             const message: string = 'user with this email already exists';
 
@@ -51,12 +54,14 @@ export class UserService {
 
         user.emailConfirmed = false;
         user.saltForEmail = '0';
-        const savedUser: User = await this.userRepository.create<User>(user);
+
+        const savedUser: User = await user.save();
 
         if (savedUser) {
             const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
-            savedUser.saltForEmail = saltForEmail;
-            const savedUserWithSaltEmail: User = await this.userRepository.create<User>(user);
+            user.saltForEmail = saltForEmail;
+
+            const savedUserWithSaltEmail: User = await user.save();
 
             return savedUserWithSaltEmail;
         }
@@ -64,24 +69,24 @@ export class UserService {
         return savedUser;
     }
 
-    // public async updateUser(updateUser: UpdateUserModel): Promise<User> {
-    //     const user: User = {};
-    //     user.id = updateUser.id;
-    //     user.firstName = updateUser.firstName;
-    //     user.lastName = updateUser.lastName;
-    //     user.passwordHash = updateUser.passwordHash;
-    //     user.email = updateUser.email;
+    public async updateUser(updateUser: UpdateUserModel): Promise<User> {
+        const user = new User();
+        user.id = updateUser.id;
+        user.firstName = updateUser.firstName;
+        user.lastName = updateUser.lastName;
+        user.passwordHash = updateUser.passwordHash;
+        user.email = updateUser.email;
 
-    //     const toUpdate: User = await this.userRepository.findOne(user.id);
-    //     toUpdate.firstName = user.firstName;
-    //     toUpdate.lastName = user.lastName;
-    //     toUpdate.passwordHash = user.passwordHash;
-    //     toUpdate.email = user.email;
+        const toUpdate: User = await this.getUserById(user.id);
+        toUpdate.firstName = user.firstName;
+        toUpdate.lastName = user.lastName;
+        toUpdate.passwordHash = user.passwordHash;
+        toUpdate.email = user.email;
 
-    //     const savedUser: User = await this.userRepository.save(toUpdate);
+        const savedUser: User = await toUpdate.save();
 
-    //     return savedUser;
-    // }
+        return savedUser;
+    }
 
     public async deleteUser(userId: string): Promise<number> {
         const result: number = await this.userRepository.destroy({
@@ -110,7 +115,7 @@ export class UserService {
         }
 
         user.saltForEmail = '0';
-        const savedUser: User = await this.userRepository.create<User>(user);
+        const savedUser: User = await user.save();
 
         return savedUser.emailConfirmed;
     }
@@ -123,7 +128,7 @@ export class UserService {
         user.saltForEmail = saltForEmail;
         user.emailConfirmed = false;
 
-        const savedUser: User = await this.userRepository.create<User>(user);
+        const savedUser: User = await user.save();
 
         if (!user) {
             const messegeError = 'Sorry, email not found';
@@ -148,7 +153,7 @@ export class UserService {
             const pass: string = await this.hashHelper.getHash(forgotPassword.password, randomSalt);
             user.passwordHash = pass;
 
-            const savedUser: User = await this.userRepository.create<User>(user);
+            const savedUser: User = await user.save();
 
             return savedUser;
         }

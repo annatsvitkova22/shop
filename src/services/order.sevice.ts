@@ -1,12 +1,16 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { Order } from 'src/entity';
 import { UpdateOrderModel, CreateOrderModel } from 'src/models';
+import { UuidHelper } from 'src/common';
 
 @Injectable()
 export class OrderService {
 
-    constructor(  @Inject('OrderRepository') private readonly orderRepository: typeof Order) { }
+    constructor(
+        @Inject('OrderRepository') private readonly orderRepository: typeof Order,
+        @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
+        ) { }
 
     public async getOrders(): Promise<Order[]> {
         const getOrders: Order[] = await this.orderRepository.findAll<Order>();
@@ -30,28 +34,32 @@ export class OrderService {
         order.userId = createOrder.userId;
         order.date = createOrder.date;
         order.paymentId = createOrder.paymentId;
-        const savedOrder: Order = await this.orderRepository.create<Order>(order);
+        order.id = this.uuidHelper.uuidv4();
+
+        const savedOrder: Order = await order.save();
 
         return(savedOrder.id);
     }
 
-    // public async updateOrder(updateOrder: UpdateOrderModel): Promise<Order> {
-    //     const order: Order = {} as Order;
-    //     order.id = updateOrder.id;
-    //     order.description = updateOrder.description;
-    //     order.userId = updateOrder.userId;
-    //     order.date = updateOrder.date;
-    //     order.paymentId = updateOrder.paymentId;
-    //     const toUpdate = await this.orderRepository.findOne(order.id);
-    //     toUpdate.description = order.description;
-    //     toUpdate.userId = order.userId;
-    //     toUpdate.date = order.date;
-    //     toUpdate.paymentId = order.paymentId;
+    public async updateOrder(updateOrder: UpdateOrderModel): Promise<Order> {
+        const order = new Order();
+        order.id = updateOrder.id;
+        order.description = updateOrder.description;
+        order.userId = updateOrder.userId;
+        order.date = updateOrder.date;
+        order.paymentId = updateOrder.paymentId;
+        const toUpdate = await this.orderRepository.findOne({
+            where: {id: order.id},
+          });
+        toUpdate.description = order.description;
+        toUpdate.userId = order.userId;
+        toUpdate.date = order.date;
+        toUpdate.paymentId = order.paymentId;
 
-    //     const savedOrder: Order = await this.orderRepository.save(toUpdate);
+        const savedOrder: Order = await toUpdate.save();
 
-    //     return savedOrder;
-    //   }
+        return savedOrder;
+      }
 
     public async deleteOrder(orderId: string): Promise<number> {
         const result: number = await this.orderRepository.destroy({

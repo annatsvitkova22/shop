@@ -35,13 +35,13 @@ export class PaymentsController {
         return createPayment;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update payment by id'})
-    // public update(@Body() payment: UpdatePaymentModel): Promise<Payment> {
-    //     const updatePayment: Promise<Payment> = this.paymentService.updatePayment(payment);
+    @Put()
+    @ApiOperation({ title: 'Update payment by id'})
+    public update(@Body() payment: UpdatePaymentModel): Promise<Payment> {
+        const updatePayment: Promise<Payment> = this.paymentService.updatePayment(payment);
 
-    //     return updatePayment;
-    // }
+        return updatePayment;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete payment by id'})

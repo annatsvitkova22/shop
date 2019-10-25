@@ -15,26 +15,33 @@ export class MailerHelper {
   ) {}
 
   public async sendEmail(email: string, url: string): Promise<string> {
-    const transporter = nodemailer.createTransport({
-      service: myEnvitonment.secureMail,
-      port: myEnvitonment.portMail,
-      secure: myEnvitonment.secureMail,
-      auth: {
-        user: myEnvitonment.userMail,
-        pass: myEnvitonment.passMail,
-      },
-    });
-    const token = await this.hashHelper.getRandomSalt();
+    try {
+      const transporter = nodemailer.createTransport({
+        service: myEnvitonment.serviceMail,
+        port: myEnvitonment.portMail,
+        secure: myEnvitonment.secureMail,
+        auth: {
+          user: myEnvitonment.userMail,
+          pass: myEnvitonment.passMail,
+        },
+      });
+      const token = await this.hashHelper.getRandomSalt();
 
-    const mailOptions = {
-      from: myEnvitonment.userMail,
-      to: email,
-      subject: 'IT works',
-      text: `\n ${url}/user/validateCode?mail=${email}&token=${token} \n`,
-    };
+      const mailOptions = {
+        from: myEnvitonment.userMail,
+        to: email,
+        subject: 'IT works',
+        text: `\n ${url}/user/validateCode?mail=${email}&token=${token} \n`,
+      };
 
-    transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailOptions);
 
-    return token;
+      return token;
+
+    } catch (error) {
+      const messegeError = error;
+
+      return messegeError;
+    }
   }
 }

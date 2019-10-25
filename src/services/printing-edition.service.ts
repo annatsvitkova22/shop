@@ -1,13 +1,17 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
+import { UuidHelper } from 'src/common';
+import { printingEditionsProviders } from 'src/providers';
 
 @Injectable()
 export class PrintingEditionService {
 
-    constructor(@Inject('PrintingEditionRepository') private readonly printingEditionRepository: typeof PrintingEdition,
-    ) { }
+    constructor(
+        @Inject('PrintingEditionRepository') private readonly printingEditionRepository: typeof PrintingEdition,
+        @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
+        ) { }
 
     public async getPrintingEditions(): Promise<PrintingEdition[]> {
         const getEditions: PrintingEdition[] = await this.printingEditionRepository.findAll<PrintingEdition>();
@@ -26,85 +30,90 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    // public async getFiltered(printingEdition: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
-    //     let query: string = 'SELECT * FROM printing_edition WHERE';
+    public async getFiltered(name: string, status: string, priceMin: number, priceMax: number) {
+        const printingEdition = new PrintingEditionFilterModel();
+        printingEdition.name = name;
+        printingEdition.status = status;
+        printingEdition.priceMin = priceMin;
+        printingEdition.priceMax = priceMax;
 
-    //     if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
-    //         query += ' name = \'' + printingEdition.name + '\' AND';
-    //     }
-    //     if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
-    //         query += ' name = \'' + printingEdition.name + '\'';
-    //     }
-    //     if ( printingEdition.status  && (printingEdition.priceMax || printingEdition.priceMin)) {
-    //         query += ' status = \'' + printingEdition.status + '\' AND';
-    //     }
-    //     if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status ) {
-    //         query += ' status = \'' + printingEdition.status + '\'';
-    //     }
-    //     if (printingEdition.priceMin && printingEdition.priceMax ) {
-    //         query += ' price > ' + printingEdition.priceMin + ' AND';
-    //     }
-    //     if (printingEdition.priceMin && !printingEdition.priceMax ) {
-    //         query += ' price > ' + printingEdition.priceMin ;
-    //     }
-    //     if (printingEdition.priceMax ) {
-    //         query += ' price < ' + printingEdition.priceMax ;
-    //     }
+        let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` AS `PrintingEdition` WHERE';
 
-    //     const foundPrintingEdition: Promise<PrintingEdition[]> = await this.printingEditionRepository.query(query);
+        if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
+            query += ' `PrintingEdition`.`name` = \'' + printingEdition.name + '\' AND';
+        }
+        if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
+            query += ' `PrintingEdition`.`name` = \'' + printingEdition.name + '\'';
+        }
+        if ( printingEdition.status  && (printingEdition.priceMax || printingEdition.priceMin)) {
+            query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\' AND';
+        }
+        if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status ) {
+            query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\'';
+        }
+        if (printingEdition.priceMin && printingEdition.priceMax ) {
+            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin + ' AND';
+        }
+        if (printingEdition.priceMin && !printingEdition.priceMax ) {
+            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin ;
+        }
+        if (printingEdition.priceMax ) {
+            query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax ;
+        }
 
-    //     return foundPrintingEdition;
-    // }
+        const foundPrintingEdition = await this.printingEditionRepository.sequelize.query(query);
 
-    // public async getPaging(take: number, skip: number) {
-    //     const printingEditions = await this.printingEditionRepository.find({
-    //         take,
-    //         skip,
-    //     });
+        return foundPrintingEdition;
+    }
 
-    //     return printingEditions;
-    // }
+    public async getPaging(limit: number, offset: number) {
+        const printingEditions = PrintingEdition.findAll({
+            limit,
+            offset,
+        });
+
+        return printingEditions;
+    }
 
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<string> {
         const edition = new PrintingEdition();
         edition.name = createPrintingEdition.name;
         edition.description = createPrintingEdition.description;
         edition.price = createPrintingEdition.price;
-        edition.isRemoved = createPrintingEdition.isRemoved;
         edition.status = createPrintingEdition.status;
         edition.currency = createPrintingEdition.currency;
         edition.type = createPrintingEdition.type;
-        console.log(createPrintingEdition);
-        console.log(edition);
-        const savedEdition: PrintingEdition = await this.printingEditionRepository.create<PrintingEdition>(edition);
+        edition.id = this.uuidHelper.uuidv4();
+
+        const savedEdition: PrintingEdition = await edition.save();
 
         return (savedEdition.id);
     }
 
-    // public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-    //     const edition: PrintingEdition = {} as PrintingEdition;
-    //     edition.id = updatePrintingEdition.id;
-    //     edition.name = updatePrintingEdition.name;
-    //     edition.description = updatePrintingEdition.description;
-    //     edition.price = updatePrintingEdition.price;
-    //     edition.isRemoved = updatePrintingEdition.isRemoved;
-    //     edition.status = updatePrintingEdition.status;
-    //     edition.currency = updatePrintingEdition.currency;
-    //     edition.type = updatePrintingEdition.type;
+    public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
+        const edition: PrintingEdition = {} as PrintingEdition;
+        edition.id = updatePrintingEdition.id;
+        edition.name = updatePrintingEdition.name;
+        edition.description = updatePrintingEdition.description;
+        edition.price = updatePrintingEdition.price;
+        edition.isRemoved = updatePrintingEdition.isRemoved;
+        edition.status = updatePrintingEdition.status;
+        edition.currency = updatePrintingEdition.currency;
+        edition.type = updatePrintingEdition.type;
 
-    //     const toUpdate: PrintingEdition = await this.printingEditionRepository.findOne(edition.id);
-    //     toUpdate.name = edition.name;
-    //     toUpdate.description = edition.description;
-    //     toUpdate.price = edition.price;
-    //     toUpdate.isRemoved = edition.isRemoved;
-    //     toUpdate.status = edition.status;
-    //     toUpdate.currency = edition.currency;
-    //     toUpdate.type = edition.type;
+        const toUpdate: PrintingEdition = await this.getPrintingEditionsById(edition.id);
+        toUpdate.name = edition.name;
+        toUpdate.description = edition.description;
+        toUpdate.price = edition.price;
+        toUpdate.isRemoved = edition.isRemoved;
+        toUpdate.status = edition.status;
+        toUpdate.currency = edition.currency;
+        toUpdate.type = edition.type;
 
-    //     const savedEdition: PrintingEdition = await this.printingEditionRepository.save(toUpdate);
+        const savedEdition: PrintingEdition = await toUpdate.save();
 
-    //     return savedEdition;
-    // }
+        return savedEdition;
+    }
 
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {
         const result: number = await this.printingEditionRepository.destroy({

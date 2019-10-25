@@ -7,3 +7,4 @@ export * from 'src/common/roles.guard';
 export * from 'src/common/hash.helper';
 export * from 'src/common/email.helper';
 export * from 'src/common/jwt.helper';
+export * from 'src/common/uuid.helper';

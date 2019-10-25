@@ -8,7 +8,7 @@ import { AppController } from 'src/app.controller';
 import { AuthenticationController, PrintingEditionsController, BooksController, AuthorsMongoController,
   UsersController, OrdersController, OrderItemsController, AuthorsController, RolesController, PaymentsController,
   RoleInUserController, AuthorInBookController} from 'src/controllers';
-import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper, JwtHelper, MailerHelper } from 'src/common';
+import { JwtStrategy, LocalStrategy, RolesGuard, AllExceptionsFilter, RequestMiddleware, HashHelper, JwtHelper, MailerHelper, UuidHelper } from 'src/common';
 import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService, UserService, OrderService, OrderItemService,
   AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
@@ -40,6 +40,7 @@ const myEnvitonment: Enviroment = getEnv();
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
     AuthorInBookService, HashHelper, MailerHelper, JwtHelper, ...authorsProviders, ...userInRolesProviders, ...rolesProviders, ...usersProviders,
     ...printingEditionsProviders, ...authorInBooksProviders, ...paymentsProviders, ...orderItemsProviders, ...ordersProviders, ...databaseProviders,
+    UuidHelper,
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

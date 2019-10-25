@@ -1,5 +1,5 @@
-import { Table, Column, Model, DataType, BelongsToMany, HasOne } from 'sequelize-typescript'; import { Order, UserInRoles } from 'src/entity';
-import uuid = require('uuid/v4');
+import { Table, Column, Model, DataType, BelongsToMany, HasOne } from 'sequelize-typescript';
+import { Order, UserInRoles } from 'src/entity';
 
 @Table({timestamps: false})
 export class Payment extends Model<Payment> {
@@ -8,12 +8,11 @@ export class Payment extends Model<Payment> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
-    id?: string;
+    id: string;
 
     @Column({ allowNull: false })
-    transactionId?: string;
+    transactionId: string;
 
     // @HasOne(() => Order)
     // order: Order;

@@ -1,12 +1,16 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
+import { UuidHelper } from 'src/common';
 
 @Injectable()
 export class RoleService {
 
-    constructor( @Inject('RoleRepository') private readonly roleRepository: typeof Role) { }
+    constructor(
+        @Inject('RoleRepository') private readonly roleRepository: typeof Role,
+        @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
+        ) { }
 
     public async getRoles(): Promise<Role[]> {
         const getRoles: Role[] = await this.roleRepository.findAll();
@@ -27,23 +31,25 @@ export class RoleService {
     public async createRole(createRole: CreateRoleModel): Promise<string> {
         const role: Role = {} as Role;
         role.name = createRole.name;
-        const saveRole: Role = await this.roleRepository.create<Role>(role);
+        role.id = this.uuidHelper.uuidv4();
+
+        const saveRole: Role = await role.save();
 
         return(saveRole.id);
     }
 
-    // public async updateRole(updateRole: UpdateRoleModel): Promise<Role> {
-    //     const role: Role = {};
-    //     role.id = updateRole.id;
-    //     role.name = updateRole.name;
+    public async updateRole(updateRole: UpdateRoleModel): Promise<Role> {
+        const role = new Role();
+        role.id = updateRole.id;
+        role.name = updateRole.name;
 
-    //     const toUpdate: Role = await this.roleRepository.findOne(role.id);
-    //     toUpdate.name = role.name;
+        const toUpdate: Role = await this.getRoleById(role.id);
+        toUpdate.name = role.name;
 
-    //     const savedRole: Role = await this.roleRepository.save(toUpdate);
+        const savedRole: Role = await toUpdate.save();
 
-    //     return savedRole;
-    //   }
+        return savedRole;
+      }
 
     public async deleteRole(roleId: string): Promise<number> {
         const result: number = await this.roleRepository.destroy({

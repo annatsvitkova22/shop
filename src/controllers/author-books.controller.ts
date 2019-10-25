@@ -35,13 +35,13 @@ export class AuthorInBookController {
         return createAuthorInBook;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update author in books by id'})
-    // public update(@Body() authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-    //     const updateAuthorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(authorInBook);
+    @Put()
+    @ApiOperation({ title: 'Update author in books by id'})
+    public update(@Body() authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
+        const updateAuthorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(authorInBook);
 
-    //     return updateAuthorInBook;
-    // }
+        return updateAuthorInBook;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete author in book by id'})

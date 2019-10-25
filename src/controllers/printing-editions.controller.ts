@@ -19,20 +19,30 @@ export class PrintingEditionsController {
         return printingEdition;
     }
 
-    // @Get('pagination')
-    // @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
-    // public getPaging(@Query('take') take: number, @Query('skip') skip: number): Promise<PrintingEdition[]> {
-    //     const printingEdition: Promise<PrintingEdition[]> = this.printingEditionService.getPaging(take, skip);
+    @Get(':limit/:offset')
+    @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
+    public getPaging(@Param('limit') limit: number, @Param('offset') offset: number) {
+        console.log('pagination')
+        const printingEdition = this.printingEditionService.getPaging(limit, offset);
 
-    //     return printingEdition;
-    // }
+        return printingEdition;
+    }
 
     @Get()
     @ApiOperation({ title: 'Search all printing editions' })
-    public async getAll(): Promise<PrintingEdition[]> {
-        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
+    public async getAll() {
+        const printingEdition = await this.printingEditionService.getPrintingEditions();
 
         return printingEdition;
+    }
+
+    @Get(':name/:status/:priceMin/:priceMax')
+    @ApiOperation({ title: 'Filter by name, status, price' })
+    public async filter(@Param('name') name: string, @Param('status') status: string, @Param('priceMin') priceMin: number, @Param('priceMax') priceMax: number) {
+        console.log(name, status, priceMin, priceMax);
+        const filteredEdition = await this.printingEditionService.getFiltered(name, status, priceMin, priceMax);
+
+        return filteredEdition;
     }
 
     @Post()
@@ -43,21 +53,13 @@ export class PrintingEditionsController {
         return createEdition;
     }
 
-    // @Post('filter')
-    // @ApiOperation({ title: 'Filter by name, status, price' })
-    // public filter(@Body() printingEdition: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
-    //     const filteredEdition = this.printingEditionService.getFiltered(printingEdition);
+    @Put()
+    @ApiOperation({ title: 'Update printing edition by id' })
+    public update(@Body() printingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
+        const updateEdition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(printingEdition);
 
-    //     return filteredEdition;
-    // }
-
-    // @Put()
-    // @ApiOperation({ title: 'Update printing edition by id' })
-    // public update(@Body() printingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-    //     const updateEdition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(printingEdition);
-
-    //     return updateEdition;
-    // }
+        return updateEdition;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete printing edition by id' })

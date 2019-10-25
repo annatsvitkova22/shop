@@ -35,13 +35,13 @@ export class RoleInUserController {
         return createRoleInUser;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update role in user by id'})
-    // public update(@Body() roleInUser: UpdateRoleInUsersModel): Promise<UserInRoles> {
-    //     const updateRoleInUser: Promise<UserInRoles> = this.roleInUserService.updateRoleInUser(roleInUser);
+    @Put()
+    @ApiOperation({ title: 'Update role in user by id'})
+    public update(@Body() roleInUser: UpdateRoleInUsersModel): Promise<UserInRoles> {
+        const updateRoleInUser: Promise<UserInRoles> = this.roleInUserService.updateRoleInUser(roleInUser);
 
-    //     return updateRoleInUser;
-    // }
+        return updateRoleInUser;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete role in user by id'})

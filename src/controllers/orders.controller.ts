@@ -37,13 +37,13 @@ export class OrdersController {
         return createOrder;
     }
 
-    // @Put()
-    // @ApiOperation({ title: 'Update order by id'})
-    // public update(@Body() order: UpdateOrderModel): Promise<Order> {
-    //     const updateOrder: Promise<Order> = this.orderService.updateOrder(order);
+    @Put()
+    @ApiOperation({ title: 'Update order by id'})
+    public update(@Body() order: UpdateOrderModel): Promise<Order> {
+        const updateOrder: Promise<Order> = this.orderService.updateOrder(order);
 
-    //     return updateOrder;
-    // }
+        return updateOrder;
+    }
 
     @Delete(':id')
     @ApiOperation({ title: 'Delete order by id'})

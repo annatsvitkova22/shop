@@ -2,7 +2,6 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
 import { Table, Column, Model, DataType, BelongsToMany, HasMany, Default } from 'sequelize-typescript';
 import { Order, UserInRoles, Role } from 'src/entity';
-import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class User extends Model<User> {
@@ -12,21 +11,20 @@ export class User extends Model<User> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
-    id?: string;
+    id: string;
 
     @ApiModelProperty()
     @Column({ allowNull: false })
-    firstName?: string;
+    firstName: string;
 
     @ApiModelProperty()
     @Column({ allowNull: false })
-    lastName?: string;
+    lastName: string;
 
     @ApiModelProperty()
     @Column({ allowNull: false })
-    passwordHash?: string;
+    passwordHash: string;
 
     @ApiModelProperty()
     @IsEmail()
@@ -36,26 +34,29 @@ export class User extends Model<User> {
             isEmail: true,
         },
     })
-    email?: string;
+    email: string;
 
     @ApiModelProperty()
     @Column({ allowNull: false })
-    salt?: string;
+    salt: string;
 
     @ApiModelProperty()
     @Column({ allowNull: true })
-    saltForEmail?: string;
+    saltForEmail: string;
 
     @ApiModelProperty()
-    @Default(false)
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     })
-    emailConfirmed?: boolean;
+    emailConfirmed: boolean;
 
-    @BelongsToMany(() => Role, () => UserInRoles)
-    roles: Role[];
+    @HasMany(() => Order)
+    orders: Order[];
+
+    // @BelongsToMany(() => Role, () => UserInRoles)
+    // roles: Role[];
 
     // @HasMany(() => Order, 'userId')
     // orders: Order[];

@@ -1,6 +1,5 @@
 import { Table, Column, Model, DataType, BelongsToMany, BelongsTo, HasMany, PrimaryKey, Unique, Default } from 'sequelize-typescript';
 import { OrderItem, AuthorInBooks, Author } from 'src/entity';
-import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class PrintingEdition extends Model<PrintingEdition> {
@@ -9,34 +8,33 @@ export class PrintingEdition extends Model<PrintingEdition> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
-    id?: string;
+    id: string;
 
     @Column({ allowNull: false })
-    name?: string;
+    name: string;
 
     @Column({ allowNull: true })
-    description?: string;
+    description: string;
 
     @Column({ allowNull: false })
-    price?: number;
+    price: number;
 
-    @Default(false)
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     })
-    isRemoved?: boolean;
+    isRemoved: boolean;
 
     @Column({ allowNull: false })
-    status?: string;
+    status: string;
 
     @Column({ allowNull: false })
-    currency?: string;
+    currency: string;
 
     @Column({ allowNull: false })
-    type?: string;
+    type: string;
 
     @BelongsToMany(() => Author, () => AuthorInBooks)
     authors: Author[];

@@ -2,12 +2,14 @@ import { Injectable, Inject } from '@nestjs/common';
 
 import { Author } from 'src/entity';
 import { UpdateAuthorModel, CreateAuthorModel } from 'src/models';
+import { UuidHelper } from 'src/common/uuid.helper';
 
 @Injectable()
 export class AuthorService {
 
     constructor(
         @Inject('AuthorRepository') private readonly authorRepository: typeof Author,
+        public uuidHelper: UuidHelper,
        ) { }
 
     public async getAuthors(): Promise<Author[]> {
@@ -30,24 +32,26 @@ export class AuthorService {
         const author = new Author();
         const validateName = await this.validateName(CreateAuthor.name);
         author.name = validateName;
+        author.id = this.uuidHelper.uuidv4();
 
-        const savedAuthor: Author = await this.authorRepository.create<Author>(author);
+        const savedAuthor: Author = await author.save();
 
         return(savedAuthor.id);
     }
 
-    // public async updateAuthor(author: UpdateAuthorModel): Promise<Author> {
-    //     const updateAuthor = new Author();
-    //     updateAuthor.id = author.id;
-    //     updateAuthor.name = author.name;
+    public async updateAuthor(author: UpdateAuthorModel): Promise<Author> {
+        const updateAuthor = new Author();
+        updateAuthor.id = author.id;
+        updateAuthor.name = author.name;
 
-    //     const toUpdate: Author = await this.authorRepository.findOne(updateAuthor.id);
-    //     toUpdate.name = updateAuthor.name;
+        const validateName = await this.validateName(updateAuthor.name);
+        const toUpdate: Author = await this.getAuthorById(updateAuthor.id);
+        toUpdate.name = validateName;
 
-    //     const savedAuthor: Author = await this.authorRepository.save(toUpdate);
+        const savedAuthor: Author = await toUpdate.save();
 
-    //     return savedAuthor;
-    //   }
+        return savedAuthor;
+      }
 
     public async deleteAuthor(authorId: string): Promise<number> {
         const result: number = await this.authorRepository.destroy({
@@ -63,12 +67,4 @@ export class AuthorService {
 
         return validateName;
     }
-
-    // private _assign(author: CreateAuthorModel, newValue: CreateAuthorModel): Author {
-    //     for (const key of Object.keys(author)) {
-    //         if (author[key] !== newValue[key]) author[key] = newValue[key];
-    //     }
-
-    //     return author as Author;
-    // }
 }

@@ -1,6 +1,5 @@
 import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { PrintingEdition, Order } from 'src/entity';
-import uuid = require('uuid/v4');
 
 @Table({timestamps: false})
 export class OrderItem extends Model<OrderItem> {
@@ -9,26 +8,25 @@ export class OrderItem extends Model<OrderItem> {
         unique: true,
         allowNull: false,
         primaryKey: true,
-        defaultValue: uuid(),
     })
-    id?: string;
+    id: string;
 
     @Column({ allowNull: false })
-    amount?: number;
+    amount: number;
 
     @Column({ allowNull: false })
-    currency?: string;
+    currency: string;
 
     @ForeignKey(() => PrintingEdition)
     @Column({allowNull: true})
-    pritingEditionId?: string;
+    pritingEditionId: string;
 
     @ForeignKey(() => Order)
     @Column({allowNull: true})
-    orderId?: string;
+    orderId: string;
 
     @Column({ allowNull: false })
-    count?: number;
+    count: number;
 
     // @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.printingEditionConnection, {primary:
     //     true})
