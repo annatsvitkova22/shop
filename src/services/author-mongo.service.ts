@@ -18,9 +18,9 @@ export class AuthorsMongoService {
     return createdAuthor;
   }
 
-  public async getAuthors() {
+  public async getAuthors(): Promise<UpdateAuthorMongoModel[]> {
     const author = await this.authorRepository.getAuthors();
-    const allAuthor = author.map(authors => ({
+    const allAuthor: UpdateAuthorMongoModel[] = author.map(authors => ({
       id: authors.id,
       name: authors.name,
     }));

@@ -31,8 +31,8 @@ export class OrdersController {
 
     @Post()
     @ApiOperation({ title: 'Create order'})
-    public async create(@Body() order: CreateOrderModel): Promise<string> {
-        const createOrder: string = await this.orderService.createOrder(order);
+    public async create(@Body() order: CreateOrderModel): Promise<Order> {
+        const createOrder: Order = await this.orderService.createOrder(order);
 
         return createOrder;
     }

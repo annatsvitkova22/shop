@@ -28,7 +28,7 @@ export class RoleInUsersService {
         return foundRoleInUser;
     }
 
-    public async createRoleInUser(createRole: CreateRoleInUsersModel): Promise<string> {
+    public async createRoleInUser(createRole: CreateRoleInUsersModel): Promise<UserInRoles> {
         const role = new UserInRoles();
         role.roleId = createRole.roleId;
         role.userId = createRole.userId;
@@ -36,7 +36,7 @@ export class RoleInUsersService {
 
         const savedRole: UserInRoles = await role.save();
 
-        return(savedRole.id);
+        return savedRole;
     }
 
     public async updateRoleInUser(updateRole: UpdateRoleInUsersModel): Promise<UserInRoles> {

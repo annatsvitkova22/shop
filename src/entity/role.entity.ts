@@ -16,7 +16,4 @@ export class Role extends Model<Role> {
 
     @BelongsToMany(() => User, () => UserInRoles)
     users: User[];
-
-    // @OneToMany(() => UserInRoles, userInRoles => userInRoles.roleId)
-    // roleConnection?: Promise<UserInRoles[]>;
 }

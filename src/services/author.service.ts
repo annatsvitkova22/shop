@@ -28,7 +28,7 @@ export class AuthorService {
         return foundAuthor;
     }
 
-    public async createAuthor(CreateAuthor: CreateAuthorModel): Promise<string> {
+    public async createAuthor(CreateAuthor: CreateAuthorModel): Promise<Author> {
         const author = new Author();
         const validateName = await this.validateName(CreateAuthor.name);
         author.name = validateName;
@@ -36,7 +36,7 @@ export class AuthorService {
 
         const savedAuthor: Author = await author.save();
 
-        return(savedAuthor.id);
+        return savedAuthor;
     }
 
     public async updateAuthor(author: UpdateAuthorModel): Promise<Author> {

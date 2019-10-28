@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Put, Delete, Param, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { PrintingEditionService } from 'src/services';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
 
 @ApiUseTags('Printing edition')
@@ -22,7 +22,6 @@ export class PrintingEditionsController {
     @Get(':limit/:offset')
     @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
     public getPaging(@Param('limit') limit: number, @Param('offset') offset: number) {
-        console.log('pagination')
         const printingEdition = this.printingEditionService.getPaging(limit, offset);
 
         return printingEdition;
@@ -38,8 +37,8 @@ export class PrintingEditionsController {
 
     @Get(':name/:status/:priceMin/:priceMax')
     @ApiOperation({ title: 'Filter by name, status, price' })
+    // tslint:disable-next-line: max-line-length
     public async filter(@Param('name') name: string, @Param('status') status: string, @Param('priceMin') priceMin: number, @Param('priceMax') priceMax: number) {
-        console.log(name, status, priceMin, priceMax);
         const filteredEdition = await this.printingEditionService.getFiltered(name, status, priceMin, priceMax);
 
         return filteredEdition;
@@ -47,8 +46,8 @@ export class PrintingEditionsController {
 
     @Post()
     @ApiOperation({ title: 'Create printing edition' })
-    public async create(@Body() printingEdition: CreatePrintingEditionModel): Promise<string> {
-        const createEdition: string = await this.printingEditionService.createPrintingEdition(printingEdition);
+    public async create(@Body() printingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
+        const createEdition: PrintingEdition = await this.printingEditionService.createPrintingEdition(printingEdition);
 
         return createEdition;
     }

@@ -12,8 +12,8 @@ export class AuthorsMongoController {
 
   @Get()
   @ApiOperation({ title: 'Search all authors by id'})
-  public async getAll() {
-    const authors = await this.authorsService.getAuthors();
+  public async getAll(): Promise<UpdateAuthorMongoModel[]> {
+    const authors: UpdateAuthorMongoModel[] = await this.authorsService.getAuthors();
 
     return authors;
   }

@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { PrintingEdition, Order } from 'src/entity';
 
 @Table({timestamps: false})
@@ -18,23 +18,23 @@ export class OrderItem extends Model<OrderItem> {
     currency: string;
 
     @ForeignKey(() => PrintingEdition)
-    @Column({allowNull: true})
+    @Column({
+        type: DataType.UUID,
+        allowNull: false,
+    })
     pritingEditionId: string;
+    @BelongsTo(() => PrintingEdition, 'pritingEditionId')
+    printingEdition: PrintingEdition;
 
     @ForeignKey(() => Order)
-    @Column({allowNull: true})
+    @Column({
+        type: DataType.UUID,
+        allowNull: false,
+    })
     orderId: string;
+    @BelongsTo(() => Order, 'orderId')
+    order: Order;
 
     @Column({ allowNull: false })
     count: number;
-
-    // @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.printingEditionConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'printing-edition_id'})
-    // printingEdition?: PrintingEdition[];
-
-    // @ManyToOne(() => Order,  order => order.orderItemConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'order_id'})
-    // orderItem?: OrderItem[];
 }

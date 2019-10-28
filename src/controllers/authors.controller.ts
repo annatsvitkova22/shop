@@ -29,8 +29,8 @@ export class AuthorsController {
 
     @Post()
     @ApiOperation({ title: 'Create author'})
-    public async create(@Body() author: CreateAuthorModel): Promise<string> {
-        const createAuthor: string = await this.authorService.createAuthor(author);
+    public async create(@Body() author: CreateAuthorModel): Promise<Author> {
+        const createAuthor: Author = await this.authorService.createAuthor(author);
 
         return createAuthor;
     }

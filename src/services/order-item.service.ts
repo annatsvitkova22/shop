@@ -28,7 +28,7 @@ export class OrderItemService {
         return foundOrderItem;
     }
 
-    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<string> {
+    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<OrderItem> {
         const orderItem = new OrderItem();
         orderItem.pritingEditionId = createOrderItem.pritingEditionId;
         orderItem.amount = createOrderItem.amount;
@@ -38,7 +38,7 @@ export class OrderItemService {
 
         const savedOrderItem: OrderItem = await orderItem.save();
 
-        return(savedOrderItem.id);
+        return savedOrderItem;
     }
 
     public async updateOrderItem(updateOrderItem: UpdateOrderItemModel): Promise<OrderItem> {

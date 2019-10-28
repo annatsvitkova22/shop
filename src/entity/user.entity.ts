@@ -1,7 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
-import { Table, Column, Model, DataType, BelongsToMany, HasMany, Default } from 'sequelize-typescript';
-import { Order, UserInRoles, Role } from 'src/entity';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { Order } from 'src/entity';
 
 @Table({timestamps: false})
 export class User extends Model<User> {
@@ -52,21 +52,6 @@ export class User extends Model<User> {
     })
     emailConfirmed: boolean;
 
-    @HasMany(() => Order)
-    orders: Order[];
-
-    // @BelongsToMany(() => Role, () => UserInRoles)
-    // roles: Role[];
-
-    // @HasMany(() => Order, 'userId')
-    // orders: Order[];
-
-    //  @HasOne(() => Order)
-    //  orders: Order;
-
-    // @OneToMany(() => Order, order => order.userId)
-    // userConnection?: Promise<Order[]>;
-
-    // @OneToOne(() => UserInRoles, userInRoles => userInRoles.userId)
-    // userRoleConnection?: Promise<UserInRoles[]>;
+    @HasMany(() => Order, 'userId')
+    order: Order[];
 }

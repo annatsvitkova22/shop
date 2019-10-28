@@ -17,7 +17,4 @@ export class Author extends Model<Author> {
 
     @BelongsToMany(() => PrintingEdition, () => AuthorInBooks)
     printingEdition: PrintingEdition[];
-
-    // @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.authorId)
-    // authorConnection?: Promise<AuthorInBooks[]>;
 }

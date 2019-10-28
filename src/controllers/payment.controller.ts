@@ -29,8 +29,8 @@ export class PaymentsController {
 
     @Post()
     @ApiOperation({ title: 'Create payment by id'})
-    public async create(@Body() payment: CreatePaymentModel): Promise<string> {
-        const createPayment: string = await this.paymentService.createPayment(payment);
+    public async create(@Body() payment: CreatePaymentModel): Promise<Payment> {
+        const createPayment: Payment = await this.paymentService.createPayment(payment);
 
         return createPayment;
     }

@@ -31,7 +31,7 @@ export class PaymentService {
         return foundPayment;
     }
 
-    public async createPayment(createPayment: CreatePaymentModel): Promise<string> {
+    public async createPayment(createPayment: CreatePaymentModel): Promise<Payment> {
         const payment = new Payment();
         const transactionId: string = await this.charge(createPayment);
         payment.transactionId = transactionId;
@@ -39,7 +39,7 @@ export class PaymentService {
 
         const savedPayment: Payment = await payment.save();
 
-        return(savedPayment.id);
+        return savedPayment;
     }
 
     public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {

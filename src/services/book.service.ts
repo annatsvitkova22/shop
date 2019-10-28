@@ -31,9 +31,9 @@ export class BooksService {
         return savedBook;
     }
 
-    public async getBooks() {
+    public async getBooks(): Promise<UpdateBookModel[]> {
         const books = await this.bookRepository.getBook();
-        const result = books.map(book => ({
+        const result: UpdateBookModel[] = books.map(book => ({
             id: book.id,
             name: book.name,
             description: book.description,

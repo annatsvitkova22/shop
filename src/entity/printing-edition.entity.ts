@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, BelongsToMany, BelongsTo, HasMany, PrimaryKey, Unique, Default } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsToMany, HasMany } from 'sequelize-typescript';
 import { OrderItem, AuthorInBooks, Author } from 'src/entity';
 
 @Table({timestamps: false})
@@ -39,12 +39,6 @@ export class PrintingEdition extends Model<PrintingEdition> {
     @BelongsToMany(() => Author, () => AuthorInBooks)
     authors: Author[];
 
-    // @HasMany(() => OrderItem)
-    // orderItems: OrderItem[];
-
-    // @OneToMany(() => OrderItem, orderItem => orderItem.pritingEditionId)
-    // printingEditionConnection?: Promise<OrderItem[]>;
-
-    // @OneToMany(() => AuthorInBooks, authorInBooks => authorInBooks.bookId)
-    // bookConnection?: Promise<AuthorInBooks[]>;
+    @HasMany(() => OrderItem, 'pritingEditionId')
+    orderItems: OrderItem[];
 }

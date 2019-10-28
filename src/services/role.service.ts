@@ -28,14 +28,14 @@ export class RoleService {
         return foundRole;
     }
 
-    public async createRole(createRole: CreateRoleModel): Promise<string> {
+    public async createRole(createRole: CreateRoleModel): Promise<Role> {
         const role: Role = {} as Role;
         role.name = createRole.name;
         role.id = this.uuidHelper.uuidv4();
 
         const saveRole: Role = await role.save();
 
-        return(saveRole.id);
+        return saveRole;
     }
 
     public async updateRole(updateRole: UpdateRoleModel): Promise<Role> {

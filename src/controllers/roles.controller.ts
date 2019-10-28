@@ -29,8 +29,8 @@ export class RolesController {
 
     @Post()
     @ApiOperation({ title: 'Creste user'})
-    public async create(@Body() role: CreateRoleModel): Promise<string> {
-        const createRole: string = await this.roleService.createRole(role);
+    public async create(@Body() role: CreateRoleModel): Promise<Role> {
+        const createRole: Role = await this.roleService.createRole(role);
 
         return createRole;
     }

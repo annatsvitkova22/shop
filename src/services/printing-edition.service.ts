@@ -66,16 +66,20 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    public async getPaging(limit: number, offset: number) {
-        const printingEditions = PrintingEdition.findAll({
-            limit,
-            offset,
+    public async getPaging(myLimit: number, myOffset: number) {
+        // const printingEditions = PrintingEdition.findAll({
+        //     limit: myLimit,
+        //     offset: myOffset,
+        // });
+        const printingEditions =  PrintingEdition.findAll({
+            limit: myLimit,
+            offset: myOffset,
         });
 
         return printingEditions;
     }
 
-    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<string> {
+    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
         const edition = new PrintingEdition();
         edition.name = createPrintingEdition.name;
         edition.description = createPrintingEdition.description;
@@ -87,7 +91,7 @@ export class PrintingEditionService {
 
         const savedEdition: PrintingEdition = await edition.save();
 
-        return (savedEdition.id);
+        return savedEdition;
     }
 
     public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {

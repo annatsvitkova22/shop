@@ -12,8 +12,8 @@ export class BooksController {
 
   @Get()
   @ApiOperation({ title: 'Search all books'})
-  public async getAllBooks()  {
-    const books = await this.booksService.getBooks();
+  public async getAllBooks(): Promise<UpdateBookModel[]>  {
+    const books: UpdateBookModel[] = await this.booksService.getBooks();
 
     return books;
   }

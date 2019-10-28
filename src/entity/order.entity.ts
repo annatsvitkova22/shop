@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, BelongsToMany, ForeignKey, BelongsTo, HasOne, HasMany, IsUUID, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { User, Payment, OrderItem } from 'src/entity';
 
 @Table({timestamps: false})
@@ -15,7 +15,10 @@ export class Order extends Model<Order> {
     description: string;
 
     @ForeignKey(() => User)
-    @Column
+    @Column({
+        type: DataType.UUID,
+        allowNull: false,
+    })
     userId: string;
     @BelongsTo(() => User, 'userId')
     user: User;
@@ -27,24 +30,14 @@ export class Order extends Model<Order> {
     date: Date;
 
     @ForeignKey(() => Payment)
-    @Column({ allowNull: true })
+    @Column({
+        type: DataType.UUID,
+        allowNull: true,
+    })
     paymentId: string;
+    @HasMany(() => Payment, 'paymentId')
+    payment: Payment;
 
-    // @HasOne(() => Payment, '')
-    // peyment: Payment;
-    // @HasMany(() => User, 'userId')
-    // user: User;
-
-    // @ManyToOne(() => User,  user => user.userConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'user_id'})
-    // user?: User[];
-
-    // @OneToOne(() => Payment,  payment => payment.paymentConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'payment_id'})
-    // payment?: Payment[];
-
-    // @OneToMany(() => OrderItem, orderItem => orderItem.orderId)
-    // orderItemConnection?: Promise<OrderItem[]>;
+    @HasMany(() => OrderItem, 'orderId')
+    orderItems: OrderItem[];
 }

@@ -29,8 +29,8 @@ export class OrderItemsController {
 
     @Post()
     @ApiOperation({ title: 'Create order item'})
-    public async create(@Body() orderItem: CreateOrderItemModel): Promise<string> {
-        const createOrderItem: string = await this.orderItemService.createOrderItem(orderItem);
+    public async create(@Body() orderItem: CreateOrderItemModel): Promise<OrderItem> {
+        const createOrderItem: OrderItem = await this.orderItemService.createOrderItem(orderItem);
 
         return createOrderItem;
     }

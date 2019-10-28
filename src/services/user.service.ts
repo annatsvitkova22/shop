@@ -1,7 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { User } from 'src/entity';
-import { UpdateUserModel, CreateUserModel, ForgotPassword } from 'src/models';
+import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 
 @Injectable()
@@ -24,15 +24,16 @@ export class UserService {
         const user = new UpdateUserModel();
         user.id = id;
         const foundUser: User = await this.userRepository.findOne({
-            where: {id: user.id},
-          });
+            where: { id: user.id },
+        });
 
         return foundUser;
     }
 
-    public async createUser(createUser: CreateUserModel, req): Promise<User | string> {
+    public async createUser(createUser: CreateUserModel, req): Promise<CreatedUserModel> {
         const url: string = req.protocol + '://' + req.hostname;
         const user = new User();
+        const showedUser = new CreatedUserModel();
         user.firstName = createUser.firstName;
         user.lastName = createUser.lastName;
         user.email = createUser.email;
@@ -41,9 +42,10 @@ export class UserService {
         const foundUser: User = await this.findByEmail(user.email);
 
         if (foundUser) {
-            const message: string = 'user with this email already exists';
+            const error = new CreatedUserModel();
+            error.message = 'user with this email already exists';
 
-            return message;
+            return error;
         }
 
         const randomSalt: string = await this.hashHelper.getRandomSalt();
@@ -58,15 +60,26 @@ export class UserService {
         const savedUser: User = await user.save();
 
         if (savedUser) {
-            const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
-            user.saltForEmail = saltForEmail;
+            const saltEmail: string = await this.emailHelper.sendEmail(user.email, url);
+            user.saltForEmail = saltEmail;
 
             const savedUserWithSaltEmail: User = await user.save();
+            showedUser.id = savedUserWithSaltEmail.id;
+            showedUser.firstName = savedUserWithSaltEmail.firstName;
+            showedUser.lastName = savedUserWithSaltEmail.lastName;
+            showedUser.email = savedUserWithSaltEmail.email;
+            showedUser.emailConfirmed = savedUserWithSaltEmail.emailConfirmed;
 
-            return savedUserWithSaltEmail;
+            return showedUser;
         }
 
-        return savedUser;
+        showedUser.id = savedUser.id;
+        showedUser.firstName = savedUser.firstName;
+        showedUser.lastName = savedUser.lastName;
+        showedUser.email = savedUser.email;
+        showedUser.emailConfirmed = savedUser.emailConfirmed;
+
+        return showedUser;
     }
 
     public async updateUser(updateUser: UpdateUserModel): Promise<User> {
@@ -91,36 +104,45 @@ export class UserService {
     public async deleteUser(userId: string): Promise<number> {
         const result: number = await this.userRepository.destroy({
             where: { id: userId },
-          });
+        });
 
         return result;
     }
 
     public async findByEmail(mail: string): Promise<User> {
         const foundUser: User = await this.userRepository.findOne({
-            where: {email: mail},
-         });
+            where: { email: mail },
+        });
 
         return foundUser;
     }
 
-    public async validateToken(token: string, user: User): Promise<string | boolean> {
+    public async validateToken(token: string, user: User): Promise<CreatedUserModel> {
         if (user.saltForEmail === token) {
             user.emailConfirmed = true;
         }
         if (user.saltForEmail !== token) {
-            const messege: string = 'sorry, it`s not your token';
+            const error = new CreatedUserModel();
+            error.message = 'sorry, it`s not your token';
 
-            return messege;
+            return error;
         }
 
         user.saltForEmail = '0';
         const savedUser: User = await user.save();
+        const info = new CreatedUserModel();
+        if (savedUser) {
+            info.message = 'Your email confirmed';
 
-        return savedUser.emailConfirmed;
+            return info;
+        }
+
+        info.message = 'Сonfirmation error';
+
+        return info;
     }
 
-    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<string | User> {
+    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<CreatedUserModel> {
         const url = req.protocol + '://' + req.hostname + req.url;
         const user = await this.findByEmail(forgotPassword.email);
 
@@ -131,20 +153,22 @@ export class UserService {
         const savedUser: User = await user.save();
 
         if (!user) {
-            const messegeError = 'Sorry, email not found';
+            const error = new CreatedUserModel();
+            error.message = 'Sorry, email not found';
 
-            return messegeError;
+            return error;
         }
 
         return savedUser;
     }
 
-    public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<User | string> {
+    public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<CreatedUserModel> {
         const user = await this.findByEmail(email);
+        const error = new CreatedUserModel();
         if (user.emailConfirmed !== true) {
-            const messegeError: string = 'sorry, password not verified';
+            error.message = 'sorry, password not verified';
 
-            return messegeError;
+            return error;
         }
         if (forgotPassword.password === forgotPassword.repeatPassword) {
             const randomSalt: string = await this.hashHelper.getRandomSalt();
@@ -157,9 +181,9 @@ export class UserService {
 
             return savedUser;
         }
-        const messege: string = 'Passwords do not match';
+        error.message = 'Passwords do not match';
 
-        return messege;
+        return error;
     }
 
 }

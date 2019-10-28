@@ -18,14 +18,4 @@ export class AuthorInBooks extends Model<AuthorInBooks> {
     @ForeignKey(() => PrintingEdition)
     @Column({allowNull: false})
     bookId: string;
-
-    // @ManyToOne(() => Author,  author => author.authorConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'author_id'})
-    // author?: Author[];
-
-    // @ManyToOne(() => PrintingEdition,  printingEdition => printingEdition.bookConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'book_id'})
-    // printingEdition?: PrintingEdition[];
 }

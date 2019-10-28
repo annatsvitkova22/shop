@@ -31,7 +31,7 @@ export class MailerHelper {
         from: myEnvitonment.userMail,
         to: email,
         subject: 'IT works',
-        text: `\n ${url}/user/validateCode?mail=${email}&token=${token} \n`,
+        text: `\n ${url}/user/${email}/${token} \n`,
       };
 
       await transporter.sendMail(mailOptions);

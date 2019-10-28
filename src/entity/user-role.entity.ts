@@ -18,14 +18,4 @@ export class UserInRoles extends Model<UserInRoles> {
     @ForeignKey(() => User)
     @Column({allowNull: false})
     userId: string;
-
-    // @OneToOne(() => User,  user => user.userRoleConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'user_id'})
-    // user?: User[];
-
-    // @ManyToOne(() => Role,  role => role.roleConnection, {primary:
-    //     true})
-    // @JoinColumn({name: 'role_id'})
-    // role?: Role[];
 }
