@@ -27,3 +27,4 @@ export * from 'src/models/role/update-role-users.model';
 export * from 'src/models/book/printing-edition-filter.model';
 export * from 'src/models/forgot-password.model';
 export * from 'src/models/user/created-user.model';
+export * from 'src/models/book/printing-edition-error.model';

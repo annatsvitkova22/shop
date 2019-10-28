@@ -6,9 +6,7 @@ import { BookRepository } from 'src/repositories';
 
 @Injectable()
 export class BooksService {
-    constructor(
-        public readonly bookRepository: BookRepository,
-    ) { }
+    constructor(public readonly bookRepository: BookRepository) { }
 
     public async createBook(book: CreateBookModel): Promise<BookDocument> {
         const createBook: BookDocument = {} as BookDocument;
@@ -126,7 +124,7 @@ export class BooksService {
     private async findBook(id: string): Promise<BookDocument> {
         const book: BookDocument = {} as BookDocument;
         book.id = id;
-        const  foundBook: BookDocument = await this.bookRepository.findBook(book);
+        const foundBook: BookDocument = await this.bookRepository.findBook(book);
 
         return foundBook;
     }

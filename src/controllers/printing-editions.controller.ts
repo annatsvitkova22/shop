@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Put, Delete, Param } from '@nestjs/common'
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { PrintingEditionService } from 'src/services';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel } from 'src/models';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionErrorModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
 
 @ApiUseTags('Printing edition')
@@ -21,16 +21,16 @@ export class PrintingEditionsController {
 
     @Get(':limit/:offset')
     @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
-    public getPaging(@Param('limit') limit: number, @Param('offset') offset: number) {
-        const printingEdition = this.printingEditionService.getPaging(limit, offset);
+    public async getPaging(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEditionErrorModel> {
+        const printingEdition: PrintingEditionErrorModel = await this.printingEditionService.getPaging(limit, offset);
 
         return printingEdition;
     }
 
     @Get()
     @ApiOperation({ title: 'Search all printing editions' })
-    public async getAll() {
-        const printingEdition = await this.printingEditionService.getPrintingEditions();
+    public async getAll(): Promise<PrintingEdition[]> {
+        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
 
         return printingEdition;
     }

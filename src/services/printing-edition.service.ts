@@ -1,9 +1,8 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PrintingEdition } from 'src/entity';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel } from 'src/models';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionErrorModel } from 'src/models';
 import { UuidHelper } from 'src/common';
-import { printingEditionsProviders } from 'src/providers';
 
 @Injectable()
 export class PrintingEditionService {
@@ -11,7 +10,7 @@ export class PrintingEditionService {
     constructor(
         @Inject('PrintingEditionRepository') private readonly printingEditionRepository: typeof PrintingEdition,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
-        ) { }
+    ) { }
 
     public async getPrintingEditions(): Promise<PrintingEdition[]> {
         const getEditions: PrintingEdition[] = await this.printingEditionRepository.findAll<PrintingEdition>();
@@ -24,8 +23,8 @@ export class PrintingEditionService {
         edition.id = id;
 
         const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.findOne({
-            where: {id: edition.id},
-          });
+            where: { id: edition.id },
+        });
 
         return foundPrintingEdition;
     }
@@ -37,6 +36,7 @@ export class PrintingEditionService {
         printingEdition.priceMin = priceMin;
         printingEdition.priceMax = priceMax;
 
+        // tslint:disable-next-line: max-line-length
         let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` AS `PrintingEdition` WHERE';
 
         if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
@@ -45,20 +45,20 @@ export class PrintingEditionService {
         if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
             query += ' `PrintingEdition`.`name` = \'' + printingEdition.name + '\'';
         }
-        if ( printingEdition.status  && (printingEdition.priceMax || printingEdition.priceMin)) {
+        if (printingEdition.status && (printingEdition.priceMax || printingEdition.priceMin)) {
             query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\' AND';
         }
-        if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status ) {
+        if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status) {
             query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\'';
         }
-        if (printingEdition.priceMin && printingEdition.priceMax ) {
+        if (printingEdition.priceMin && printingEdition.priceMax) {
             query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin + ' AND';
         }
-        if (printingEdition.priceMin && !printingEdition.priceMax ) {
-            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin ;
+        if (printingEdition.priceMin && !printingEdition.priceMax) {
+            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin;
         }
-        if (printingEdition.priceMax ) {
-            query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax ;
+        if (printingEdition.priceMax) {
+            query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax;
         }
 
         const foundPrintingEdition = await this.printingEditionRepository.sequelize.query(query);
@@ -66,17 +66,22 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    public async getPaging(myLimit: number, myOffset: number) {
-        // const printingEditions = PrintingEdition.findAll({
-        //     limit: myLimit,
-        //     offset: myOffset,
-        // });
-        const printingEditions =  PrintingEdition.findAll({
-            limit: myLimit,
-            offset: myOffset,
-        });
+    public async getPaging(take: number, skip: number): Promise<PrintingEditionErrorModel> {
+        if (isNaN(+take) || isNaN(+skip)) {
+            const error = new PrintingEditionErrorModel();
+            error.message = 'You entered incorrect data, please enter take, skip (numbers)';
 
-        return printingEditions;
+            return error;
+        }
+
+        const printingEditions: PrintingEdition[] = await PrintingEdition.findAll({
+            limit: +take,
+            offset: +skip,
+        });
+        const printingEditionModel = new PrintingEditionErrorModel();
+        printingEditionModel.printingEdition = printingEditions;
+
+        return printingEditionModel;
     }
 
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
@@ -122,7 +127,7 @@ export class PrintingEditionService {
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {
         const result: number = await this.printingEditionRepository.destroy({
             where: { id: printingEditionId },
-          });
+        });
 
         return result;
     }
