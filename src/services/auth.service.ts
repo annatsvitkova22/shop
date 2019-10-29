@@ -21,25 +21,25 @@ export class AuthService {
 
   public async validateUser(username: string, password: string): Promise<AuthenticatedUserModel> {
     // tslint:disable-next-line: max-line-length
-    let query: string = 'SELECT user.*, role.name FROM user_in_roles INNER JOIN role ON user_in_roles.role_id = role.id INNER JOIN user ON user_in_roles.user_id = user.id WHERE user.email = ';
+    let query: string  = 'SELECT `users.id`, `users.firstName`, `users.passwordHash`, `users.email`, `roles.name` FROM `userinroles` INNER JOIN `roles` ON `userinroles.roleId` = `roles.id` INNER JOIN `users` ON `userinroles.userId` = ';
     query += username;
     const user = await this.userRepository.sequelize.query(query);
-   
+  
     if (!user) {
 
       return null;
     }
 
-    const isPasswordValid = await this.hashHelper.compareHash(password, user.passwordHash);
+    // const isPasswordValid = await this.hashHelper.compareHash(password, user.passwordHash);
 
-    if ( isPasswordValid) {
-        const result = new AuthenticatedUserModel();
-        result.firstName = user.firstName;
-        result.userId = user.id;
-        result.role = user.name;
+    // if ( isPasswordValid) {
+    //     const result = new AuthenticatedUserModel();
+    //     result.firstName = user.firstName;
+    //     result.userId = user.id;
+    //     result.role = user.name;
 
-        return result;
-    }
+    //     return result;
+    // }
 
     return null;
   }

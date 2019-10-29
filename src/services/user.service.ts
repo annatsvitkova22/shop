@@ -1,7 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { User } from 'src/entity';
-import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel } from 'src/models';
+import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 
 @Injectable()
@@ -30,10 +30,11 @@ export class UserService {
         return foundUser;
     }
 
-    public async createUser(createUser: CreateUserModel, req): Promise<CreatedUserModel> {
+    public async createUser(createUser: CreateUserModel, req): Promise<UserInfoModel> {
         const url: string = req.protocol + '://' + req.hostname;
         const user = new User();
         const showedUser = new CreatedUserModel();
+        const userModel = new UserInfoModel();
         user.firstName = createUser.firstName;
         user.lastName = createUser.lastName;
         user.email = createUser.email;
@@ -42,7 +43,7 @@ export class UserService {
         const foundUser: User = await this.findByEmail(user.email);
 
         if (foundUser) {
-            const error = new CreatedUserModel();
+            const error = new UserInfoModel();
             error.message = 'user with this email already exists';
 
             return error;
@@ -69,8 +70,9 @@ export class UserService {
             showedUser.lastName = savedUserWithSaltEmail.lastName;
             showedUser.email = savedUserWithSaltEmail.email;
             showedUser.emailConfirmed = savedUserWithSaltEmail.emailConfirmed;
+            userModel.userCreateModel = showedUser;
 
-            return showedUser;
+            return userModel;
         }
 
         showedUser.id = savedUser.id;
@@ -78,8 +80,9 @@ export class UserService {
         showedUser.lastName = savedUser.lastName;
         showedUser.email = savedUser.email;
         showedUser.emailConfirmed = savedUser.emailConfirmed;
+        userModel.userCreateModel = showedUser;
 
-        return showedUser;
+        return userModel;
     }
 
     public async updateUser(updateUser: UpdateUserModel): Promise<User> {
@@ -117,12 +120,12 @@ export class UserService {
         return foundUser;
     }
 
-    public async validateToken(token: string, user: User): Promise<CreatedUserModel> {
+    public async validateToken(token: string, user: User): Promise<UserInfoModel> {
         if (user.saltForEmail === token) {
             user.emailConfirmed = true;
         }
         if (user.saltForEmail !== token) {
-            const error = new CreatedUserModel();
+            const error = new UserInfoModel();
             error.message = 'sorry, it`s not your token';
 
             return error;
@@ -130,7 +133,7 @@ export class UserService {
 
         user.saltForEmail = '0';
         const savedUser: User = await user.save();
-        const info = new CreatedUserModel();
+        const info = new UserInfoModel();
         if (savedUser) {
             info.message = 'Your email confirmed';
 
@@ -142,7 +145,7 @@ export class UserService {
         return info;
     }
 
-    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<CreatedUserModel> {
+    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<UserInfoModel> {
         const url = req.protocol + '://' + req.hostname + req.url;
         const user = await this.findByEmail(forgotPassword.email);
 
@@ -151,20 +154,22 @@ export class UserService {
         user.emailConfirmed = false;
 
         const savedUser: User = await user.save();
+        const userModel = new UserInfoModel();
+        userModel.user = savedUser;
 
         if (!user) {
-            const error = new CreatedUserModel();
+            const error = new UserInfoModel();
             error.message = 'Sorry, email not found';
 
             return error;
         }
 
-        return savedUser;
+        return userModel;
     }
 
-    public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<CreatedUserModel> {
+    public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<UserInfoModel> {
         const user = await this.findByEmail(email);
-        const error = new CreatedUserModel();
+        const error = new UserInfoModel();
         if (user.emailConfirmed !== true) {
             error.message = 'sorry, password not verified';
 
@@ -178,8 +183,10 @@ export class UserService {
             user.passwordHash = pass;
 
             const savedUser: User = await user.save();
+            const userModel = new UserInfoModel();
+            userModel.user = savedUser;
 
-            return savedUser;
+            return userModel;
         }
         error.message = 'Passwords do not match';
 

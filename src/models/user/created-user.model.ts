@@ -13,6 +13,4 @@ export class CreatedUserModel {
     email?: string;
     @ApiModelProperty()
     emailConfirmed?: boolean;
-    @ApiModelProperty()
-    message?: string;
 }

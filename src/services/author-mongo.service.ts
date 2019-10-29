@@ -48,17 +48,15 @@ export class AuthorsMongoService {
     return result;
   }
 
-  public async deleteAuthor(authorId: string) {
+  public async deleteAuthor(authorId: string): Promise<number> {
     const author: AuthorDocument = {} as AuthorDocument;
     author.id = authorId;
     const result = await this.authorRepository.deleteAuthor(author);
-    await this.getBookByAuthor(author.id);
-
-    if (result.n === 0) {
-      throw new NotFoundException('Could not find author.');
+    if (result.n === 1) {
+      await this.getBookByAuthor(author.id);
     }
 
-    return result;
+    return result.n;
   }
 
   private async findAuthor(id: string): Promise<AuthorDocument> {

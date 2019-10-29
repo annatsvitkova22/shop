@@ -44,9 +44,9 @@ export class AuthorsMongoController {
 
   @Delete(':id')
   @ApiOperation({ title: 'Delete author by id'})
-  public async delete(@Param('id') authorId: string): Promise<boolean> {
-    await this.authorsService.deleteAuthor(authorId);
+  public async delete(@Param('id') authorId: string): Promise<number> {
+    const deleted: number = await this.authorsService.deleteAuthor(authorId);
 
-    return true;
+    return deleted;
   }
 }

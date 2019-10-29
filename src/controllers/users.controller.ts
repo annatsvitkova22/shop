@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Put, Delete, Param, Query, Request } from 
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { UserService } from 'src/services';
-import { CreateUserModel, UpdateUserModel, ForgotPassword, CreatedUserModel } from 'src/models';
+import { CreateUserModel, UpdateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
 import { User } from 'src/entity';
 
 @ApiUseTags('Users table')
@@ -28,33 +28,33 @@ export class UsersController {
 
     @Get(':mail/:token')
     @ApiOperation({ title: 'Email confirmation' })
-    public async validate(@Param('mail') mail: string, @Param('token') token: string): Promise<CreatedUserModel> {
+    public async validate(@Param('mail') mail: string, @Param('token') token: string): Promise<UserInfoModel> {
         const user: User = await this.userService.findByEmail(mail);
-        const validate: CreatedUserModel = await this.userService.validateToken(token, user);
+        const validate: UserInfoModel = await this.userService.validateToken(token, user);
 
         return validate;
     }
 
     @Post('create')
     @ApiOperation({ title: 'Create user' })
-    public async create(@Request() req, @Body() user: CreateUserModel): Promise<CreatedUserModel> {
-        const createUser: CreatedUserModel = await this.userService.createUser(user, req);
+    public async create(@Request() req, @Body() user: CreateUserModel): Promise<UserInfoModel> {
+        const createUser: UserInfoModel = await this.userService.createUser(user, req);
 
         return createUser;
     }
 
     @Post('forgotPassword')
     @ApiOperation({ title: 'Forgot password, enter email' })
-    public async forgotPassword(@Request() req, @Body() forgotPassword: ForgotPassword): Promise<CreatedUserModel> {
-        const user: CreatedUserModel = await this.userService.forgotPassword(forgotPassword, req);
+    public async forgotPassword(@Request() req, @Body() forgotPassword: ForgotPassword): Promise<UserInfoModel> {
+        const user: UserInfoModel = await this.userService.forgotPassword(forgotPassword, req);
 
         return user;
     }
 
     @Post('validateCode')
     @ApiOperation({ title: 'Forgot password, enter password' })
-    public async validateForgotPassword(@Query('mail') mail: string, @Body() forgotPassword: ForgotPassword): Promise<CreatedUserModel> {
-        const user: CreatedUserModel = await this.userService.validateForgotPassword(forgotPassword, mail);
+    public async validateForgotPassword(@Query('mail') mail: string, @Body() forgotPassword: ForgotPassword): Promise<UserInfoModel> {
+        const user: UserInfoModel = await this.userService.validateForgotPassword(forgotPassword, mail);
 
         return user;
     }

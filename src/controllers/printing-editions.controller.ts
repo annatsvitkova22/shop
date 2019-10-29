@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Get, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, Query } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { PrintingEditionService } from 'src/services';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionErrorModel } from 'src/models';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionInfoModel, PrintingEditionFilterModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
 
 @ApiUseTags('Printing edition')
@@ -11,7 +11,7 @@ export class PrintingEditionsController {
 
     constructor(private printingEditionService: PrintingEditionService) { }
 
-    @Get(':id')
+    @Get('id/:id')
     @ApiOperation({ title: 'Search printing edition by id' })
     public async get(@Param() params): Promise<PrintingEdition> {
         const printingEdition: PrintingEdition = await this.printingEditionService.getPrintingEditionsById(params.id);
@@ -19,15 +19,15 @@ export class PrintingEditionsController {
         return printingEdition;
     }
 
-    @Get(':limit/:offset')
+    @Get('pagination/:limit/:offset')
     @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
-    public async getPaging(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEditionErrorModel> {
-        const printingEdition: PrintingEditionErrorModel = await this.printingEditionService.getPaging(limit, offset);
+    public async getPaging(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEditionInfoModel> {
+        const printingEdition: PrintingEditionInfoModel = await this.printingEditionService.getPaging(limit, offset);
 
         return printingEdition;
     }
 
-    @Get()
+    @Get('all')
     @ApiOperation({ title: 'Search all printing editions' })
     public async getAll(): Promise<PrintingEdition[]> {
         const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
@@ -35,11 +35,11 @@ export class PrintingEditionsController {
         return printingEdition;
     }
 
-    @Get(':name/:status/:priceMin/:priceMax')
+    @Get('filter')
     @ApiOperation({ title: 'Filter by name, status, price' })
     // tslint:disable-next-line: max-line-length
-    public async filter(@Param('name') name: string, @Param('status') status: string, @Param('priceMin') priceMin: number, @Param('priceMax') priceMax: number) {
-        const filteredEdition = await this.printingEditionService.getFiltered(name, status, priceMin, priceMax);
+    public async filter(@Query() params: PrintingEditionFilterModel) {
+        const filteredEdition = await this.printingEditionService.getFiltered(params);
 
         return filteredEdition;
     }

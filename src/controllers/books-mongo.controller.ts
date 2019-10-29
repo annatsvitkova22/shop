@@ -67,9 +67,9 @@ export class BooksController {
 
   @Delete(':id')
   @ApiOperation({ title: 'Delete book by id' })
-  public async removeBook(@Param('id') bookId: string): Promise<boolean> {
-    await this.booksService.deleteBook(bookId);
+  public async removeBook(@Param('id') bookId: string): Promise<number> {
+    const deleted: number = await this.booksService.deleteBook(bookId);
 
-    return true;
+    return deleted;
   }
 }

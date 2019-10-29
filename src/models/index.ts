@@ -1,5 +1,3 @@
-import { from } from 'rxjs';
-
 export * from 'src/models/book/create-book.model';
 export * from 'src/models/author/create-author.model';
 export * from 'src/models/book/update-book.model';
@@ -27,6 +25,7 @@ export * from 'src/models/role/update-role-users.model';
 export * from 'src/models/book/printing-edition-filter.model';
 export * from 'src/models/forgot-password.model';
 export * from 'src/models/user/created-user.model';
-export * from 'src/models/book/printing-edition-error.model';
+export * from 'src/models/book/printing-edition-info.model';
 export * from 'src/models/book/book-author-result.model';
+export * from 'src/models/user/user-info.model';
 

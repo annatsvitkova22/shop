@@ -1,8 +1,9 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PrintingEdition } from 'src/entity';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionErrorModel } from 'src/models';
+import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel } from 'src/models';
 import { UuidHelper } from 'src/common';
+import sequelize = require('sequelize');
 
 @Injectable()
 export class PrintingEditionService {
@@ -29,12 +30,12 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    public async getFiltered(name: string, status: string, priceMin: number, priceMax: number) {
+    public async getFiltered(params: PrintingEditionFilterModel) {
         const printingEdition = new PrintingEditionFilterModel();
-        printingEdition.name = name;
-        printingEdition.status = status;
-        printingEdition.priceMin = priceMin;
-        printingEdition.priceMax = priceMax;
+        printingEdition.name = params.name;
+        printingEdition.status = params.status;
+        printingEdition.priceMin = params.priceMin;
+        printingEdition.priceMax = params.priceMax;
 
         // tslint:disable-next-line: max-line-length
         let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` AS `PrintingEdition` WHERE';
@@ -62,13 +63,13 @@ export class PrintingEditionService {
         }
 
         const foundPrintingEdition = await this.printingEditionRepository.sequelize.query(query);
-
+        console.log(foundPrintingEdition[0]);
         return foundPrintingEdition;
     }
 
-    public async getPaging(take: number, skip: number): Promise<PrintingEditionErrorModel> {
+    public async getPaging(take: number, skip: number): Promise<PrintingEditionInfoModel> {
         if (isNaN(+take) || isNaN(+skip)) {
-            const error = new PrintingEditionErrorModel();
+            const error = new PrintingEditionInfoModel();
             error.message = 'You entered incorrect data, please enter take, skip (numbers)';
 
             return error;
@@ -78,7 +79,7 @@ export class PrintingEditionService {
             limit: +take,
             offset: +skip,
         });
-        const printingEditionModel = new PrintingEditionErrorModel();
+        const printingEditionModel = new PrintingEditionInfoModel();
         printingEditionModel.printingEdition = printingEditions;
 
         return printingEditionModel;
@@ -100,7 +101,7 @@ export class PrintingEditionService {
     }
 
     public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const edition: PrintingEdition = {} as PrintingEdition;
+        const edition = new UpdatePrintingEditionModel();
         edition.id = updatePrintingEdition.id;
         edition.name = updatePrintingEdition.name;
         edition.description = updatePrintingEdition.description;

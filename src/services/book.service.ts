@@ -115,15 +115,12 @@ export class BooksService {
         return newBook;
     }
 
-    public async deleteBook(bookId: string) {
+    public async deleteBook(bookId: string): Promise<number> {
         const book: BookDocument = {} as BookDocument;
         book.id = bookId;
         const result = await this.bookRepository.deleteBook(book);
-        if (result.n === 0) {
-            throw new NotFoundException('Could not find book.');
-        }
 
-        return result;
+        return result.n;
     }
 
     private async findBook(id: string): Promise<BookDocument> {

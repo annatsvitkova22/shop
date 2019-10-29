@@ -29,7 +29,7 @@ export class RoleService {
     }
 
     public async createRole(createRole: CreateRoleModel): Promise<Role> {
-        const role: Role = {} as Role;
+        const role = new Role();
         role.name = createRole.name;
         role.id = this.uuidHelper.uuidv4();
 
