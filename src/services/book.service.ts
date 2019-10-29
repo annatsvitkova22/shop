@@ -4,11 +4,13 @@ import { BookDocument, AuthorDocument } from 'src/document';
 import { CreateBookModel, UpdateBookModel } from 'src/models';
 import { BookRepository } from 'src/repositories';
 
+const fs = require('fs');
+
 @Injectable()
 export class BooksService {
     constructor(public readonly bookRepository: BookRepository) { }
 
-    public async createBook(book: CreateBookModel): Promise<BookDocument> {
+    public async createBook(book: CreateBookModel, file): Promise<BookDocument> {
         const createBook: BookDocument = {} as BookDocument;
         createBook.name = book.name;
         createBook.description = book.description;
@@ -17,6 +19,8 @@ export class BooksService {
         createBook.currency = book.currency;
         createBook.type = book.type;
         createBook.author = book.author;
+        const bitmap = fs.readFileSync(file.path);
+        createBook.image = bitmap.toString('base64');
 
         const author: BookDocument = await this.getAuthorById(createBook.author);
 

@@ -8,6 +8,7 @@ export const BookSchema = new mongoose.Schema({
     status: { type: String, required: true},
     currency: { type: String, required: true},
     type: { type: String, required: true},
+    image: { type: String, required: true},
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'Author'},
 });
 
@@ -19,6 +20,7 @@ export interface BookDocument extends mongoose.Document {
     status?: string;
     currency?: string;
     type?: string;
+    image?: string;
     author?: string;
 }
 

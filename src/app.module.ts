@@ -17,6 +17,7 @@ import { BookSchema, AuthorSchema } from 'src/document';
 import { AuthorMongoRepository, BookRepository } from 'src/repositories';
 import { databaseProviders, printingEditionsProviders, authorInBooksProviders, paymentsProviders, authorsProviders,
   userInRolesProviders, orderItemsProviders, rolesProviders, ordersProviders, usersProviders } from 'src/providers';
+import { MulterModule } from '@nestjs/platform-express';
 
 const myEnvitonment: Enviroment = getEnv();
 
