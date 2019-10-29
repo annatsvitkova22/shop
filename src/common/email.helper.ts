@@ -1,8 +1,9 @@
 import { Injectable, Inject, forwardRef} from '@nestjs/common';
 
+import * as nodemailer from 'nodemailer';
+
 import { HashHelper } from 'src/entity';
 import { UserService } from 'src/services';
-import * as nodemailer from 'nodemailer';
 import { Enviroment, getEnv } from 'src/environment/environment';
 
 const myEnvitonment: Enviroment = getEnv();
@@ -25,7 +26,7 @@ export class MailerHelper {
           pass: myEnvitonment.passMail,
         },
       });
-      const token = await this.hashHelper.getRandomSalt();
+      const token: string = await this.hashHelper.getRandomSalt();
 
       const mailOptions = {
         from: myEnvitonment.userMail,
@@ -39,7 +40,7 @@ export class MailerHelper {
       return token;
 
     } catch (error) {
-      const messegeError = error;
+      const messegeError: string = error;
 
       return messegeError;
     }

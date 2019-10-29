@@ -28,3 +28,5 @@ export * from 'src/models/book/printing-edition-filter.model';
 export * from 'src/models/forgot-password.model';
 export * from 'src/models/user/created-user.model';
 export * from 'src/models/book/printing-edition-error.model';
+export * from 'src/models/book/book-author-result.model';
+

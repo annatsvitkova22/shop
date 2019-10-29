@@ -21,8 +21,8 @@ export class AuthenticationController {
   @Post('login')
   @ApiCreatedResponse({ description: 'The record has been successfully created.', type: User })
   public async login(@Request() requ): Promise<TokenModel> {
-    const accessTokenUser = this.authService.getToken(requ.user);
-    const refreshTokenUser = this.authService.getRefresh(requ.user);
+    const accessTokenUser: string = this.authService.getToken(requ.user);
+    const refreshTokenUser: string = this.authService.getRefresh(requ.user);
     const tokenModel: TokenModel = {
       accessToken: accessTokenUser,
       refreshToken: refreshTokenUser,

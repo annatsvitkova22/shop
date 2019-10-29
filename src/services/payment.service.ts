@@ -63,8 +63,8 @@ export class PaymentService {
     }
 
     public async charge(payment: CreatePaymentModel): Promise<string> {
-        const status = 'succeeded';
-        const messege = 'Error';
+        const status: string = 'succeeded';
+        const messege: string = 'Error';
         const stripe = require('stripe')(myEnvitonment.stripeApiKey);
         const customer = await stripe.customers.create({
           email: payment.email,

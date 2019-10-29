@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { BookDocument, AuthorDocument } from 'src/document';
-import { CreateBookModel, UpdateBookModel } from 'src/models';
+import { CreateBookModel, UpdateBookModel, BookAuthorResultModel } from 'src/models';
 import { BookRepository } from 'src/repositories';
 
 const fs = require('fs');
@@ -49,14 +49,15 @@ export class BooksService {
         return result;
     }
 
-    public async getBookById(bookId: string) {
+    public async getBookById(bookId: string): Promise<BookAuthorResultModel> {
         const book: BookDocument = await this.findBook(bookId);
         const authorId = book.author;
         const author: BookDocument = await this.getAuthorById(authorId);
-        const allResult = {
+        const allResult: BookAuthorResultModel = {
             book,
             author,
         };
+
         return allResult;
     }
 

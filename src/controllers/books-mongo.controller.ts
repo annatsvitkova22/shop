@@ -1,14 +1,13 @@
 import { Controller, Post, Body, Get, Param, Put, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { FileInterceptor,  } from '@nestjs/platform-express';
 
-import { BooksService } from 'src/services/book.service';
-import { CreateBookModel, UpdateBookModel } from 'src/models';
-import { BookDocument } from 'src/document';
-import { FileInterceptor, AnyFilesInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
 
-const fs = require('fs');
+import { BooksService } from 'src/services/book.service';
+import { CreateBookModel, UpdateBookModel, BookAuthorResultModel } from 'src/models';
+import { BookDocument } from 'src/document';
 
 export const editFileName = (req, file, callback) => {
   const name = file.originalname.split('.')[0];
@@ -36,37 +35,24 @@ export class BooksController {
 
   @Get(':id')
   @ApiOperation({ title: 'Search books by id' })
-  public async getBook(@Param('id') bookId: string) {
-    const result = await this.booksService.getBookById(bookId);
+  public async getBook(@Param('id') bookId: string): Promise<BookAuthorResultModel> {
+    const result: BookAuthorResultModel = await this.booksService.getBookById(bookId);
 
-    return { result };
+    return  result ;
   }
-
-  // @Post()
-  // @ApiOperation({ title: 'Create book' })
-  // public async createBook(@Body() createBook: CreateBookModel): Promise<BookDocument> {
-  //   const getBook: BookDocument = await this.booksService.createBook(createBook);
-
-  //   return getBook;
-  // }
 
   @Post('file')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './image',
+        destination: 'src/image',
         filename: editFileName,
       }),
     }),
   )
   public async uploadedFile(@UploadedFile() file, @Body() createBook: CreateBookModel): Promise<BookDocument> {
-    console.log(createBook.name);
-    const response = {
-      originalname: file.originalname,
-      filename: file.filename,
-    };
     const getBook: BookDocument = await this.booksService.createBook(createBook, file);
-    console.log(file);
+
     return getBook;
   }
 

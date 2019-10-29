@@ -12,13 +12,13 @@ export class HashHelper {
     }
 
     public async getHash(password: string, randomSalt: string): Promise<string> {
-        const result = bcrypt.hash(password, randomSalt);
+        const result: string = await bcrypt.hash(password, randomSalt);
 
         return result;
     }
 
     public async compareHash(password: string, hash: string): Promise<boolean> {
-        const result = bcrypt.compare(password, hash);
+        const result: boolean = await bcrypt.compare(password, hash);
 
         return result;
       }
