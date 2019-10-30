@@ -7,6 +7,7 @@ import { User } from 'src/entity';
 import { AuthenticatedUserModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
+import { UserRepository } from 'src/repositories';
 
 const jwt = jsonwebtoken;
 const myEnvitonment: Enviroment = getEnv();
@@ -16,19 +17,19 @@ export class AuthService {
 
   constructor(
     @Inject(forwardRef(() => HashHelper)) private readonly hashHelper: HashHelper,
-    @Inject('UserRepository') private readonly userRepository: typeof User,
+    private readonly userRepository: UserRepository,
   ) {}
 
   public async validateUser(username: string, password: string): Promise<AuthenticatedUserModel> {
     // tslint:disable-next-line: max-line-length
-    let query: string  = 'SELECT `users.id`, `users.firstName`, `users.passwordHash`, `users.email`, `roles.name` FROM `userinroles` INNER JOIN `roles` ON `userinroles.roleId` = `roles.id` INNER JOIN `users` ON `userinroles.userId` = ';
+    let query: string = 'SELECT user.*, role.name FROM user_in_roles INNER JOIN role ON user_in_roles.role_id = role.id INNER JOIN user ON user_in_roles.user_id = user.id WHERE user.email = ';
     query += username;
-    const user = await this.userRepository.sequelize.query(query);
-  
-    if (!user) {
+    // const user = await this.userRepository.sequelize.query(query);
 
-      return null;
-    }
+    // if (!user) {
+
+    //   return null;
+    // }
 
     // const isPasswordValid = await this.hashHelper.compareHash(password, user.passwordHash);
 

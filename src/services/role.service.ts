@@ -3,17 +3,18 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
 import { UuidHelper } from 'src/common';
+import { RoleRepository } from 'src/repositories/role.repository';
 
 @Injectable()
 export class RoleService {
 
     constructor(
-        @Inject('RoleRepository') private readonly roleRepository: typeof Role,
+        private readonly roleRepository: RoleRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
         ) { }
 
     public async getRoles(): Promise<Role[]> {
-        const getRoles: Role[] = await this.roleRepository.findAll();
+        const getRoles: Role[] = await this.roleRepository.getRoles();
 
         return getRoles;
     }
@@ -21,9 +22,7 @@ export class RoleService {
     public async getRoleById(id: string): Promise<Role> {
         const role = new UpdateRoleModel();
         role.id = id;
-        const foundRole: Role = await this.roleRepository.findOne({
-            where: {id: role.id},
-          });
+        const foundRole: Role = await this.roleRepository.getRoleById(role.id);
 
         return foundRole;
     }
@@ -33,7 +32,7 @@ export class RoleService {
         role.name = createRole.name;
         role.id = this.uuidHelper.uuidv4();
 
-        const saveRole: Role = await role.save();
+        const saveRole: Role = await this.roleRepository.createRole(role);
 
         return saveRole;
     }
@@ -43,19 +42,17 @@ export class RoleService {
         role.id = updateRole.id;
         role.name = updateRole.name;
 
-        const toUpdate: Role = await this.getRoleById(role.id);
+        const toUpdate: Role = await this.roleRepository.getRoleById(role.id);
         toUpdate.name = role.name;
 
-        const savedRole: Role = await toUpdate.save();
+        const savedRole: Role = await this.roleRepository.createRole(toUpdate);
 
         return savedRole;
       }
 
     public async deleteRole(roleId: string): Promise<number> {
-        const result: number = await this.roleRepository.destroy({
-            where: { id: roleId },
-          });
+        const deleted: number = await this.roleRepository.deleteRole(roleId);
 
-        return result;
+        return deleted;
     }
 }

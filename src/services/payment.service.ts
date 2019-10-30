@@ -4,6 +4,7 @@ import { Payment } from 'src/entity';
 import { UpdatePaymentModel, CreatePaymentModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { UuidHelper } from 'src/common';
+import { PaymentRepository } from 'src/repositories/payment.repository';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -11,12 +12,12 @@ const myEnvitonment: Enviroment = getEnv();
 export class PaymentService {
 
     constructor(
-      @Inject('PaymentRepository') private readonly paymentRepository: typeof Payment,
+      private readonly paymentRepository: PaymentRepository,
       @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
       ) { }
 
     public async getPayments(): Promise<Payment[]> {
-        const getPayments: Payment[] = await this.paymentRepository.findAll<Payment>();
+        const getPayments: Payment[] = await this.paymentRepository.getPayments();
 
         return getPayments;
     }
@@ -24,9 +25,7 @@ export class PaymentService {
     public async getUPaymentById(id: string): Promise<Payment> {
         const payment = new UpdatePaymentModel();
         payment.id = id;
-        const foundPayment: Payment = await this.paymentRepository.findOne({
-          where: {id: payment.id},
-        });
+        const foundPayment: Payment = await this.paymentRepository.getPaymentById(payment.id);
 
         return foundPayment;
     }
@@ -37,7 +36,7 @@ export class PaymentService {
         payment.transactionId = transactionId;
         payment.id = this.uuidHelper.uuidv4();
 
-        const savedPayment: Payment = await payment.save();
+        const savedPayment: Payment = await this.paymentRepository.createPayment(payment);
 
         return savedPayment;
     }
@@ -46,18 +45,16 @@ export class PaymentService {
         const payment = new Payment();
         payment.id = updatePayment.id;
         payment.transactionId = updatePayment.transactionId;
-        const toUpdate: Payment = await this.getUPaymentById(payment.id);
+        const toUpdate: Payment = await this.paymentRepository.getPaymentById(payment.id);
         toUpdate.transactionId = payment.transactionId;
 
-        const savedPayment: Payment = await toUpdate.save();
+        const savedPayment: Payment = await this.paymentRepository.createPayment(toUpdate);
 
         return savedPayment;
       }
 
     public async deletePayment(paymentId: string): Promise<number> {
-        const result: number = await this.paymentRepository.destroy({
-          where: { id: paymentId },
-        });
+        const result: number = await this.paymentRepository.deletePayment(paymentId);
 
         return result;
     }

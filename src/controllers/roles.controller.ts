@@ -13,8 +13,8 @@ export class RolesController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search role by id'})
-    public async get(id: string): Promise<Role> {
-        const role: Role = await this.roleService.getRoleById(id);
+    public async get(@Param() param): Promise<Role> {
+        const role: Role = await this.roleService.getRoleById(param.id);
 
         return role;
     }
@@ -30,17 +30,17 @@ export class RolesController {
     @Post()
     @ApiOperation({ title: 'Creste user'})
     public async create(@Body() role: CreateRoleModel): Promise<Role> {
-        const createRole: Role = await this.roleService.createRole(role);
+        const createdRole: Role = await this.roleService.createRole(role);
 
-        return createRole;
+        return createdRole;
     }
 
     @Put()
     @ApiOperation({ title: 'Update user by id'})
     public update(@Body() role: UpdateRoleModel): Promise<Role> {
-        const updateRole: Promise<Role> = this.roleService.updateRole(role);
+        const updatedRole: Promise<Role> = this.roleService.updateRole(role);
 
-        return updateRole;
+        return updatedRole;
     }
 
     @Delete(':id')

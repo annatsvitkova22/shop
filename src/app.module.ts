@@ -14,10 +14,9 @@ import { AuthService, AuthorsMongoService, BooksService, PrintingEditionService,
   AuthorService, RoleService, PaymentService, RoleInUsersService, AuthorInBookService} from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { BookSchema, AuthorSchema } from 'src/document';
-import { AuthorMongoRepository, BookRepository } from 'src/repositories';
-import { databaseProviders, printingEditionsProviders, authorInBooksProviders, paymentsProviders, authorsProviders,
-  userInRolesProviders, orderItemsProviders, rolesProviders, ordersProviders, usersProviders } from 'src/providers';
-import { MulterModule } from '@nestjs/platform-express';
+import { AuthorMongoRepository, BookRepository, RoleRepository, OrderRepository, OrderItemRepository, PaymentRepository,
+  AuthorRepository, PrintingEditionRepository, AuthorInBookRepository, UserInRoleRepository, UserRepository } from 'src/repositories';
+import { databaseProviders} from 'src/providers';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -40,8 +39,9 @@ const myEnvitonment: Enviroment = getEnv();
     AuthorInBookController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthorsMongoService, BooksService, AuthorMongoRepository, BookRepository,
     PrintingEditionService, UserService, OrderService, OrderItemService, AuthorService, RoleService, PaymentService, RoleInUsersService,
-    AuthorInBookService, HashHelper, MailerHelper, JwtHelper, ...authorsProviders, ...userInRolesProviders, ...rolesProviders, ...usersProviders,
-    ...printingEditionsProviders, ...authorInBooksProviders, ...paymentsProviders, ...orderItemsProviders, ...ordersProviders, ...databaseProviders,
+    AuthorInBookService, HashHelper, MailerHelper, JwtHelper, UserInRoleRepository, RoleRepository, UserRepository, UserInRoleRepository,
+    PrintingEditionRepository, AuthorInBookRepository, AuthorRepository, PaymentRepository, OrderItemRepository, OrderRepository,
+    ...databaseProviders,
     UuidHelper,
     {
       provide: APP_GUARD,

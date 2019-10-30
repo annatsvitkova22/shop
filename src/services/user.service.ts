@@ -3,6 +3,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { User } from 'src/entity';
 import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
+import { UserRepository } from 'src/repositories/user.repository';
 
 @Injectable()
 export class UserService {
@@ -10,12 +11,12 @@ export class UserService {
     constructor(
         @Inject(forwardRef(() => MailerHelper)) public emailHelper: MailerHelper,
         public readonly hashHelper: HashHelper,
-        @Inject('UserRepository') private readonly userRepository: typeof User,
+        private readonly userRepository: UserRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
 
     public async getUsers(): Promise<User[]> {
-        const getUsers: User[] = await this.userRepository.findAll();
+        const getUsers: User[] = await this.userRepository.getUsers();
 
         return getUsers;
     }
@@ -23,9 +24,7 @@ export class UserService {
     public async getUserById(id: string): Promise<User> {
         const user = new UpdateUserModel();
         user.id = id;
-        const foundUser: User = await this.userRepository.findOne({
-            where: { id: user.id },
-        });
+        const foundUser: User = await this.userRepository.getUserById(user.id);
 
         return foundUser;
     }
@@ -40,7 +39,7 @@ export class UserService {
         user.email = createUser.email;
         user.id = this.uuidHelper.uuidv4();
 
-        const foundUser: User = await this.findByEmail(user.email);
+        const foundUser: User = await this.userRepository.getUserByEmail(user.email);
 
         if (foundUser) {
             const error = new UserInfoModel();
@@ -58,13 +57,13 @@ export class UserService {
         user.emailConfirmed = false;
         user.saltForEmail = '0';
 
-        const savedUser: User = await user.save();
+        const savedUser: User = await this.userRepository.createUser(user);
 
         if (savedUser) {
             const saltEmail: string = await this.emailHelper.sendEmail(user.email, url);
             user.saltForEmail = saltEmail;
 
-            const savedUserWithSaltEmail: User = await user.save();
+            const savedUserWithSaltEmail: User = await this.userRepository.createUser(user);
             showedUser.id = savedUserWithSaltEmail.id;
             showedUser.firstName = savedUserWithSaltEmail.firstName;
             showedUser.lastName = savedUserWithSaltEmail.lastName;
@@ -93,32 +92,29 @@ export class UserService {
         user.passwordHash = updateUser.passwordHash;
         user.email = updateUser.email;
 
-        const toUpdate: User = await this.getUserById(user.id);
+        const toUpdate: User = await this.userRepository.getUserById(user.id);
         toUpdate.firstName = user.firstName;
         toUpdate.lastName = user.lastName;
         toUpdate.passwordHash = user.passwordHash;
         toUpdate.email = user.email;
 
-        const savedUser: User = await toUpdate.save();
+        const savedUser: User = await this.userRepository.createUser(toUpdate);
 
         return savedUser;
     }
 
     public async deleteUser(userId: string): Promise<number> {
-        const result: number = await this.userRepository.destroy({
-            where: { id: userId },
-        });
+        const result: number = await this.userRepository.deleteUser(userId);
 
         return result;
     }
 
     public async findByEmail(mail: string): Promise<User> {
-        const foundUser: User = await this.userRepository.findOne({
-            where: { email: mail },
-        });
+        const foundUser: User = await this.userRepository.getUserByEmail(mail);
 
         return foundUser;
     }
+
 
     public async validateToken(token: string, user: User): Promise<UserInfoModel> {
         if (user.saltForEmail === token) {
@@ -132,7 +128,7 @@ export class UserService {
         }
 
         user.saltForEmail = '0';
-        const savedUser: User = await user.save();
+        const savedUser: User = await this.userRepository.createUser(user);
         const info = new UserInfoModel();
         if (savedUser) {
             info.message = 'Your email confirmed';
@@ -147,13 +143,13 @@ export class UserService {
 
     public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<UserInfoModel> {
         const url = req.protocol + '://' + req.hostname + req.url;
-        const user = await this.findByEmail(forgotPassword.email);
+        const user = await this.userRepository.getUserByEmail(forgotPassword.email);
 
         const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
         user.saltForEmail = saltForEmail;
         user.emailConfirmed = false;
 
-        const savedUser: User = await user.save();
+        const savedUser: User = await this.userRepository.createUser(user);
         const userModel = new UserInfoModel();
         userModel.user = savedUser;
 
@@ -168,7 +164,7 @@ export class UserService {
     }
 
     public async validateForgotPassword(forgotPassword: ForgotPassword, email: string): Promise<UserInfoModel> {
-        const user = await this.findByEmail(email);
+        const user = await this.userRepository.getUserByEmail(email);
         const error = new UserInfoModel();
         if (user.emailConfirmed !== true) {
             error.message = 'sorry, password not verified';
@@ -182,7 +178,7 @@ export class UserService {
             const pass: string = await this.hashHelper.getHash(forgotPassword.password, randomSalt);
             user.passwordHash = pass;
 
-            const savedUser: User = await user.save();
+            const savedUser: User = await this.userRepository.createUser(user);
             const userModel = new UserInfoModel();
             userModel.user = savedUser;
 

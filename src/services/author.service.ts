@@ -1,19 +1,20 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { Author } from 'src/entity';
 import { UpdateAuthorModel, CreateAuthorModel } from 'src/models';
 import { UuidHelper } from 'src/common/uuid.helper';
+import { AuthorRepository } from 'src/repositories/author.repository';
 
 @Injectable()
 export class AuthorService {
 
     constructor(
-        @Inject('AuthorRepository') private readonly authorRepository: typeof Author,
+        private readonly authorRepository: AuthorRepository,
         public uuidHelper: UuidHelper,
        ) { }
 
     public async getAuthors(): Promise<Author[]> {
-        const gotAuthors: Author[] = await this.authorRepository.findAll<Author>();
+        const gotAuthors: Author[] = await this.authorRepository.getAuthors();
 
         return gotAuthors;
     }
@@ -21,9 +22,7 @@ export class AuthorService {
     public async getAuthorById(id: string): Promise<Author> {
         const author = new UpdateAuthorModel();
         author.id = id;
-        const foundAuthor: Author = await this.authorRepository.findOne({
-            where: {id: author.id},
-          });
+        const foundAuthor: Author = await this.authorRepository.getAuthorIById(author.id);
 
         return foundAuthor;
     }
@@ -34,7 +33,7 @@ export class AuthorService {
         author.name = validateName;
         author.id = this.uuidHelper.uuidv4();
 
-        const savedAuthor: Author = await author.save();
+        const savedAuthor: Author = await this.authorRepository.createAuthor(author);
 
         return savedAuthor;
     }
@@ -45,18 +44,16 @@ export class AuthorService {
         updateAuthor.name = author.name;
 
         const validateName = await this.validateName(updateAuthor.name);
-        const toUpdate: Author = await this.getAuthorById(updateAuthor.id);
+        const toUpdate: Author = await this.authorRepository.getAuthorIById(updateAuthor.id);
         toUpdate.name = validateName;
 
-        const savedAuthor: Author = await toUpdate.save();
+        const savedAuthor: Author = await this.authorRepository.createAuthor(toUpdate);
 
         return savedAuthor;
       }
 
     public async deleteAuthor(authorId: string): Promise<number> {
-        const result: number = await this.authorRepository.destroy({
-            where: { id: authorId },
-          });
+        const result: number = await this.authorRepository.deleteAuthor(authorId);
 
         return result;
     }

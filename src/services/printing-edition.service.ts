@@ -4,17 +4,18 @@ import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel } from 'src/models';
 import { UuidHelper } from 'src/common';
 import sequelize = require('sequelize');
+import { PrintingEditionRepository } from 'src/repositories/printing-edition.repository';
 
 @Injectable()
 export class PrintingEditionService {
 
     constructor(
-        @Inject('PrintingEditionRepository') private readonly printingEditionRepository: typeof PrintingEdition,
+        private readonly printingEditionRepository: PrintingEditionRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
 
     public async getPrintingEditions(): Promise<PrintingEdition[]> {
-        const getEditions: PrintingEdition[] = await this.printingEditionRepository.findAll<PrintingEdition>();
+        const getEditions: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditions();
 
         return getEditions;
     }
@@ -23,9 +24,7 @@ export class PrintingEditionService {
         const edition = new UpdatePrintingEditionModel();
         edition.id = id;
 
-        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.findOne({
-            where: { id: edition.id },
-        });
+        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(edition.id);
 
         return foundPrintingEdition;
     }
@@ -62,7 +61,7 @@ export class PrintingEditionService {
             query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax;
         }
 
-        const foundPrintingEdition = await this.printingEditionRepository.sequelize.query(query);
+        const foundPrintingEdition = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
         console.log(foundPrintingEdition[0]);
         return foundPrintingEdition;
     }
@@ -75,10 +74,7 @@ export class PrintingEditionService {
             return error;
         }
 
-        const printingEditions: PrintingEdition[] = await PrintingEdition.findAll({
-            limit: +take,
-            offset: +skip,
-        });
+        const printingEditions: PrintingEdition[] = await this.printingEditionRepository.getPaginationPrintingEdition(take, skip);
         const printingEditionModel = new PrintingEditionInfoModel();
         printingEditionModel.printingEdition = printingEditions;
 
@@ -95,7 +91,7 @@ export class PrintingEditionService {
         edition.type = createPrintingEdition.type;
         edition.id = this.uuidHelper.uuidv4();
 
-        const savedEdition: PrintingEdition = await edition.save();
+        const savedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
 
         return savedEdition;
     }
@@ -111,7 +107,7 @@ export class PrintingEditionService {
         edition.currency = updatePrintingEdition.currency;
         edition.type = updatePrintingEdition.type;
 
-        const toUpdate: PrintingEdition = await this.getPrintingEditionsById(edition.id);
+        const toUpdate: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(edition.id);
         toUpdate.name = edition.name;
         toUpdate.description = edition.description;
         toUpdate.price = edition.price;
@@ -120,15 +116,13 @@ export class PrintingEditionService {
         toUpdate.currency = edition.currency;
         toUpdate.type = edition.type;
 
-        const savedEdition: PrintingEdition = await toUpdate.save();
+        const savedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(toUpdate);
 
         return savedEdition;
     }
 
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {
-        const result: number = await this.printingEditionRepository.destroy({
-            where: { id: printingEditionId },
-        });
+        const result: number = await this.printingEditionRepository.deletePrintingEdition(printingEditionId)
 
         return result;
     }

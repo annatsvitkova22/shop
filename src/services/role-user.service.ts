@@ -3,17 +3,18 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { UserInRoles } from 'src/entity';
 import { UpdateRoleInUsersModel, CreateRoleInUsersModel } from 'src/models';
 import { UuidHelper } from 'src/common';
+import { UserInRoleRepository } from 'src/repositories/user-role.repository';
 
 @Injectable()
 export class RoleInUsersService {
 
     constructor(
-        @Inject('UserInRolesRepository') private readonly roleInUsersRepository: typeof UserInRoles,
+        private readonly roleInUsersRepository: UserInRoleRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
         ) { }
 
     public async getRoleInUsers(): Promise<UserInRoles[]> {
-        const getRoleInUsers: UserInRoles[] = await this.roleInUsersRepository.findAll();
+        const getRoleInUsers: UserInRoles[] = await this.roleInUsersRepository.getUserInRoles();
 
         return getRoleInUsers;
     }
@@ -21,9 +22,7 @@ export class RoleInUsersService {
     public async getRoleInUsersById(id: string): Promise<UserInRoles> {
         const role = new UpdateRoleInUsersModel();
         role.id = id;
-        const foundRoleInUser: UserInRoles = await this.roleInUsersRepository.findOne({
-            where: {id: role.id},
-          });
+        const foundRoleInUser: UserInRoles = await this.roleInUsersRepository.getUserInRoleById(role.id);
 
         return foundRoleInUser;
     }
@@ -34,7 +33,7 @@ export class RoleInUsersService {
         role.userId = createRole.userId;
         role.id = this.uuidHelper.uuidv4();
 
-        const savedRole: UserInRoles = await role.save();
+        const savedRole: UserInRoles = await this.roleInUsersRepository.createUserInRole(role);
 
         return savedRole;
     }
@@ -45,18 +44,16 @@ export class RoleInUsersService {
         roleInUser.roleId = updateRole.roleId;
         roleInUser.userId = updateRole.userId;
 
-        const toUpdate: UserInRoles = await this.getRoleInUsersById(roleInUser.id);
+        const toUpdate: UserInRoles = await this.roleInUsersRepository.getUserInRoleById(roleInUser.id);
         toUpdate.roleId = roleInUser.roleId;
         toUpdate.userId = roleInUser.userId;
 
-        const savedRoleInUser: UserInRoles = await toUpdate.save();
+        const savedRoleInUser: UserInRoles = await this.roleInUsersRepository.createUserInRole(toUpdate);
         return savedRoleInUser;
       }
 
     public async deleteRole(roleId: string): Promise<number> {
-        const result: number = await this.roleInUsersRepository.destroy({
-            where: { id: roleId },
-          });
+        const result: number = await this.roleInUsersRepository.deleteUserInRole(roleId);
 
         return result;
     }
