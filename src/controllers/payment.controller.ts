@@ -13,8 +13,8 @@ export class PaymentsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search payment by id'})
-    public async get(id: string): Promise<Payment> {
-        const payment: Payment = await this.paymentService.getUPaymentById(id);
+    public async get(@Param() params): Promise<Payment> {
+        const payment: Payment = await this.paymentService.getUPaymentById(params.id);
 
         return payment;
     }

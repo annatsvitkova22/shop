@@ -13,8 +13,8 @@ export class OrderItemsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order item by id'})
-    public async get(id: string): Promise<OrderItem> {
-        const orderItem: OrderItem = await this.orderItemService.getOrderItemById(id);
+    public async get(@Param() params): Promise<OrderItem> {
+        const orderItem: OrderItem = await this.orderItemService.getOrderItemById(params.id);
 
         return orderItem;
     }

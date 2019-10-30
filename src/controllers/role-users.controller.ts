@@ -13,8 +13,8 @@ export class RoleInUserController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search role in user by id'})
-    public async get(id: string): Promise<UserInRoles> {
-        const roleInUser: UserInRoles = await this.roleInUserService.getRoleInUsersById(id);
+    public async get(@Param() params): Promise<UserInRoles> {
+        const roleInUser: UserInRoles = await this.roleInUserService.getRoleInUsersById(params.id);
 
         return roleInUser;
     }

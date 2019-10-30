@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrintingEdition } from 'src/entity';
+import sequelize = require('sequelize');
 
 const db = require('src/entity/printing-edition.entity');
 

@@ -13,8 +13,8 @@ export class AuthorsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search author by id'})
-    public async get(id: string): Promise<Author> {
-        const author: Author = await this.authorService.getAuthorById(id);
+    public async get(@Param() params): Promise<Author> {
+        const author: Author = await this.authorService.getAuthorById(params.id);
 
         return author;
     }

@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { User } from 'src/entity';
+import { User, Role } from 'src/entity';
 import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 import { UserRepository } from 'src/repositories/user.repository';
@@ -10,7 +10,7 @@ export class UserService {
     public saltRounds = 10;
     constructor(
         @Inject(forwardRef(() => MailerHelper)) public emailHelper: MailerHelper,
-        public readonly hashHelper: HashHelper,
+        @Inject(forwardRef(() => HashHelper)) public readonly hashHelper: HashHelper,
         private readonly userRepository: UserRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
@@ -115,6 +115,11 @@ export class UserService {
         return foundUser;
     }
 
+    public async findUserWithRoleByEmail(username: string) {
+        const foundUser = await this.userRepository.getUserWithRoleByEmail(username);
+
+        return foundUser;
+    }
 
     public async validateToken(token: string, user: User): Promise<UserInfoModel> {
         if (user.saltForEmail === token) {

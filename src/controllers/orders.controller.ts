@@ -15,8 +15,8 @@ export class OrdersController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order by id'})
-    public async get(id: string): Promise<Order> {
-        const order: Order = await this.orderService.getOrderById(id);
+    public async get(@Param() params): Promise<Order> {
+        const order: Order = await this.orderService.getOrderById(params.id);
 
         return order;
     }

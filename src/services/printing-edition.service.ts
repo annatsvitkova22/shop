@@ -62,7 +62,7 @@ export class PrintingEditionService {
         }
 
         const foundPrintingEdition = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
-        console.log(foundPrintingEdition[0]);
+
         return foundPrintingEdition;
     }
 
