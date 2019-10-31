@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrintingEdition } from 'src/entity';
+import sequelize = require('sequelize');
 
 const db = require('src/entity/printing-edition.entity');
 
@@ -30,7 +31,11 @@ export class PrintingEditionRepository {
     }
 
     public async getFiltrationPrintingEdition(query: string) {
-        const printingEditions: PrintingEdition[] = await db.PrintingEdition.sequelize.query(query);
+        const printingEditions: PrintingEdition[] = await db.PrintingEdition.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
+        });
 
         return printingEditions;
     }
