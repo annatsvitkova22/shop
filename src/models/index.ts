@@ -28,4 +28,4 @@ export * from 'src/models/user/created-user.model';
 export * from 'src/models/book/printing-edition-info.model';
 export * from 'src/models/book/book-author-result.model';
 export * from 'src/models/user/user-info.model';
-
+export * from 'src/models/user/user-role.model';

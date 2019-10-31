@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/entity';
 import sequelize = require('sequelize');
+import { UserWithRoleModel } from 'src/models';
 
 const db = require('src/entity/user.entity');
 
@@ -29,8 +30,8 @@ export class UserRepository {
         return user;
     }
 
-    public async getUserWithRoleByEmail(query: string) {
-        const user = await db.User.sequelize.query(query, {
+    public async getUserWithRoleByEmail(query: string): Promise<UserWithRoleModel[]> {
+        const user: UserWithRoleModel[] = await db.User.sequelize.query(query, {
             plain: false,
             raw: false,
             type: sequelize.QueryTypes.SELECT,

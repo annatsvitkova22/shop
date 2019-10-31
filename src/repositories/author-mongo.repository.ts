@@ -11,6 +11,12 @@ export class AuthorMongoRepository {
         @InjectModel('Author') public authorModel: Model<AuthorDocument>,
     ) { }
 
+    public async getAuthors(): Promise<AuthorDocument[]>  {
+        const authors: AuthorDocument[] = await this.authorModel.find().exec();
+
+        return authors;
+    }
+
     public async createAuthor(createAuthor: AuthorDocument): Promise<AuthorDocument> {
         const newAuthor: AuthorDocument = new this.authorModel(
             createAuthor,
@@ -18,12 +24,6 @@ export class AuthorMongoRepository {
         const result = await newAuthor.save();
 
         return result;
-    }
-
-    public async getAuthors(): Promise<AuthorDocument[]>  {
-        const authors: AuthorDocument[] = await this.authorModel.find().exec();
-
-        return authors;
     }
 
     public async updateAuthor(updatedAuthor: AuthorDocument): Promise<AuthorDocument>  {

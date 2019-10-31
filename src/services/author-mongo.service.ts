@@ -10,14 +10,6 @@ export class AuthorsMongoService {
     public readonly authorRepository: AuthorMongoRepository,
   ) { }
 
-  public async createAuthor(author: CreateAuthorModel): Promise<AuthorDocument> {
-    const createAuthor: AuthorDocument = {} as AuthorDocument;
-    createAuthor.name = author.name;
-    const createdAuthor: AuthorDocument = await this.authorRepository.createAuthor(createAuthor);
-
-    return createdAuthor;
-  }
-
   public async getAuthors(): Promise<UpdateAuthorMongoModel[]> {
     const author = await this.authorRepository.getAuthors();
     const allAuthor: UpdateAuthorMongoModel[] = author.map(authors => ({
@@ -32,6 +24,14 @@ export class AuthorsMongoService {
     const author: AuthorDocument = await this.findAuthor(authorId);
 
     return author;
+  }
+
+  public async createAuthor(author: CreateAuthorModel): Promise<AuthorDocument> {
+    const createAuthor: AuthorDocument = {} as AuthorDocument;
+    createAuthor.name = author.name;
+    const createdAuthor: AuthorDocument = await this.authorRepository.createAuthor(createAuthor);
+
+    return createdAuthor;
   }
 
   public async updateAuthor(author: UpdateAuthorMongoModel): Promise<AuthorDocument> {

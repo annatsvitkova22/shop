@@ -30,7 +30,7 @@ export class PrintingEditionRepository {
         return printingEditions;
     }
 
-    public async getFiltrationPrintingEdition(query: string) {
+    public async getFiltrationPrintingEdition(query: string): Promise<PrintingEdition[]> {
         const printingEditions: PrintingEdition[] = await db.PrintingEdition.sequelize.query(query, {
             plain: false,
             raw: false,

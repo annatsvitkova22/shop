@@ -10,29 +10,6 @@ const fs = require('fs');
 export class BooksService {
     constructor(public readonly bookRepository: BookRepository) { }
 
-    public async createBook(book: CreateBookModel, file): Promise<BookDocument> {
-        const createBook: BookDocument = {} as BookDocument;
-        createBook.name = book.name;
-        createBook.description = book.description;
-        createBook.price = book.price;
-        createBook.status = book.status;
-        createBook.currency = book.currency;
-        createBook.type = book.type;
-        createBook.author = book.author;
-        const bitmap = fs.readFileSync(file.path);
-        createBook.image = bitmap.toString('base64');
-
-        const author: BookDocument = await this.getAuthorById(createBook.author);
-
-        if (!author) {
-            createBook.author = null;
-        }
-
-        const savedBook: BookDocument = await this.bookRepository.createBook(createBook);
-
-        return savedBook;
-    }
-
     public async getBooks(): Promise<UpdateBookModel[]> {
         const books = await this.bookRepository.getBook();
         const result: UpdateBookModel[] = books.map(book => ({
@@ -65,6 +42,29 @@ export class BooksService {
         const bookByAuthor: BookDocument = await this.findBookByAuthor(authorId);
 
         return bookByAuthor;
+    }
+
+    public async createBook(book: CreateBookModel, file): Promise<BookDocument> {
+        const createBook: BookDocument = {} as BookDocument;
+        createBook.name = book.name;
+        createBook.description = book.description;
+        createBook.price = book.price;
+        createBook.status = book.status;
+        createBook.currency = book.currency;
+        createBook.type = book.type;
+        createBook.author = book.author;
+        const bitmap = fs.readFileSync(file.path);
+        createBook.image = bitmap.toString('base64');
+
+        const author: BookDocument = await this.getAuthorById(createBook.author);
+
+        if (!author) {
+            createBook.author = null;
+        }
+
+        const savedBook: BookDocument = await this.bookRepository.createBook(createBook);
+
+        return savedBook;
     }
 
     public async updateBook(book: UpdateBookModel): Promise<BookDocument> {

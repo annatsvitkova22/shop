@@ -10,6 +10,13 @@ export class BookRepository {
         @InjectModel('Book') public bookModel: Model<BookDocument>,
         @InjectModel('Author') public authorModel: Model<AuthorDocument>,
     ) {}
+
+    public async getBook(): Promise<BookDocument[]> {
+        const books: BookDocument[] = await this.bookModel.find().exec();
+
+        return books;
+    }
+
     public async createBook(createBook: BookDocument): Promise<BookDocument> {
 
         const newBook: BookDocument = new this.bookModel(
@@ -18,12 +25,6 @@ export class BookRepository {
         const result = await newBook.save();
 
         return result;
-    }
-
-    public async getBook(): Promise<BookDocument[]> {
-        const books: BookDocument[] = await this.bookModel.find().exec();
-
-        return books;
     }
 
     public async updateBook(updateBook: BookDocument): Promise<BookDocument> {

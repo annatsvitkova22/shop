@@ -2,7 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import { AuthenticatedUserModel } from 'src/models';
+import { AuthenticatedUserModel, UserWithRoleModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
 import { UserService } from './user.service';
@@ -22,7 +22,7 @@ export class AuthService {
     // tslint:disable-next-line: max-line-length
     let query: string = 'SELECT `users`.`id`, `users`.`firstName`, `users`.`passwordHash`, `users`.`email`, `roles`.`name` FROM `userinroles` INNER JOIN `roles` ON `userinroles`.`roleId` = `roles`.`id` INNER JOIN `users` ON `userinroles`.`userId` = `users`.`id` WHERE `users`.`email` = \'';
     query += username + '\'';
-    const user = await this.userService.findUserWithRoleByEmail(query);
+    const user: UserWithRoleModel[] = await this.userService.findUserWithRoleByEmail(query);
 
     if (!user) {
 

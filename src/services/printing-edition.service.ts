@@ -28,7 +28,7 @@ export class PrintingEditionService {
         return foundPrintingEdition;
     }
 
-    public async getFiltered(params: PrintingEditionFilterModel) {
+    public async getFiltered(params: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
         const printingEdition = new PrintingEditionFilterModel();
         printingEdition.name = params.name;
         printingEdition.status = params.status;
@@ -60,7 +60,7 @@ export class PrintingEditionService {
             query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax;
         }
 
-        const foundPrintingEdition = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
+        const foundPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
 
         return foundPrintingEdition;
     }
