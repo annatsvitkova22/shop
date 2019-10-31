@@ -11,14 +11,6 @@ export class AuthorInBookController {
 
     constructor( private authorInBookService: AuthorInBookService ) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search author in book by id'})
-    public async get(@Param() params): Promise<AuthorInBooks> {
-        const authorInBook: AuthorInBooks = await this.authorInBookService.getAuthorInBooksById(params.id);
-
-        return authorInBook;
-    }
-
     @Get()
     @ApiOperation({ title: 'Search all author in books'})
     public async getAll(): Promise<AuthorInBooks[]> {
@@ -27,20 +19,28 @@ export class AuthorInBookController {
         return authorInBook;
   }
 
+  @Get(':id')
+    @ApiOperation({ title: 'Search author in book by id'})
+    public async get(@Param() params): Promise<AuthorInBooks> {
+        const authorInBook: AuthorInBooks = await this.authorInBookService.getAuthorInBooksById(params.id);
+
+        return authorInBook;
+    }
+
     @Post()
     @ApiOperation({ title: 'Create author in book'})
-    public async create(@Body() authorInBook: CreateAuthorInBooksModel): Promise<string> {
-        const createAuthorInBook: string = await this.authorInBookService.createAuthorInBook(authorInBook);
+    public async create(@Body() createAuthorInBook: CreateAuthorInBooksModel): Promise<string> {
+        const authorInBook: string = await this.authorInBookService.createAuthorInBook(createAuthorInBook);
 
-        return createAuthorInBook;
+        return authorInBook;
     }
 
     @Put()
     @ApiOperation({ title: 'Update author in books by id'})
-    public update(@Body() authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const updateAuthorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(authorInBook);
+    public update(@Body() updateAuthorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
+        const authorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(updateAuthorInBook);
 
-        return updateAuthorInBook;
+        return authorInBook;
     }
 
     @Delete(':id')

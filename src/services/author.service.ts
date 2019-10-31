@@ -20,15 +20,13 @@ export class AuthorService {
     }
 
     public async getAuthorById(id: string): Promise<Author> {
-        const author = new UpdateAuthorModel();
-        author.id = id;
-        const foundAuthor: Author = await this.authorRepository.getAuthorIById(author.id);
+        const foundAuthor: Author = await this.authorRepository.getAuthorIById(id);
 
         return foundAuthor;
     }
 
     public async createAuthor(CreateAuthor: CreateAuthorModel): Promise<Author> {
-        const author = new Author();
+        const author: Author = new Author();
         const validateName = await this.validateName(CreateAuthor.name);
         author.name = validateName;
         author.id = this.uuidHelper.uuidv4();
@@ -39,11 +37,11 @@ export class AuthorService {
     }
 
     public async updateAuthor(author: UpdateAuthorModel): Promise<Author> {
-        const updateAuthor = new Author();
+        const updateAuthor: Author = new Author();
         updateAuthor.id = author.id;
         updateAuthor.name = author.name;
 
-        const validateName = await this.validateName(updateAuthor.name);
+        const validateName: string = await this.validateName(updateAuthor.name);
         const toUpdate: Author = await this.authorRepository.getAuthorIById(updateAuthor.id);
         toUpdate.name = validateName;
 

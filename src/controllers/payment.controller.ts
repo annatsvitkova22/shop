@@ -11,14 +11,6 @@ export class PaymentsController {
 
     constructor(private paymentService: PaymentService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search payment by id'})
-    public async get(@Param() params): Promise<Payment> {
-        const payment: Payment = await this.paymentService.getUPaymentById(params.id);
-
-        return payment;
-    }
-
     @Get()
     @ApiOperation({ title: 'Search all payments'})
     public async getAll(): Promise<Payment[]> {
@@ -27,20 +19,28 @@ export class PaymentsController {
         return payment;
     }
 
+    @Get(':id')
+    @ApiOperation({ title: 'Search payment by id'})
+    public async get(@Param() params): Promise<Payment> {
+        const payment: Payment = await this.paymentService.getUPaymentById(params.id);
+
+        return payment;
+    }
+
     @Post()
     @ApiOperation({ title: 'Create payment by id'})
-    public async create(@Body() payment: CreatePaymentModel): Promise<Payment> {
-        const createPayment: Payment = await this.paymentService.createPayment(payment);
+    public async create(@Body() createPayment: CreatePaymentModel): Promise<Payment> {
+        const payment: Payment = await this.paymentService.createPayment(createPayment);
 
-        return createPayment;
+        return payment;
     }
 
     @Put()
     @ApiOperation({ title: 'Update payment by id'})
-    public update(@Body() payment: UpdatePaymentModel): Promise<Payment> {
-        const updatePayment: Promise<Payment> = this.paymentService.updatePayment(payment);
+    public update(@Body() updatePayment: UpdatePaymentModel): Promise<Payment> {
+        const payment: Promise<Payment> = this.paymentService.updatePayment(updatePayment);
 
-        return updatePayment;
+        return payment;
     }
 
     @Delete(':id')

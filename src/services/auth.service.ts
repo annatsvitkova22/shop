@@ -5,7 +5,7 @@ import * as jsonwebtoken from 'jsonwebtoken';
 import { AuthenticatedUserModel, UserWithRoleModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
-import { UserService } from './user.service';
+import { UserService } from 'src/services';
 
 const jwt = jsonwebtoken;
 const myEnvitonment: Enviroment = getEnv();
@@ -29,7 +29,7 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await this.hashHelper.compareHash(password, user[0].passwordHash);
+    const isPasswordValid: boolean = await this.hashHelper.compareHash(password, user[0].passwordHash);
 
     if ( isPasswordValid) {
         const result: AuthenticatedUserModel = {};

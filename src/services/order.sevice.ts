@@ -20,15 +20,13 @@ export class OrderService {
     }
 
     public async getOrderById(id: string): Promise<Order> {
-        const order = new UpdateOrderModel();
-        order.id = id;
-        const foundOrder: Order = await this.orderRepository.getOrderById(order.id);
+        const foundOrder: Order = await this.orderRepository.getOrderById(id);
 
         return foundOrder;
     }
 
     public async createOrder(createOrder: CreateOrderModel): Promise<Order> {
-        const order = new Order();
+        const order: Order = new Order();
         order.description = createOrder.description;
         order.userId = createOrder.userId;
         order.date = createOrder.date;
@@ -41,13 +39,14 @@ export class OrderService {
     }
 
     public async updateOrder(updateOrder: UpdateOrderModel): Promise<Order> {
-        const order = new Order();
+        const order: Order = new Order();
         order.id = updateOrder.id;
         order.description = updateOrder.description;
         order.userId = updateOrder.userId;
         order.date = updateOrder.date;
         order.paymentId = updateOrder.paymentId;
-        const toUpdate = await this.orderRepository.getOrderById(order.id);
+
+        const toUpdate: Order = await this.orderRepository.getOrderById(order.id);
         toUpdate.description = order.description;
         toUpdate.userId = order.userId;
         toUpdate.date = order.date;

@@ -11,6 +11,14 @@ export class PrintingEditionsController {
 
     constructor(private printingEditionService: PrintingEditionService) { }
 
+    @Get('all')
+    @ApiOperation({ title: 'Search all printing editions' })
+    public async getAll(): Promise<PrintingEdition[]> {
+        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
+
+        return printingEdition;
+    }
+
     @Get('id/:id')
     @ApiOperation({ title: 'Search printing edition by id' })
     public async get(@Param() params): Promise<PrintingEdition> {
@@ -27,14 +35,6 @@ export class PrintingEditionsController {
         return printingEdition;
     }
 
-    @Get('all')
-    @ApiOperation({ title: 'Search all printing editions' })
-    public async getAll(): Promise<PrintingEdition[]> {
-        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
-
-        return printingEdition;
-    }
-
     @Get('filter')
     @ApiOperation({ title: 'Filter by name, status, price' })
     // tslint:disable-next-line: max-line-length
@@ -46,18 +46,18 @@ export class PrintingEditionsController {
 
     @Post()
     @ApiOperation({ title: 'Create printing edition' })
-    public async create(@Body() printingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
-        const createEdition: PrintingEdition = await this.printingEditionService.createPrintingEdition(printingEdition);
+    public async create(@Body() createEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
+        const edition: PrintingEdition = await this.printingEditionService.createPrintingEdition(createEdition);
 
-        return createEdition;
+        return edition;
     }
 
     @Put()
     @ApiOperation({ title: 'Update printing edition by id' })
-    public update(@Body() printingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const updateEdition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(printingEdition);
+    public update(@Body() updateEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
+        const edition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(updateEdition);
 
-        return updateEdition;
+        return edition;
     }
 
     @Delete(':id')

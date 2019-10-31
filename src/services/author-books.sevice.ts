@@ -20,9 +20,7 @@ export class AuthorInBookService {
     }
 
     public async getAuthorInBooksById(id: string): Promise<AuthorInBooks> {
-        const authorInBookId = new UpdateAuthorInBooksModel();
-        authorInBookId.id = id;
-        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.getAuthorInBookById(authorInBookId.id);
+        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.getAuthorInBookById(id);
 
         return authorInBook;
     }

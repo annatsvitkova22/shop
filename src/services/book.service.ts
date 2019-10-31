@@ -11,7 +11,7 @@ export class BooksService {
     constructor(public readonly bookRepository: BookRepository) { }
 
     public async getBooks(): Promise<UpdateBookModel[]> {
-        const books = await this.bookRepository.getBook();
+        const books: BookDocument[] = await this.bookRepository.getBook();
         const result: UpdateBookModel[] = books.map(book => ({
             id: book.id,
             name: book.name,

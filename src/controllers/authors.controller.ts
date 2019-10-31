@@ -11,14 +11,6 @@ export class AuthorsController {
 
     constructor(private authorService: AuthorService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search author by id'})
-    public async get(@Param() params): Promise<Author> {
-        const author: Author = await this.authorService.getAuthorById(params.id);
-
-        return author;
-    }
-
     @Get()
     @ApiOperation({ title: 'Search all authors by id'})
     public async getAll(): Promise<Author[]> {
@@ -27,20 +19,28 @@ export class AuthorsController {
         return author;
     }
 
+    @Get(':id')
+    @ApiOperation({ title: 'Search author by id'})
+    public async get(@Param() params): Promise<Author> {
+        const author: Author = await this.authorService.getAuthorById(params.id);
+
+        return author;
+    }
+
     @Post()
     @ApiOperation({ title: 'Create author'})
-    public async create(@Body() author: CreateAuthorModel): Promise<Author> {
-        const createAuthor: Author = await this.authorService.createAuthor(author);
+    public async create(@Body() createAuthor: CreateAuthorModel): Promise<Author> {
+        const author: Author = await this.authorService.createAuthor(createAuthor);
 
-        return createAuthor;
+        return author;
     }
 
     @Put()
     @ApiOperation({ title: 'Update author by id'})
-    public update(@Body() author: UpdateAuthorModel): Promise<Author> {
-        const updateAuthor: Promise<Author> = this.authorService.updateAuthor(author);
+    public update(@Body() updateAuthor: UpdateAuthorModel): Promise<Author> {
+        const author: Promise<Author> = this.authorService.updateAuthor(updateAuthor);
 
-        return updateAuthor;
+        return author;
     }
 
     @Delete(':id')

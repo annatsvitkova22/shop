@@ -20,15 +20,13 @@ export class OrderItemService {
     }
 
     public async getOrderItemById(id: string): Promise<OrderItem> {
-        const orderItem = new UpdateOrderItemModel();
-        orderItem.id = id;
-        const foundOrderItem: OrderItem = await this.orderItemRepository.getOrderItemById(orderItem.id);
+        const foundOrderItem: OrderItem = await this.orderItemRepository.getOrderItemById(id);
 
         return foundOrderItem;
     }
 
     public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<OrderItem> {
-        const orderItem = new OrderItem();
+        const orderItem: OrderItem = new OrderItem();
         orderItem.pritingEditionId = createOrderItem.pritingEditionId;
         orderItem.amount = createOrderItem.amount;
         orderItem.currency = createOrderItem.currency;
@@ -41,7 +39,7 @@ export class OrderItemService {
     }
 
     public async updateOrderItem(updateOrderItem: UpdateOrderItemModel): Promise<OrderItem> {
-        const orderItem = new OrderItem();
+        const orderItem: OrderItem = new OrderItem();
         orderItem.id = updateOrderItem.id;
         orderItem.pritingEditionId = updateOrderItem.pritingEditionId;
         orderItem.amount = updateOrderItem.amount;

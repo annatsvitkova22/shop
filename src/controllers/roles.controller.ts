@@ -11,14 +11,6 @@ export class RolesController {
 
     constructor(private roleService: RoleService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search role by id'})
-    public async get(@Param() param): Promise<Role> {
-        const role: Role = await this.roleService.getRoleById(param.id);
-
-        return role;
-    }
-
     @Get()
     @ApiOperation({ title: 'Search all roles'})
     public async getAll(): Promise<Role[]> {
@@ -27,20 +19,28 @@ export class RolesController {
         return role;
     }
 
+    @Get(':id')
+    @ApiOperation({ title: 'Search role by id'})
+    public async get(@Param() param): Promise<Role> {
+        const role: Role = await this.roleService.getRoleById(param.id);
+
+        return role;
+    }
+
     @Post()
     @ApiOperation({ title: 'Creste user'})
-    public async create(@Body() role: CreateRoleModel): Promise<Role> {
-        const createdRole: Role = await this.roleService.createRole(role);
+    public async create(@Body() createRole: CreateRoleModel): Promise<Role> {
+        const role: Role = await this.roleService.createRole(createRole);
 
-        return createdRole;
+        return role;
     }
 
     @Put()
     @ApiOperation({ title: 'Update user by id'})
-    public update(@Body() role: UpdateRoleModel): Promise<Role> {
-        const updatedRole: Promise<Role> = this.roleService.updateRole(role);
+    public update(@Body() updateRole: UpdateRoleModel): Promise<Role> {
+        const role: Promise<Role> = this.roleService.updateRole(updateRole);
 
-        return updatedRole;
+        return role;
     }
 
     @Delete(':id')

@@ -29,3 +29,5 @@ export * from 'src/models/book/printing-edition-info.model';
 export * from 'src/models/book/book-author-result.model';
 export * from 'src/models/user/user-info.model';
 export * from 'src/models/user/user-role.model';
+export * from 'src/models/create-transport.model';
+export * from 'src/models/mail-option.model';

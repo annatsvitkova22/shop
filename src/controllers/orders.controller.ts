@@ -9,17 +9,7 @@ import { Order } from 'src/entity';
 @Controller('order')
 export class OrdersController {
 
-    constructor(
-        private orderService: OrderService,
-        ) { }
-
-    @Get(':id')
-    @ApiOperation({ title: 'Search order by id'})
-    public async get(@Param() params): Promise<Order> {
-        const order: Order = await this.orderService.getOrderById(params.id);
-
-        return order;
-    }
+    constructor( private orderService: OrderService, ) { }
 
     @Get()
     @ApiOperation({ title: 'Search all orders'})
@@ -29,20 +19,28 @@ export class OrdersController {
         return order;
     }
 
+    @Get(':id')
+    @ApiOperation({ title: 'Search order by id'})
+    public async get(@Param() params): Promise<Order> {
+        const order: Order = await this.orderService.getOrderById(params.id);
+
+        return order;
+    }
+
     @Post()
     @ApiOperation({ title: 'Create order'})
-    public async create(@Body() order: CreateOrderModel): Promise<Order> {
-        const createOrder: Order = await this.orderService.createOrder(order);
+    public async create(@Body() createOrder: CreateOrderModel): Promise<Order> {
+        const order: Order = await this.orderService.createOrder(createOrder);
 
-        return createOrder;
+        return order;
     }
 
     @Put()
     @ApiOperation({ title: 'Update order by id'})
-    public update(@Body() order: UpdateOrderModel): Promise<Order> {
-        const updateOrder: Promise<Order> = this.orderService.updateOrder(order);
+    public update(@Body() updateOrder: UpdateOrderModel): Promise<Order> {
+        const order: Promise<Order> = this.orderService.updateOrder(updateOrder);
 
-        return updateOrder;
+        return order;
     }
 
     @Delete(':id')

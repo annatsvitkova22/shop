@@ -10,18 +10,18 @@ import { User } from 'src/entity';
 export class UsersController {
     constructor(private userService: UserService) { }
 
-    @Get(':id')
-    @ApiOperation({ title: 'Search user by id' })
-    public async get(@Param() params): Promise<User> {
-        const user: User = await this.userService.getUserById(params.id);
-
-        return user;
-    }
-
     @Get()
     @ApiOperation({ title: 'Search all users' })
     public async getAll(): Promise<User[]> {
         const user: User[] = await this.userService.getUsers();
+
+        return user;
+    }
+
+    @Get(':id')
+    @ApiOperation({ title: 'Search user by id' })
+    public async get(@Param() params): Promise<User> {
+        const user: User = await this.userService.getUserById(params.id);
 
         return user;
     }
@@ -37,10 +37,10 @@ export class UsersController {
 
     @Post('create')
     @ApiOperation({ title: 'Create user' })
-    public async create(@Request() req, @Body() user: CreateUserModel): Promise<UserInfoModel> {
-        const createUser: UserInfoModel = await this.userService.createUser(user, req);
+    public async create(@Request() req, @Body() createUser: CreateUserModel): Promise<UserInfoModel> {
+        const user: UserInfoModel = await this.userService.createUser(createUser, req);
 
-        return createUser;
+        return user;
     }
 
     @Post('forgotPassword')
@@ -61,10 +61,10 @@ export class UsersController {
 
     @Put()
     @ApiOperation({ title: 'Update user by id' })
-    public async update(@Body() user: UpdateUserModel): Promise<User> {
-        const updateUser: User = await this.userService.updateUser(user);
+    public async update(@Body() updateUser: UpdateUserModel): Promise<User> {
+        const user: User = await this.userService.updateUser(updateUser);
 
-        return updateUser;
+        return user;
     }
 
     @Delete(':id')
