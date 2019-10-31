@@ -3,8 +3,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { PrintingEdition } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel } from 'src/models';
 import { UuidHelper } from 'src/common';
-import sequelize = require('sequelize');
-import { PrintingEditionRepository } from 'src/repositories/printing-edition.repository';
+import { PrintingEditionRepository } from 'src/repositories';
 
 @Injectable()
 export class PrintingEditionService {

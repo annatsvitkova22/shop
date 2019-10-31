@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Put, Delete, Param, Query, Request } from 
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { UserService } from 'src/services';
-import { CreateUserModel, UpdateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
+import { CreateUserModel, UpdateUserModel, ForgotPassword, UserInfoModel } from 'src/models';
 import { User } from 'src/entity';
 
 @ApiUseTags('Users table')

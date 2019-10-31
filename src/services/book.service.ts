@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { BookDocument, AuthorDocument } from 'src/document';
 import { CreateBookModel, UpdateBookModel, BookAuthorResultModel } from 'src/models';

@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, Param, Put, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
-import { FileInterceptor,  } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { extname } from 'path';
 import { diskStorage } from 'multer';

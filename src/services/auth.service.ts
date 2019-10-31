@@ -2,7 +2,6 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import { User } from 'src/entity';
 import { AuthenticatedUserModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
