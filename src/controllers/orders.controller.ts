@@ -9,7 +9,7 @@ import { Order } from 'src/entity';
 @Controller('order')
 export class OrdersController {
 
-    constructor( private orderService: OrderService, ) { }
+    constructor(private orderService: OrderService) { }
 
     @Get()
     @ApiOperation({ title: 'Search all orders'})

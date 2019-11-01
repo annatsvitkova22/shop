@@ -1,7 +1,4 @@
-export * from 'src/models/book/create-book.model';
 export * from 'src/models/author/create-author.model';
-export * from 'src/models/book/update-book.model';
-export * from 'src/models/author/update-author-mongo.model';
 export * from 'src/models/token.model';
 export * from 'src/models/user/validate-user.model';
 export * from 'src/models/user/user.model';
@@ -26,7 +23,6 @@ export * from 'src/models/book/printing-edition-filter.model';
 export * from 'src/models/forgot-password.model';
 export * from 'src/models/user/created-user.model';
 export * from 'src/models/book/printing-edition-info.model';
-export * from 'src/models/book/book-author-result.model';
 export * from 'src/models/user/user-info.model';
 export * from 'src/models/user/user-role.model';
 export * from 'src/models/create-transport.model';

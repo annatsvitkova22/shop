@@ -29,16 +29,16 @@ export class RolesController {
 
     @Post()
     @ApiOperation({ title: 'Creste user'})
-    public async create(@Body() createRole: CreateRoleModel): Promise<Role> {
-        const role: Role = await this.roleService.createRole(createRole);
+    public async create(@Body() createdRole: CreateRoleModel): Promise<Role> {
+        const role: Role = await this.roleService.createRole(createdRole);
 
         return role;
     }
 
     @Put()
     @ApiOperation({ title: 'Update user by id'})
-    public update(@Body() updateRole: UpdateRoleModel): Promise<Role> {
-        const role: Promise<Role> = this.roleService.updateRole(updateRole);
+    public update(@Body() updatedRole: UpdateRoleModel): Promise<Role> {
+        const role: Promise<Role> = this.roleService.updateRole(updatedRole);
 
         return role;
     }

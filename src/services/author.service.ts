@@ -27,7 +27,7 @@ export class AuthorService {
 
     public async createAuthor(CreateAuthor: CreateAuthorModel): Promise<Author> {
         const author: Author = new Author();
-        const validateName = await this.validateName(CreateAuthor.name);
+        const validateName: string = await this.validateName(CreateAuthor.name);
         author.name = validateName;
         author.id = this.uuidHelper.uuidv4();
 

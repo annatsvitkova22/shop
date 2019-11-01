@@ -1,6 +1,4 @@
 export * from 'src/services/auth.service';
-export * from 'src/services/author-mongo.service';
-export * from 'src/services/book.service';
 export * from 'src/services/printing-edition.service';
 export * from 'src/services/user.service';
 export * from 'src/services/order.sevice';

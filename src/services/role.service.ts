@@ -3,7 +3,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
 import { UuidHelper } from 'src/common';
-import { RoleRepository } from 'src/repositories/role.repository';
+import { RoleRepository } from 'src/repositories/';
 
 @Injectable()
 export class RoleService {
