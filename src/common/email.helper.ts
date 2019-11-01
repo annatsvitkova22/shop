@@ -5,6 +5,8 @@ import * as nodemailer from 'nodemailer';
 import { HashHelper } from 'src/entity';
 import { UserService } from 'src/services';
 import { Enviroment, getEnv } from 'src/environment/environment';
+import { MailOptionModel } from 'src/models';
+import { CreateTransporterModel } from 'src/models/create-transporter.model';
 
 const myEnvitonment: Enviroment = getEnv();
 
@@ -17,7 +19,7 @@ export class MailerHelper {
 
   public async sendEmail(email: string, url: string): Promise<string> {
     try {
-      const transporter = nodemailer.createTransport({
+      const transporter: CreateTransporterModel = nodemailer.createTransport({
         service: myEnvitonment.serviceMail,
         port: myEnvitonment.portMail,
         secure: myEnvitonment.secureMail,
@@ -28,7 +30,7 @@ export class MailerHelper {
       });
       const token: string = await this.hashHelper.getRandomSalt();
 
-      const mailOptions = {
+      const mailOptions: MailOptionModel = {
         from: myEnvitonment.userMail,
         to: email,
         subject: 'IT works',

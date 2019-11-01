@@ -25,3 +25,4 @@ export * from 'src/models/user/created-user.model';
 export * from 'src/models/book/printing-edition-info.model';
 export * from 'src/models/user/user-info.model';
 export * from 'src/models/user/user-role.model';
+export * from 'src/models/mail-option.model';
