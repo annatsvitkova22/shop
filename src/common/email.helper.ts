@@ -32,7 +32,7 @@ export class MailerHelper {
         from: myEnvitonment.userMail,
         to: email,
         subject: 'IT works',
-        text: `\n ${url}/user/${email}/${token} \n`,
+        html: `<a href="${url}/user/${email}/${token}">Подтвердить</a>`,
       };
 
       await transporter.sendMail(mailOptions);

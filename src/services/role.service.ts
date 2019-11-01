@@ -3,7 +3,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Role } from 'src/entity';
 import { UpdateRoleModel, CreateRoleModel } from 'src/models';
 import { UuidHelper } from 'src/common';
-import { RoleRepository } from 'src/repositories/role.repository';
+import { RoleRepository } from 'src/repositories/';
 
 @Injectable()
 export class RoleService {
@@ -20,15 +20,13 @@ export class RoleService {
     }
 
     public async getRoleById(id: string): Promise<Role> {
-        const role = new UpdateRoleModel();
-        role.id = id;
-        const foundRole: Role = await this.roleRepository.getRoleById(role.id);
+        const foundRole: Role = await this.roleRepository.getRoleById(id);
 
         return foundRole;
     }
 
     public async createRole(createRole: CreateRoleModel): Promise<Role> {
-        const role = new Role();
+        const role: Role = new Role();
         role.name = createRole.name;
         role.id = this.uuidHelper.uuidv4();
 
@@ -38,7 +36,7 @@ export class RoleService {
     }
 
     public async updateRole(updateRole: UpdateRoleModel): Promise<Role> {
-        const role = new Role();
+        const role: Role = new Role();
         role.id = updateRole.id;
         role.name = updateRole.name;
 

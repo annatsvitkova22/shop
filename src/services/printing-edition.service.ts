@@ -20,16 +20,13 @@ export class PrintingEditionService {
     }
 
     public async getPrintingEditionsById(id: string): Promise<PrintingEdition> {
-        const edition = new UpdatePrintingEditionModel();
-        edition.id = id;
-
-        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(edition.id);
+        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(id);
 
         return foundPrintingEdition;
     }
 
     public async getFiltered(params: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
-        const printingEdition = new PrintingEditionFilterModel();
+        const printingEdition: PrintingEditionFilterModel = new PrintingEditionFilterModel();
         printingEdition.name = params.name;
         printingEdition.status = params.status;
         printingEdition.priceMin = params.priceMin;
@@ -67,21 +64,21 @@ export class PrintingEditionService {
 
     public async getPaging(take: number, skip: number): Promise<PrintingEditionInfoModel> {
         if (isNaN(+take) || isNaN(+skip)) {
-            const error = new PrintingEditionInfoModel();
+            const error: PrintingEditionInfoModel = new PrintingEditionInfoModel();
             error.message = 'You entered incorrect data, please enter take, skip (numbers)';
 
             return error;
         }
 
         const printingEditions: PrintingEdition[] = await this.printingEditionRepository.getPaginationPrintingEdition(take, skip);
-        const printingEditionModel = new PrintingEditionInfoModel();
+        const printingEditionModel: PrintingEditionInfoModel = new PrintingEditionInfoModel();
         printingEditionModel.printingEdition = printingEditions;
 
         return printingEditionModel;
     }
 
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
-        const edition = new PrintingEdition();
+        const edition: PrintingEdition = new PrintingEdition();
         edition.name = createPrintingEdition.name;
         edition.description = createPrintingEdition.description;
         edition.price = createPrintingEdition.price;
@@ -96,7 +93,7 @@ export class PrintingEditionService {
     }
 
     public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const edition = new UpdatePrintingEditionModel();
+        const edition: UpdatePrintingEditionModel = new UpdatePrintingEditionModel();
         edition.id = updatePrintingEdition.id;
         edition.name = updatePrintingEdition.name;
         edition.description = updatePrintingEdition.description;
@@ -121,7 +118,7 @@ export class PrintingEditionService {
     }
 
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {
-        const result: number = await this.printingEditionRepository.deletePrintingEdition(printingEditionId)
+        const result: number = await this.printingEditionRepository.deletePrintingEdition(printingEditionId);
 
         return result;
     }

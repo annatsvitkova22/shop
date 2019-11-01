@@ -23,15 +23,13 @@ export class PaymentService {
     }
 
     public async getUPaymentById(id: string): Promise<Payment> {
-        const payment = new UpdatePaymentModel();
-        payment.id = id;
-        const foundPayment: Payment = await this.paymentRepository.getPaymentById(payment.id);
+        const foundPayment: Payment = await this.paymentRepository.getPaymentById(id);
 
         return foundPayment;
     }
 
     public async createPayment(createPayment: CreatePaymentModel): Promise<Payment> {
-        const payment = new Payment();
+        const payment: Payment = new Payment();
         const transactionId: string = await this.charge(createPayment);
         payment.transactionId = transactionId;
         payment.id = this.uuidHelper.uuidv4();
@@ -42,7 +40,7 @@ export class PaymentService {
     }
 
     public async updatePayment(updatePayment: UpdatePaymentModel): Promise<Payment> {
-        const payment = new Payment();
+        const payment: Payment = new Payment();
         payment.id = updatePayment.id;
         payment.transactionId = updatePayment.transactionId;
         const toUpdate: Payment = await this.paymentRepository.getPaymentById(payment.id);

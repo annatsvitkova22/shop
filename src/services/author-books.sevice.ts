@@ -20,15 +20,13 @@ export class AuthorInBookService {
     }
 
     public async getAuthorInBooksById(id: string): Promise<AuthorInBooks> {
-        const authorInBookId = new UpdateAuthorInBooksModel();
-        authorInBookId.id = id;
-        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.getAuthorInBookById(authorInBookId.id);
+        const authorInBook: AuthorInBooks = await this.authorInBooksRepository.getAuthorInBookById(id);
 
         return authorInBook;
     }
 
     public async createAuthorInBook(createdAuthorInBook: CreateAuthorInBooksModel): Promise<string> {
-        const authorInBook = new AuthorInBooks();
+        const authorInBook: AuthorInBooks = new AuthorInBooks();
         authorInBook.authorId = createdAuthorInBook.authorId;
         authorInBook.bookId = createdAuthorInBook.bookId;
         authorInBook.id = this.uuidHelper.uuidv4();
@@ -38,7 +36,7 @@ export class AuthorInBookService {
     }
 
     public async updateAuthorInBook(authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const updateAuthorInBook = new AuthorInBooks();
+        const updateAuthorInBook: AuthorInBooks = new AuthorInBooks();
         updateAuthorInBook.id = authorInBook.id;
         updateAuthorInBook.authorId = authorInBook.authorId;
         updateAuthorInBook.bookId = authorInBook.bookId;

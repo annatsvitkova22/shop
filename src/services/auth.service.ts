@@ -29,7 +29,7 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await this.hashHelper.compareHash(password, user[0].passwordHash);
+    const isPasswordValid: boolean = await this.hashHelper.compareHash(password, user[0].passwordHash);
 
     if ( isPasswordValid) {
         const result: AuthenticatedUserModel = {};

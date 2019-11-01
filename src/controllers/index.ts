@@ -1,6 +1,4 @@
 export * from 'src/controllers/authentication.controller';
-export * from 'src/controllers/authors-mongo.controller';
-export * from 'src/controllers/books-mongo.controller';
 export * from 'src/controllers/printing-editions.controller';
 export * from 'src/controllers/users.controller';
 export * from 'src/controllers/orders.controller';

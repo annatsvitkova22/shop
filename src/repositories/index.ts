@@ -1,5 +1,3 @@
-export * from 'src/repositories/author-mongo.repository';
-export * from 'src/repositories/book.repository';
 export * from 'src/repositories/order.repository';
 export * from 'src/repositories/role.repository';
 export * from 'src/repositories/order-item.repository';

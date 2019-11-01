@@ -1,7 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { User } from 'src/entity';
-import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel } from 'src/models';
+import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel, UserWithRoleModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 import { UserRepository } from 'src/repositories/user.repository';
 
@@ -22,18 +22,16 @@ export class UserService {
     }
 
     public async getUserById(id: string): Promise<User> {
-        const user = new UpdateUserModel();
-        user.id = id;
-        const foundUser: User = await this.userRepository.getUserById(user.id);
+        const foundUser: User = await this.userRepository.getUserById(id);
 
         return foundUser;
     }
 
     public async createUser(createUser: CreateUserModel, req): Promise<UserInfoModel> {
         const url: string = req.protocol + '://' + req.hostname;
-        const user = new User();
-        const showedUser = new CreatedUserModel();
-        const userModel = new UserInfoModel();
+        const user: User = new User();
+        const showedUser: CreatedUserModel = new CreatedUserModel();
+        const userModel: UserInfoModel = new UserInfoModel();
         user.firstName = createUser.firstName;
         user.lastName = createUser.lastName;
         user.email = createUser.email;
@@ -42,7 +40,7 @@ export class UserService {
         const foundUser: User = await this.userRepository.getUserByEmail(user.email);
 
         if (foundUser) {
-            const error = new UserInfoModel();
+            const error: UserInfoModel = new UserInfoModel();
             error.message = 'user with this email already exists';
 
             return error;
@@ -85,7 +83,7 @@ export class UserService {
     }
 
     public async updateUser(updateUser: UpdateUserModel): Promise<User> {
-        const user = new User();
+        const user: User = new User();
         user.id = updateUser.id;
         user.firstName = updateUser.firstName;
         user.lastName = updateUser.lastName;
@@ -115,8 +113,8 @@ export class UserService {
         return foundUser;
     }
 
-    public async findUserWithRoleByEmail(username: string) {
-        const foundUser = await this.userRepository.getUserWithRoleByEmail(username);
+    public async findUserWithRoleByEmail(username: string): Promise<UserWithRoleModel[]> {
+        const foundUser: UserWithRoleModel[] = await this.userRepository.getUserWithRoleByEmail(username);
 
         return foundUser;
     }

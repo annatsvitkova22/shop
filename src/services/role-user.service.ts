@@ -20,15 +20,13 @@ export class RoleInUsersService {
     }
 
     public async getRoleInUsersById(id: string): Promise<UserInRoles> {
-        const role = new UpdateRoleInUsersModel();
-        role.id = id;
-        const foundRoleInUser: UserInRoles = await this.roleInUsersRepository.getUserInRoleById(role.id);
+        const foundRoleInUser: UserInRoles = await this.roleInUsersRepository.getUserInRoleById(id);
 
         return foundRoleInUser;
     }
 
     public async createRoleInUser(createRole: CreateRoleInUsersModel): Promise<UserInRoles> {
-        const role = new UserInRoles();
+        const role: UserInRoles = new UserInRoles();
         role.roleId = createRole.roleId;
         role.userId = createRole.userId;
         role.id = this.uuidHelper.uuidv4();
@@ -39,7 +37,7 @@ export class RoleInUsersService {
     }
 
     public async updateRoleInUser(updateRole: UpdateRoleInUsersModel): Promise<UserInRoles> {
-        const roleInUser = new UserInRoles();
+        const roleInUser: UserInRoles = new UserInRoles();
         roleInUser.id = updateRole.id;
         roleInUser.roleId = updateRole.roleId;
         roleInUser.userId = updateRole.userId;
