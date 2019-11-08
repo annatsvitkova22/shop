@@ -1,39 +1,55 @@
 import React, { Component } from 'react';
-import './author.css';
 import { connect } from 'react-redux';
+import './author.css';
+
+const BASE_PATH = 'https://localhost:443/author/';
 
 class Author extends Component {
-    state = {
-        authors: [],
-        tests: [],
-    };
+    constructor(props) {
+        super(props);
+        this.state = ({
+            tests: [],
+        });
+    }
+
+    addAuthor = () => {
+        const { value } = this.authorInput;
+        const createAuthor = {
+            name: value,
+        };
+        this.createAuthor(createAuthor);
+        this.props.onAddAuthor(value);
+        this.authorInput.value = '';
+        console.log(this.state);
+        console.log(this.props.testAuthor);
+    }
 
     componentDidMount = () => {
+        this.getAllAuthors();
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log(this.props.testAuthor);
+        if (this.props.testAuthor !== prevProps.testAuthor) {
+            this.getAllAuthors();
+        }
+      }
+
+    getAllAuthors = () => {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const options = {
             method: 'GET',
             headers,
         };
-        const request = new Request('https://localhost:443/author/', options);
+        const request = new Request(BASE_PATH, options);
         fetch(request)
             .then(res => res.json())
-            .then(authors => this.setState({ authors }));
-        console.log(this.props);
-        console.log(this.state);
+            .then(tests => this.setState({ tests }))
+            .catch(error => error);
     }
 
-    addAuthor() {
-        const createAuthor = {
-            name: this.authorInput.value,
-        };
-        console.log(createAuthor)
-        this.createAuthor(createAuthor);
-        this.props.onAddAuthor(this.authorInput.value);
-        this.authorInput.value = '';
-    }
-
-    createAuthor(data) {
+    createAuthor = (data) => {
         const json = JSON.stringify(data);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -42,40 +58,40 @@ class Author extends Component {
             headers,
             body: json,
         };
-        const request = new Request('https://localhost:443/author/', options);
+        const request = new Request(BASE_PATH, options);
         fetch(request)
-            .then(res => res.json())
-            .then(tests => this.setState({ tests }));
+            .catch(error => error);
     }
 
     render() {
+        const { testAuthor } = this.props;
+        const { tests } = this.state;
         return (
             <div>
                 <h2>Authors</h2>
                 <input type="text" ref={(input) => { this.authorInput = input }} />
-                <button onClick={this.addAuthor.bind(this)}>Add author</button>
+                <button onClick={this.addAuthor}>Add author</button>
                 <ul>
-                    {this.state.authors.map(author =>
-                        <li key={author.id}>{author.name}</li>
-                    )}
+                    {
+                        tests.map(({id, name}) => <li key={id}>{name}</li>)
+                    }
                 </ul>
-                <hr />
                 {/* <ul>
-                    {this.state.test.map(test =>
-                        <li key={test.id}>{test.name}</li>
-                    )}
+                    {
+                        testAuthor.map((author, index) => <li key={index}>{author}</li>)
+                    }
                 </ul> */}
             </div>
         );
     }
 }
 
-export default connect(state => ({
-    tests: state
-}),
+export default connect( state => ({
+        testAuthor: state,
+    }),
     dispatch => ({
         onAddAuthor: (authorName) => {
-            dispatch({ type: 'ADD_AUTHOR', payload: authorName })
+            dispatch({ type: 'ADD_AUTHOR', payload: authorName });
         }
     })
 )(Author);

@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# compiled output
+ /dist
+ 
 # testing
 /coverage
 
