@@ -18,6 +18,12 @@ interface IState {
     tests?: test[],
     taskText?: '',
 }
+interface IProps {
+    addAuthor?: string[],
+    removeAuthor?: string[],
+    tasks?: string[],
+}
+
 class Author extends Component {
     constructor(props: IState) {
         super(props);
@@ -34,7 +40,7 @@ class Author extends Component {
     }
 
     addAuthor = () => {
-        const { taskText }: any = this.state;
+        const { taskText }: IState = this.state;
         const { addAuthor }: any = this.props;
         const createAuthor = {
             name: taskText,
@@ -69,7 +75,7 @@ class Author extends Component {
         this.getAllAuthors();
     }
 
-    componentDidUpdate(prevProps: any) {
+    componentDidUpdate(prevProps: IProps) {
         const { tasks }: any = this.props;
 
         if (tasks[1] == REMOVE_AUTHOR) {
@@ -112,7 +118,7 @@ class Author extends Component {
     }
 
     render() {
-        const { taskText, tests }: any = this.state;
+        const { taskText, tests }: IState = this.state;
         const { removeAuthor }: any = this.props;
 
         return (
@@ -124,6 +130,6 @@ class Author extends Component {
     }
 }
 
-export default connect(({ tasks }: any) => ({
+export default connect(({ tasks }: IProps) => ({
     tasks,
 }), { addAuthor, removeAuthor, completeAuthor })(Author);
