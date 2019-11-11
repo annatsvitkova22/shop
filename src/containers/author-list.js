@@ -1,63 +1,138 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { add } from '../actions/index';
 
-class AuthorList extends Component {
-    addAuthor() {
-        console.log(this.state);
-        this.props.onAddAuthor(this.authorInput.value);
-        this.authorInput.value = '';
-        console.log(this.props);
-    }
+import { addAuthor, removeAuthor, completeAuthor } from '../actions/index';
+import AuthorInput from '../components/author-input/author-input';
+import AuthorList from '../components/author-list/author-list';
+import { REMOVE_AUTHOR, ADD_AUTHOR } from '../constants';
 
-    showList() {
-        return this.props.authors.map((author) => {
-            return (<li onClick={() => this.props.add(author)}
-            >{author.name}</li>
-            );
+import '../components/author.css';
+
+const BASE_PATH = 'https://localhost:443/author/';
+
+class Author extends Component {
+    constructor(props) {
+        super(props);
+        this.state = ({
+            tests: [],
+            taskText: '',
         });
     }
 
+    handleInputChange = ({ target: { value } }) => {
+        this.setState({
+            taskText: value,
+        })
+    }
+
+    addAuthor = () => {
+        const { taskText } = this.state;
+        const { addAuthor } = this.props;
+        const createAuthor = {
+            name: taskText,
+        };
+        
+        this.createAuthor(createAuthor);
+        addAuthor(taskText);
+        this.setState({
+            taskText: '',
+        });
+    }
+
+    deleteAuthor = (id) => {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'DELETE',
+            headers,
+        };
+
+        const path = BASE_PATH + id;
+        console.log(path);
+
+        const request = new Request(path, options);
+        fetch(request)
+            .then(res => res.json())
+            .then(tests => this.setState({ tests }))
+            .catch(error => error);
+    }
+
+    componentDidMount = () => {
+        this.getAllAuthors();
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log(this.state.tests);
+        console.log(this.props.tasks);
+        if (this.props.tasks[1] == REMOVE_AUTHOR) {
+            this.deleteAuthor(this.props.tasks[0]);
+            this.props.tasks[1] = ADD_AUTHOR;
+            this.getAllAuthors();
+        }
+        if (this.props.tasks !== prevProps.tasks) {
+            this.getAllAuthors();
+          
+        }
+    }
+
+    getAllAuthors = () => {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'GET',
+            headers,
+        };
+        const request = new Request(BASE_PATH, options);
+        fetch(request)
+            .then(res => res.json())
+            .then(tests => this.setState({ tests }))
+            .catch(error => error);
+    }
+
+    createAuthor = (data) => {
+        const json = JSON.stringify(data);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+        const request = new Request(BASE_PATH, options);
+        fetch(request)
+            .catch(error => error);
+    }
+
+    // render() {
+    //     const { tests } = this.state;
+    //     return (
+    //         <div>
+    //             <h2>Authors</h2>
+    //             <input type="text" ref={(input) => { this.authorInput = input }} />
+    //             <button onClick={this.addAuthor}>Add author</button>
+    //             <ul>
+    //                 {
+    //                     tests.map(({id, name}) => <li key={id}>{name}</li>)
+    //                 }
+    //             </ul>
+    //         </div>
+    //     );
+    // }
+
+
     render() {
+        const { taskText, tests } = this.state;
+        const { removeAuthor } = this.props;
+
         return (
-            <div>
-                <h2>Authors</h2>
-                <input type="text" ref={(input) => { this.authorInput = input }} />
-                <button onClick={this.addAuthor.bind(this)}>Add author</button>
-                {/* <ul>
-                    {this.props.testAuthor.map((author, index) =>
-                        <li key={index}>{author}</li>
-                    )}
-                </ul> */}
-                <ul>
-                    {this.showList()}
-                </ul>
+            <div className="author-wrapper">
+                <AuthorInput onClick={this.addAuthor} onChange={this.handleInputChange} value={taskText} />
+                <AuthorList onClick={this.deleteAuthor} removeAuthor={removeAuthor} testsList={tests} />
             </div>
         );
     }
 }
 
-// function mapStateToProps(state) {
-//     return {
-//         authors: state.authors
-//     };
-// }
-
-// function matchDispatchToProps(dispatch) {
-//     return bindActionCreators({ add: add }, dispatch)
-// }
-
-export default connect(state => ({
-    testAuthor: state,
-    authors: state.authors,
-}),
-    dispatch => ({
-        onAddAuthor: (author) => {
-            dispatch({ type: 'ADD_AUTHOR', payload: author })
-        }
-    })
-)(AuthorList);
-
-
-// export default connect(mapStateToProps)(AuthorList);
+export default connect(({ tasks }) => ({
+    tasks,
+}), { addAuthor, removeAuthor, completeAuthor })(Author);

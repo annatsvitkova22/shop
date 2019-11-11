@@ -1,25 +1,32 @@
-export default function () {
-    return [
-        {
-            name: 'mbbfd'
-        },
-        {
-            name: 'mbfgdfbfd'
-        }
-    ]
-    // state = {
-    //     authors: [],
-    // };
-    // const headers = new Headers();
-    //     headers.append('Content-Type', 'application/json');
-    //     const options = {
-    //         method: 'GET',
-    //         headers,
-    //     };
-    //     const request = new Request('https://localhost:443/author/', options);
-    //     fetch(request)
-    //         .then(res => res.json())
-    //         .then(authors => this.setState({ authors }));
-    
-    // return authors;
+import { ADD_AUTHOR, REMOVE_AUTHOR, COMPLETE_AUTHOR } from '../constants';
+
+const AUTHORS = {
+    tasks: [],
 }
+
+const tasks = (state = AUTHORS.tasks, { id, name, isCompleted, type }) => {
+    switch (type) {
+        case ADD_AUTHOR:
+            return [
+                ...state,
+                name,
+
+            ];
+        case REMOVE_AUTHOR:
+            return [
+                id,
+                type
+            ];
+        case COMPLETE_AUTHOR:
+            return [...state].map(task => {
+                if (task.id === id) {
+                    task.isCompleted = !task.isCompleted;
+                }
+                return task;
+            });
+        default:
+            return state;
+    }
+}
+
+export default tasks;

@@ -1,0 +1,4 @@
+
+export const ADD_AUTHOR = 'ADD_AUTHOR';
+export const REMOVE_AUTHOR = 'REMOVE_AUTHOR';
+export const COMPLETE_AUTHOR = 'COMPLETE_AUTHOR';

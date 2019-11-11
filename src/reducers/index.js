@@ -1,10 +1,6 @@
 import { combineReducers } from 'redux';
-import AuthorsReducers from './author';
-import ActiveAuthor from './author-active';
+import tasks from './author';
 
-const allReducers = combineReducers ({
-    authors: AuthorsReducers,
-    active: ActiveAuthor,
-});
+const rootReducer = combineReducers({ tasks });
 
-export default allReducers;
+export default rootReducer;
