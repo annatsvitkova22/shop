@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 
 import '../author.css'
 
-const AuthorInput = ({ value, onChange, onClick }) => (
+interface authorInput {
+    value?: string,
+    onClick: () => { },
+    onChange: () => { },
+}
+
+const AuthorInput = ({ value, onChange, onClick }: authorInput) => (
     <div className="author-input-wrapper">
         <h2>Authors</h2>
         <input
@@ -17,12 +23,14 @@ const AuthorInput = ({ value, onChange, onClick }) => (
 
 AuthorInput.propTypes = {
     onClick: PropTypes.func,
+    onChange: PropTypes.func,
     value: PropTypes.string,
 }
 
 AuthorInput.defaultProps = {
     onClick: () => { },
-    // value: '',
+    onChange: () => { },
+    value: '',
 }
 
 export default AuthorInput;

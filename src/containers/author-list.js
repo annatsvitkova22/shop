@@ -103,23 +103,6 @@ class Author extends Component {
             .catch(error => error);
     }
 
-    // render() {
-    //     const { tests } = this.state;
-    //     return (
-    //         <div>
-    //             <h2>Authors</h2>
-    //             <input type="text" ref={(input) => { this.authorInput = input }} />
-    //             <button onClick={this.addAuthor}>Add author</button>
-    //             <ul>
-    //                 {
-    //                     tests.map(({id, name}) => <li key={id}>{name}</li>)
-    //                 }
-    //             </ul>
-    //         </div>
-    //     );
-    // }
-
-
     render() {
         const { taskText, tests } = this.state;
         const { removeAuthor } = this.props;

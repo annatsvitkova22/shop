@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 
 import '../author.css';
 
-const AuthorItem = ({ name, removeAuthor, id }) => (
+interface authorItem {
+  name?: string,
+  removeAuthor?: any,
+  id?: string
+}
+
+const AuthorItem = ({ name, removeAuthor, id }: authorItem) => (
   <li className="author-item">
     <span>{name}</span>
     <button onClick={() => removeAuthor(id)}  className="fas fa-times" >delete</button>

@@ -1,17 +1,16 @@
 import { ADD_AUTHOR, REMOVE_AUTHOR, COMPLETE_AUTHOR } from '../constants';
 
-export const addAuthor = (name, isCompleted) => ({
+export const addAuthor = (name: string) => ({
   type: ADD_AUTHOR,
-  name,
-  isCompleted
+  name
 });
 
-export const removeAuthor = id => ({
+export const removeAuthor = (id: string) => ({
   type: REMOVE_AUTHOR,
   id
 });
 
-export const completeAuthor = id => ({
+export const completeAuthor = (id: string) => ({
   type: COMPLETE_AUTHOR,
   id
 });

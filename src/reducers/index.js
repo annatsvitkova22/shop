@@ -1,6 +1,12 @@
-import { combineReducers } from 'redux';
+import { combineReducers, Reducer } from 'redux';
 import tasks from './author';
 
-const rootReducer = combineReducers({ tasks });
+// interface task {
+//     id?: string,
+//     name?: string,
+//     type?: string;
+// }
+
+const rootReducer = combineReducers({ task });
 
 export default rootReducer;

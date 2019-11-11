@@ -1,10 +1,15 @@
 import { ADD_AUTHOR, REMOVE_AUTHOR, COMPLETE_AUTHOR } from '../constants';
 
+interface task {
+    id?: string,
+    name?: string,
+    type?: string;
+}
 const AUTHORS = {
     tasks: [],
 }
 
-const tasks = (state = AUTHORS.tasks, { id, name, isCompleted, type }) => {
+const tasks = (state = AUTHORS.tasks, { id, name, type }: task) => {
     switch (type) {
         case ADD_AUTHOR:
             return [
@@ -18,12 +23,9 @@ const tasks = (state = AUTHORS.tasks, { id, name, isCompleted, type }) => {
                 type
             ];
         case COMPLETE_AUTHOR:
-            return [...state].map(task => {
-                if (task.id === id) {
-                    task.isCompleted = !task.isCompleted;
-                }
-                return task;
-            });
+            return [
+                ...state,
+            ];
         default:
             return state;
     }

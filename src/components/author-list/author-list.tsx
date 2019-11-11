@@ -5,7 +5,12 @@ import AuthorItem from '../author-item/author-item';
 
 import '../author.css';
 
-const AuthorList = ({ testsList, removeAuthor }) => (
+interface authorList {
+    testsList: [],
+    removeAuthor: () => { },
+  }
+
+const AuthorList = ({ testsList, removeAuthor }: authorList) => (
     <ul className="author-list">
         {Array.isArray(testsList) && testsList.map(({ id, name }) => (
             <AuthorItem removeAuthor={removeAuthor} id={id} key={id} name={name} />
@@ -15,12 +20,12 @@ const AuthorList = ({ testsList, removeAuthor }) => (
 
 AuthorList.propTypes = {
     testsList: PropTypes.array,
-    removeTask: PropTypes.func,
+    removeAuthor: PropTypes.func,
 }
 
 AuthorList.defaultProps = {
     testsList: [],
-    removeTask: () => { },
+    removeAuthor: () => { },
 }
 
 export default AuthorList;
