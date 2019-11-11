@@ -5,6 +5,7 @@ interface task {
     name?: string,
     type?: string;
 }
+
 const AUTHORS = {
     tasks: [],
 }
@@ -25,7 +26,7 @@ const tasks = (state = AUTHORS.tasks, { id, name, type }: task) => {
         case COMPLETE_AUTHOR:
             return [
                 ...state,
-            ];
+        ];
         default:
             return state;
     }
