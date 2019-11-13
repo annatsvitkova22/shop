@@ -1,10 +1,9 @@
 import React, {FC} from 'react';
-import PropTypes from 'prop-types';
 
 import AuthorItem from '../author-item/author-item';
+import { AuthorListProps } from '../../../../type/author.type';
 
 import '../author.css';
-import { AuthorListProps } from '../../type/author.type';
 
 
 const AuthorList: FC<AuthorListProps> = ({ authors, onRemoveAuthor }) => (

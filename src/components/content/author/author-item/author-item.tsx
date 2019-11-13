@@ -1,8 +1,7 @@
 import React, {FC} from 'react';
-import PropTypes from 'prop-types';
 
 import '../author.css';
-import { AuthorItemProps } from '../../type/author.type';
+import { AuthorItemProps } from '../../../../type/author.type';
 
 const AuthorItem: FC<AuthorItemProps> = ({ id, name, onRemoveAuthor}) => (
   <li className="author-item">

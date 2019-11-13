@@ -2,13 +2,13 @@ import React, { Component, ReactElement } from 'react';
 import { connect } from 'react-redux';
 
 import { addAuthor, removeAuthor } from '../actions/actions';
-import AuthorInput from '../components/author-input/author-input';
-import AuthorList from '../components/author-list/author-list';
+import AuthorInput from '../components/content/author/author-input/author-input';
+import AuthorList from '../components/content/author/author-list/author-list';
 
 import '../components/author.css';
 import { AuthorListState, AuthorProps } from '../type/author.type';
 
-const BASE_PATH = 'https://localhost:443/author/';
+const BASE_PATH = 'https://192.168.0.104:443/author/';
 
 
 class Author extends Component<AuthorProps, AuthorListState> {
@@ -105,7 +105,7 @@ class Author extends Component<AuthorProps, AuthorListState> {
         const { authorName, authors }: AuthorListState = this.state;
 
         return (
-            <div className="author-wrapper">
+            <div className="content">
                 <AuthorInput onCreateAuthor={this.addAuthor} onInputValueUpdate={this.handleInputChange} value={authorName} />
                 <AuthorList onRemoveAuthor={this.removeAuthor} authors={authors} />
             </div>
