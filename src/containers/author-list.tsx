@@ -1,59 +1,89 @@
-import React, { Component } from 'react';
+import React, { Component, ReactElement } from 'react';
 import { connect } from 'react-redux';
 
-import { addAuthor, removeAuthor, completeAuthor } from '../actions/index';
+import { addAuthor, removeAuthor } from '../actions/actions';
 import AuthorInput from '../components/author-input/author-input';
 import AuthorList from '../components/author-list/author-list';
-import { REMOVE_AUTHOR, ADD_AUTHOR } from '../constants';
 
 import '../components/author.css';
+import { AuthorListState, AuthorProps } from '../type/author.type';
 
 const BASE_PATH = 'https://localhost:443/author/';
-interface test {
-    id?: string,
-    name?: string,
-    isRemoved?: boolean
-}
-interface IState {
-    tests?: test[],
-    taskText?: '',
-}
-interface IProps {
-    addAuthor?: string[],
-    removeAuthor?: string[],
-    tasks?: string[],
-}
 
-class Author extends Component {
-    constructor(props: IState) {
-        super(props);
-        this.state = ({
-            tests: [],
-            taskText: '',
-        });
-    }
 
-    handleInputChange = ({ target: { value } }: any) => {
+class Author extends Component<AuthorProps, AuthorListState> {
+    state: AuthorListState = ({
+        authors: [],
+   
+        authorName: '',
+    });
+
+    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const { value } = event.target;
+
         this.setState({
-            taskText: value,
-        })
+            authorName: value,
+        });
     }
 
     addAuthor = () => {
-        const { taskText }: IState = this.state;
+        const { authorName }: AuthorListState = this.state;
+
         const { addAuthor }: any = this.props;
         const createAuthor = {
-            name: taskText,
+            name: authorName,
         };
-        
+
         this.createAuthor(createAuthor);
-        addAuthor(taskText);
+
         this.setState({
-            taskText: '',
+            authorName: '',
         });
     }
 
-    deleteAuthor = (id: string) => {
+    componentDidMount = () => {
+        this.getAllAuthors();
+    }
+
+    componentDidUpdate(prevProps: any) {
+        const { author }: any = this.props;
+
+        if (author !== prevProps.author) {
+            this.getAllAuthors();
+        }
+    }
+
+    getAllAuthors = (): void => {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'GET',
+            headers,
+        };
+        const request = new Request(BASE_PATH, options);
+        fetch(request)
+            .then(res => res.json())
+            .then(authors => this.setState({ authors }))
+            .catch(error => error);
+    }
+
+    createAuthor = (data: any): void => {
+        const json = JSON.stringify(data);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+        const request = new Request(BASE_PATH, options);
+        fetch(request)
+            .then(res => res.json())
+            .then(createdAuthor => this.props.addAuthor(createdAuthor))
+            .catch(error => error);
+    }
+
+    removeAuthor = (id: string): void => {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const options = {
@@ -67,69 +97,23 @@ class Author extends Component {
         const request = new Request(path, options);
         fetch(request)
             .then(res => res.json())
-            .then(tests => this.setState({ tests }))
+            .then(createdAuthor => this.props.removeAuthor( createdAuthor ))
             .catch(error => error);
     }
 
-    componentDidMount = () => {
-        this.getAllAuthors();
-    }
-
-    componentDidUpdate(prevProps: IProps) {
-        const { tasks }: any = this.props;
-
-        if (tasks[1] == REMOVE_AUTHOR) {
-            this.deleteAuthor(tasks[0]);
-            tasks[1] = ADD_AUTHOR;
-            this.getAllAuthors();
-        }
-        if (tasks !== prevProps.tasks) {
-            this.getAllAuthors();
-          
-        }
-    }
-
-    getAllAuthors = () => {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        const options = {
-            method: 'GET',
-            headers,
-        };
-        const request = new Request(BASE_PATH, options);
-        fetch(request)
-            .then(res => res.json())
-            .then(tests => this.setState({ tests }))
-            .catch(error => error);
-    }
-
-    createAuthor = (data: test) => {
-        const json = JSON.stringify(data);
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        const options = {
-            method: 'POST',
-            headers,
-            body: json,
-        };
-        const request = new Request(BASE_PATH, options);
-        fetch(request)
-            .catch(error => error);
-    }
-
-    render() {
-        const { taskText, tests }: IState = this.state;
-        const { removeAuthor }: any = this.props;
+    render(): ReactElement {
+        const { authorName, authors }: AuthorListState = this.state;
 
         return (
             <div className="author-wrapper">
-                <AuthorInput onClick={this.addAuthor} onChange={this.handleInputChange} value={taskText} />
-                <AuthorList onClick={this.deleteAuthor} removeAuthor={removeAuthor} testsList={tests} />
+                <AuthorInput onCreateAuthor={this.addAuthor} onInputValueUpdate={this.handleInputChange} value={authorName} />
+                <AuthorList onRemoveAuthor={this.removeAuthor} authors={authors} />
             </div>
         );
     }
 }
 
-export default connect(({ tasks }: IProps) => ({
-    tasks,
-}), { addAuthor, removeAuthor, completeAuthor })(Author);
+const mapStateToProps = (state: AuthorListState) => {
+    return state;
+}
+export default connect(mapStateToProps, { addAuthor, removeAuthor })(Author);

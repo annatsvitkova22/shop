@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { FC } from 'react';
 import './App.css';
-import Authors from './containers/author-list';
+import Author from './containers/author-list';
 
-const App: React.FC = () => {
-    return (
-      <div className="App">
-        <Authors />
-      </div>
-    );
-  };
+const App: FC = () => {
+  return (
+    <div className="App">
+      <Author />
+    </div>
+  );
+};
 
 
 export default App;

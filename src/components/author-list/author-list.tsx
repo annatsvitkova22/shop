@@ -1,31 +1,18 @@
-import React from 'react';
+import React, {FC} from 'react';
 import PropTypes from 'prop-types';
 
 import AuthorItem from '../author-item/author-item';
 
 import '../author.css';
+import { AuthorListProps } from '../../type/author.type';
 
-interface authorList {
-    testsList: [],
-    removeAuthor: () => { },
-  }
 
-const AuthorList = ({ testsList, removeAuthor }: authorList) => (
+const AuthorList: FC<AuthorListProps> = ({ authors, onRemoveAuthor }) => (
     <ul className="author-list">
-        {Array.isArray(testsList) && testsList.map(({ id, name }) => (
-            <AuthorItem removeAuthor={removeAuthor} id={id} key={id} name={name} />
+        {authors.map(({ id, name }) => (
+            <AuthorItem id={id} name={name} onRemoveAuthor={() => onRemoveAuthor(id)} key={id} />
         ))}
     </ul>
 );
-
-AuthorList.propTypes = {
-    testsList: PropTypes.array,
-    removeAuthor: PropTypes.func,
-}
-
-AuthorList.defaultProps = {
-    testsList: [],
-    removeAuthor: () => { },
-}
 
 export default AuthorList;

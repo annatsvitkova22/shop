@@ -1,36 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 
 import '../author.css'
+import { AuthorInputProps } from '../../type/author.type';
 
-interface authorInput {
-    value?: string,
-    onClick: () => { },
-    onChange: () => { },
-}
-
-const AuthorInput = ({ value, onChange, onClick }: authorInput) => (
+const AuthorInput: FC<AuthorInputProps> = ({ value, onInputValueUpdate, onCreateAuthor }) => (
     <div className="author-input-wrapper">
         <h2>Authors</h2>
         <input
             type='text'
             value={value}
-            onChange={onChange}
+            onChange={onInputValueUpdate}
         />
-        <button onClick={onClick}>Add author</button>
+        <button onClick={onCreateAuthor}>Add author</button>
     </div>
 );
-
-AuthorInput.propTypes = {
-    onClick: PropTypes.func,
-    onChange: PropTypes.func,
-    value: PropTypes.string,
-}
-
-AuthorInput.defaultProps = {
-    onClick: () => { },
-    onChange: () => { },
-    value: '',
-}
 
 export default AuthorInput;
