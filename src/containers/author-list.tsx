@@ -28,8 +28,6 @@ class Author extends Component<AuthorProps, AuthorListState> {
 
     addAuthor = () => {
         const { authorName }: AuthorListState = this.state;
-
-        const { addAuthor }: any = this.props;
         const createAuthor = {
             name: authorName,
         };
