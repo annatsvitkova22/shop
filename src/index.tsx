@@ -8,6 +8,7 @@ import store from './store/store';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Author from './containers/author-list';
 import CreateUser from './containers/create-user.container';
+import Login from './containers/login.container';
 
 ReactDOM.render((
   <BrowserRouter>
@@ -16,6 +17,7 @@ ReactDOM.render((
       <Provider store={store}>
         <Route exact path='/' component={CreateUser} />
         <Route path='/authors' component={Author} />
+        <Route path='/sing' component={Login} />
       </Provider>
     </Switch>
   </BrowserRouter>

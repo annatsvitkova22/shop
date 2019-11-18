@@ -1,4 +1,4 @@
-import { UserState, UserPayload, UserTypes, AddUserType } from '../type/user.type';
+import { UserState, UserTypes, AddUserType } from '../type/user.type';
 import { ADD_USER } from '../constants';
 
 const USER: UserState = {

@@ -1,4 +1,4 @@
-.user-input-wrapper {
+.login-input-wrapper {
     height: 700px;
     width: 500px;
     border-radius: 5px;
@@ -8,12 +8,12 @@
     margin:auto;
 }
 
-.user-input-wrapper h2 {
+.login-input-wrapper h2 {
     display: flex;
     justify-content: center;
 }
 
-.user-input-wrapper input{
+.login-input-wrapper input{
     height: 35px;
     width: 97%;
     margin-top: 10px;
@@ -21,15 +21,15 @@
     padding-left: 10px;
     border: 2px solid #333333;
 }
-.user-input-wrapper input {
+.login-input-wrapper input {
     outline:none;
 }
 
-.user-input-wrapper input:focus {
+.login-input-wrapper input:focus {
     border: 3px solid #E44815;
 }
 
-.user-input-wrapper button {
+.login-input-wrapper button {
     display: flex;
     justify-content: center;
     margin-top: 10px;
@@ -40,16 +40,16 @@
     border-radius: 5px;
 }
 
-.user-input-wrapper button:hover {
+.login-input-wrapper button:hover {
     background: #333333;
   }
 
-  .user-input-wrapper .has-error input {
+.login-input-wrapper .has-error input {
     border-color: #843534;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px #ca5b59;
 }
 
-.user-input-wrapper label{
+.login-input-wrapper label{
     color: red;
 }
 

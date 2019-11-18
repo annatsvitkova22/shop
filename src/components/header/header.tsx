@@ -10,7 +10,8 @@ const Header: FC = () => (
         <ul className="nav">
           <li><NavLink to='/books'>Books</NavLink></li>
           <li><NavLink to='/authors'>Authors</NavLink></li>
-          <li><NavLink exact to='/'>Sign</NavLink></li>
+          <li><NavLink exact to='/'>Login</NavLink></li>
+          <li><NavLink  to='/sing'>SignIn</NavLink></li>
         </ul>
       </nav>
     </header>
