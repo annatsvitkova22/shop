@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from 'react';
+import React, { Component, ReactElement, MouseEvent} from 'react';
 import { connect } from 'react-redux';
 
 import '../components/author.css';
@@ -48,7 +48,6 @@ class CreateUser extends Component<UserProps, UserModel> {
     handleInputChangeEmail = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
         const { name } = event.target;
-        console.log(name);
         this.setState({
             email: value,
         });
@@ -80,16 +79,15 @@ class CreateUser extends Component<UserProps, UserModel> {
     }
 
     validateForm() {
-        console.log(this.state.emailValid );
         this.setState({ formValid: this.state.emailValid && this.state.passwordValid });
     }
 
     errorClass = (error: string) => {
-        console.log(this.state);
         return (error.length === 0 ? '' : 'has-error');
     }
 
-    addUser = () => {
+    handleCreateUser = (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
         const { firstName, lastName, passwordHash, email }: UserModel = this.state;
 
         const createUser: User = {
@@ -140,7 +138,7 @@ class CreateUser extends Component<UserProps, UserModel> {
 
         return (
             <div className="content">
-                <RegistrationUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.addUser} onInputValueUpdateFirstName={this.handleInputChangeFirstName} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChangeLastName} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={email} />
+                <RegistrationUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleCreateUser} onInputValueUpdateFirstName={this.handleInputChangeFirstName} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChangeLastName} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={email} />
             </div>
         );
     }

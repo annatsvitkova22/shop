@@ -1,3 +1,4 @@
+import React, { MouseEvent, ChangeEvent } from 'react';
 import { ADD_USER, LOGIN } from '../constants';
 import { addUser } from '../actions/user.action';
 import { login } from '../actions/login.action';
@@ -88,32 +89,32 @@ export interface LoginProps {
 
 export interface UserInputProps {
     valueFirstName: string,
-    onInputValueUpdateFirstName: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdateFirstName: (event: ChangeEvent<HTMLInputElement>) => void,
     valueLastName: string,
-    onInputValueUpdateLastName: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdateLastName: (event: ChangeEvent<HTMLInputElement>) => void,
     valuePassword: string,
-    onInputValueUpdatePassword: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdatePassword: (event: ChangeEvent<HTMLInputElement>) => void,
     valueEmail: string,
-    onInputValueUpdateEmail: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdateEmail: (event: ChangeEvent<HTMLInputElement>) => void,
     onValidateEmail: string,
     onValidatePassword: string,
     formValid: boolean,
     errorPassword: string,
     errorEmail: string,
-    onCreateUser: () => void,
+    onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
 export interface AuthenticationInputProps {
     valuePassword: string,
-    onInputValueUpdatePassword: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdatePassword: (event: ChangeEvent<HTMLInputElement>) => void,
     valueEmail: string,
-    onInputValueUpdateEmail: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputValueUpdateEmail: (event: ChangeEvent<HTMLInputElement>) => void,
     onValidateEmail: string,
     onValidatePassword: string,
     formValid: boolean,
     errorPassword: string,
     errorEmail: string,
-    onCreateUser: () => void,
+    onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
 export interface Validate {

@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from 'react';
+import React, { Component, ReactElement, MouseEvent } from 'react';
 import { LoginUserModel, LoginState, LoginProps } from '../type/user.type';
 import { login } from '../actions/login.action';
 import { connect } from 'react-redux';
@@ -68,7 +68,8 @@ class Login extends Component<LoginProps, LoginState> {
         return (error.length === 0 ? '' : 'has-error');
     }
 
-    loginUser = () => {
+    handleLoginUser = (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
         const { password, username }: LoginState = this.state;
 
         const loginUser: LoginUserModel = {
@@ -83,7 +84,7 @@ class Login extends Component<LoginProps, LoginState> {
         });
     }
 
-    loginRequestUser = (data: any): void => {
+    loginRequestUser = (data: LoginUserModel): void => {
         const json = JSON.stringify(data);
         console.log(json);
         const headers = new Headers();
@@ -105,7 +106,7 @@ class Login extends Component<LoginProps, LoginState> {
 
         return (
             <div className="content">
-                <LoginUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.loginUser} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={password} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={username} />
+                <LoginUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={password} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={username} />
             </div>
         );
     }
