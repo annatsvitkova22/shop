@@ -1,10 +1,8 @@
 import { LoginGlobalState, AuthenticationUserType, AuthenticationTypes } from '../type/user.type';
 import { LOGIN } from '../constants';
-import { switchStatement } from '@babel/types';
 
 const TOKEN: LoginGlobalState = {
-    token: [],
-
+    token: []
 }
 
 const loginReducer = (state: LoginGlobalState = TOKEN, action: AuthenticationTypes): LoginGlobalState => {

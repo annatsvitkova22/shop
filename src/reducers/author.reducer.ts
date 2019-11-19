@@ -4,8 +4,6 @@ import { AuthorListState, AuthorTypes, AddAuthorType, RemoveAuthorType } from '.
 const AUTHORS: AuthorListState = {
     authors: [],
     authorName: '',
-    styleInput: {display: ''},
-    styleDelete: {display: ''}
 }
 
 const authorReducer = (state: AuthorListState = AUTHORS, action: AuthorTypes): AuthorListState => {

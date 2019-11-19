@@ -28,6 +28,7 @@ class CreateUser extends Component<UserProps, UserModel> {
         this.setState({
             firstName: value,
         });
+        console.log(this.props);
     }
 
     handleInputChangeLastName = (event: React.ChangeEvent<HTMLInputElement>): void => {

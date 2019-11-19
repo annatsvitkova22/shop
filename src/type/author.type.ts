@@ -27,8 +27,16 @@ export interface AuthorModel {
 export interface AuthorListState {
     authors: AuthorModel[],
     authorName: string,
-    styleInput: AuthorStyle
-    styleDelete: AuthorStyle
+}
+
+export interface UserRoleState {
+    style: AuthorStyle
+}
+
+export interface UserHeaderState {
+    styleRoleAdmin: AuthorStyle,
+    styleRoleUser: AuthorStyle,
+    styleDefault: AuthorStyle
 }
 
 export interface AuthorProps {
@@ -45,18 +53,15 @@ export interface AuthorInputProps {
     value: string,
     onCreateAuthor: () => void,
     onInputValueUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    onInputAuthor: AuthorStyle,
 }
 
 export interface AuthorListProps {
     authors: AuthorModel[],
     onRemoveAuthor: (id: string) => void,
-    onInputAuthor: AuthorStyle,
 }
 
 export interface AuthorItemProps {
     id: string,
     name: string;
     onRemoveAuthor: (id: string) => void,
-    onInputAuthor: AuthorStyle,
 }

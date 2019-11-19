@@ -6,10 +6,10 @@ import { AuthorListProps } from '../../../../type/author.type';
 import '../author.css';
 
 
-const AuthorList: FC<AuthorListProps> = ({ authors, onInputAuthor, onRemoveAuthor }) => (
+const AuthorList: FC<AuthorListProps> = ({ authors, onRemoveAuthor }) => (
     <ul className="author-list">
         {authors.map(({ id, name }) => (
-            <AuthorItem id={id} name={name} onInputAuthor={onInputAuthor} onRemoveAuthor={() => onRemoveAuthor(id)} key={id} />
+            <AuthorItem id={id} name={name} onRemoveAuthor={() => onRemoveAuthor(id)} key={id} />
         ))}
     </ul>
 );

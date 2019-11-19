@@ -15,9 +15,9 @@ ReactDOM.render((
     <App />
     <Switch>
       <Provider store={store}>
-        <Route exact path='/' component={CreateUser} />
+        <Route exact path='/registration' component={CreateUser} />
         <Route path='/authors' component={Author} />
-        <Route path='/sing' component={Login} />
+        <Route path='/login' component={Login} />
       </Provider>
     </Switch>
   </BrowserRouter>
