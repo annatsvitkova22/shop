@@ -11,7 +11,7 @@ const Header: FC = () => (
           <li><NavLink to='/books'>Books</NavLink></li>
           <li><NavLink to='/authors'>Authors</NavLink></li>
           <li><NavLink exact to='/'>Login</NavLink></li>
-          <li><NavLink  to='/sing'>SignIn</NavLink></li>
+          <li><NavLink  to='/sing'>Sign In</NavLink></li>
         </ul>
       </nav>
     </header>

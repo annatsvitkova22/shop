@@ -27,28 +27,36 @@ export interface AuthorModel {
 export interface AuthorListState {
     authors: AuthorModel[],
     authorName: string,
-
+    styleInput: AuthorStyle
+    styleDelete: AuthorStyle
 }
 
 export interface AuthorProps {
     addAuthor: typeof addAuthor,
     removeAuthor: typeof removeAuthor,
-    authors: AuthorModel[],
+    authors: AuthorModel[]
+}
+
+export interface AuthorStyle {
+    display: string
 }
 
 export interface AuthorInputProps {
     value: string,
     onCreateAuthor: () => void,
     onInputValueUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onInputAuthor: AuthorStyle,
 }
 
 export interface AuthorListProps {
     authors: AuthorModel[],
     onRemoveAuthor: (id: string) => void,
+    onInputAuthor: AuthorStyle,
 }
 
 export interface AuthorItemProps {
     id: string,
     name: string;
     onRemoveAuthor: (id: string) => void,
+    onInputAuthor: AuthorStyle,
 }

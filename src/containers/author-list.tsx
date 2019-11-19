@@ -6,7 +6,8 @@ import AuthorInput from '../components/content/author/author-input/author-input'
 import AuthorList from '../components/content/author/author-list/author-list';
 
 import '../components/author.css';
-import { AuthorListState, AuthorProps } from '../type/author.type';
+import { AuthorListState, AuthorProps, } from '../type/author.type';
+import JwtDecode from 'jwt-decode';
 
 const BASE_PATH = 'https://192.168.0.104:443/author/';
 
@@ -14,9 +15,24 @@ const BASE_PATH = 'https://192.168.0.104:443/author/';
 class Author extends Component<AuthorProps, AuthorListState> {
     state: AuthorListState = ({
         authors: [],
-   
         authorName: '',
+        styleInput: { display: '' },
+        styleDelete: { display: '' }
     });
+
+    deleteAuthor = (): void => {
+        const token = localStorage.getItem('accessToken');
+        const jwt = require('jsonwebtoken');
+        const payload = jwt.decode(token);
+
+        if (payload.role == 'admin') {
+            const inputElement: any = document.getElementById('author-input-wrapper');
+            debugger;
+            inputElement.style.display = "none";
+            // element[0].style.display = 'none';
+            // this.setState({ styleInput: { display: 'none' } });
+        }
+    }
 
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
@@ -31,7 +47,6 @@ class Author extends Component<AuthorProps, AuthorListState> {
         const createAuthor = {
             name: authorName,
         };
-
         this.createAuthor(createAuthor);
 
         this.setState({
@@ -52,6 +67,7 @@ class Author extends Component<AuthorProps, AuthorListState> {
     }
 
     getAllAuthors = (): void => {
+        this.deleteAuthor();
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const options = {
@@ -95,17 +111,17 @@ class Author extends Component<AuthorProps, AuthorListState> {
         const request = new Request(path, options);
         fetch(request)
             .then(res => res.json())
-            .then(createdAuthor => this.props.removeAuthor( createdAuthor ))
+            .then(createdAuthor => this.props.removeAuthor(createdAuthor))
             .catch(error => error);
     }
 
     render(): ReactElement {
-        const { authorName, authors }: AuthorListState = this.state;
+        const { authorName, authors, styleInput }: AuthorListState = this.state;
 
         return (
             <div className="content">
-                <AuthorInput onCreateAuthor={this.addAuthor} onInputValueUpdate={this.handleInputChange} value={authorName} />
-                <AuthorList onRemoveAuthor={this.removeAuthor} authors={authors} />
+                <AuthorInput onCreateAuthor={this.addAuthor} onInputAuthor={styleInput} onInputValueUpdate={this.handleInputChange} value={authorName} />
+                <AuthorList onRemoveAuthor={this.removeAuthor} onInputAuthor={styleInput} authors={authors} />
             </div>
         );
     }

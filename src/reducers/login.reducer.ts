@@ -13,7 +13,7 @@ const loginReducer = (state: LoginGlobalState = TOKEN, action: AuthenticationTyp
             const { payload }: AuthenticationUserType = action as AuthenticationUserType;
             state.token.pop();
             state.token.push(payload);
-            console.log(state);
+            localStorage.setItem('accessToken', state.token[0].accessToken);
             return { ...state };
             
         default:
