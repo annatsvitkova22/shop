@@ -16,7 +16,8 @@ class Login extends Component<LoginProps, LoginState> {
         },
         emailValid: false,
         passwordValid: false,
-        formValid: false
+        formValid: false,
+        isRegistration: false
     });
 
     handleInputChangePassword = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -80,13 +81,13 @@ class Login extends Component<LoginProps, LoginState> {
 
         this.setState({
             password: '',
-            username: ''
+            username: '',
+            isRegistration: true,
         });
     }
 
     loginRequestUser = (data: LoginUserModel): void => {
         const json = JSON.stringify(data);
-        console.log(json);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const options = {
@@ -102,11 +103,11 @@ class Login extends Component<LoginProps, LoginState> {
     }
 
     render(): ReactElement {
-        const { password, username, formErrors, formValid }: LoginState = this.state;
+        const { password, username, formErrors, formValid, isRegistration }: LoginState = this.state;
 
         return (
             <div className="content">
-                <LoginUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={password} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={username} />
+                <LoginUser isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={password} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={username} />
             </div>
         );
     }

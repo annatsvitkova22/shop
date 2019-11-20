@@ -34,9 +34,9 @@ export interface UserRoleState {
 }
 
 export interface UserHeaderState {
-    styleRoleAdmin: AuthorStyle,
-    styleRoleUser: AuthorStyle,
-    styleDefault: AuthorStyle
+    isAdmin: boolean,
+    isUser: boolean,
+    isToken: boolean
 }
 
 export interface AuthorProps {

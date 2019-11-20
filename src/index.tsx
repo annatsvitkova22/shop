@@ -12,9 +12,9 @@ import Login from './containers/login.container';
 
 ReactDOM.render((
   <BrowserRouter>
-    <App />
     <Switch>
       <Provider store={store}>
+      <App />
         <Route exact path='/registration' component={CreateUser} />
         <Route path='/authors' component={Author} />
         <Route path='/login' component={Login} />

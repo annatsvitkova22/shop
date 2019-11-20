@@ -13,7 +13,7 @@ class AuthorItem extends Component<AuthorItemProps, UserRoleState>  {
     const jwt = require('jsonwebtoken');
     const payload = jwt.decode(token);
 
-    if (payload.role == 'admin') {
+    if (payload.role === 'user') {
       this.setState({ style: { display: 'none' } });
     }
   }

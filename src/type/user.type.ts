@@ -1,5 +1,5 @@
 import React, { MouseEvent, ChangeEvent } from 'react';
-import { ADD_USER, LOGIN } from '../constants';
+import { ADD_USER, LOGIN, LOGOUT } from '../constants';
 import { addUser } from '../actions/user.action';
 import { login } from '../actions/login.action';
 
@@ -16,7 +16,6 @@ export interface AuthenticationPayload {
     refreshToken: string,
 }
 
-
 export interface AddUserType {
     type: typeof ADD_USER,
     payload: UserPayload,
@@ -24,8 +23,15 @@ export interface AddUserType {
 
 export interface AuthenticationUserType {
     type: typeof LOGIN,
-    payload: AuthenticationPayload,
+    payloadIn: AuthenticationPayload,
 }
+
+export interface LogoutUserType {
+    type: typeof LOGOUT,
+    payloadOut: AuthenticationPayload,
+}
+
+export type LogTypes = AuthenticationUserType | LogoutUserType;
 
 export interface UserModel {
     firstName: string,
@@ -38,7 +44,8 @@ export interface UserModel {
        },
    emailValid: boolean,
    passwordValid: boolean,
-   formValid: boolean
+   formValid: boolean,
+   isRegistration: boolean
 }
 
 export interface LoginState {
@@ -50,7 +57,8 @@ export interface LoginState {
        },
    emailValid: boolean,
    passwordValid: boolean,
-   formValid: boolean
+   formValid: boolean,
+   isRegistration: boolean
 }
 
 export interface User {
@@ -74,7 +82,7 @@ export interface UserState {
 }
 
 export interface LoginGlobalState {
-    token: AuthenticationPayload[],
+    token: AuthenticationPayload,
 }
 
 export interface UserProps {
@@ -101,6 +109,7 @@ export interface UserInputProps {
     formValid: boolean,
     errorPassword: string,
     errorEmail: string,
+    isRegistration: boolean,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
@@ -114,6 +123,7 @@ export interface AuthenticationInputProps {
     formValid: boolean,
     errorPassword: string,
     errorEmail: string,
+    isRegistration: boolean,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
@@ -121,4 +131,11 @@ export interface Validate {
     firstName?: string,
     lastName?: string,
     email?: string
+}
+
+export interface HeaderProps{
+    isAdmin: boolean,
+    isUser: boolean,
+    isToken: boolean,
+    onLogOut: (event: MouseEvent<HTMLLIElement>) => void,
 }

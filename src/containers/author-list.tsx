@@ -17,8 +17,6 @@ class Author extends Component<AuthorProps, AuthorListState> {
         authorName: '',
     });
 
-   
-
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
 
@@ -52,8 +50,9 @@ class Author extends Component<AuthorProps, AuthorListState> {
     }
 
     getAllAuthors = (): void => {
+        const token = localStorage.getItem('accessToken');
         const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer '+ token);
         const options = {
             method: 'GET',
             headers,
@@ -67,8 +66,10 @@ class Author extends Component<AuthorProps, AuthorListState> {
 
     createAuthor = (data: any): void => {
         const json = JSON.stringify(data);
+        const token = localStorage.getItem('accessToken');
+        console.log(token);
         const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer '+ token);
         const options = {
             method: 'POST',
             headers,
@@ -82,8 +83,9 @@ class Author extends Component<AuthorProps, AuthorListState> {
     }
 
     removeAuthor = (id: string): void => {
+        const token = localStorage.getItem('accessToken');
         const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer '+ token);
         const options = {
             method: 'DELETE',
             headers,

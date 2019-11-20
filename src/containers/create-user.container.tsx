@@ -20,7 +20,8 @@ class CreateUser extends Component<UserProps, UserModel> {
         },
         emailValid: false,
         passwordValid: false,
-        formValid: false
+        formValid: false,
+        isRegistration: false
     });
 
     handleInputChangeFirstName = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -103,7 +104,8 @@ class CreateUser extends Component<UserProps, UserModel> {
             firstName: '',
             lastName: '',
             passwordHash: '',
-            email: ''
+            email: '',
+            isRegistration: true
         });
     }
 
@@ -132,14 +134,16 @@ class CreateUser extends Component<UserProps, UserModel> {
             .then(res => res.json())
             .then(createdUser => this.props.addUser(createdUser.userCreateModel))
             .catch(error => error);
+
+        console.log(this.props);
     }
 
     render(): ReactElement {
-        const { firstName, lastName, passwordHash, email, formErrors, formValid }: UserModel = this.state;
+        const { firstName, lastName, passwordHash, email, formErrors, formValid, isRegistration }: UserModel = this.state;
 
         return (
             <div className="content">
-                <RegistrationUser errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleCreateUser} onInputValueUpdateFirstName={this.handleInputChangeFirstName} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChangeLastName} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={email} />
+                <RegistrationUser isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleCreateUser} onInputValueUpdateFirstName={this.handleInputChangeFirstName} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChangeLastName} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={email} />
             </div>
         );
     }
