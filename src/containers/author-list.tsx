@@ -66,16 +66,17 @@ class Author extends Component<AuthorProps, AuthorListState> {
 
     createAuthor = (data: any): void => {
         const json = JSON.stringify(data);
-        const token = localStorage.getItem('accessToken');
-        console.log(token);
         const headers = new Headers();
-        headers.append('Authorization', 'Bearer '+ token);
+        headers.append('Content-Type', 'application/json');
         const options = {
             method: 'POST',
             headers,
             body: json,
         };
+        console.log(BASE_PATH);
+        console.log(options);
         const request = new Request(BASE_PATH, options);
+        console.log(request);
         fetch(request)
             .then(res => res.json())
             .then(createdAuthor => this.props.addAuthor(createdAuthor))
@@ -92,9 +93,8 @@ class Author extends Component<AuthorProps, AuthorListState> {
         };
 
         const path = BASE_PATH + id;
-        console.log(path);
-
         const request = new Request(path, options);
+        console.log(request);
         fetch(request)
             .then(res => res.json())
             .then(createdAuthor => this.props.removeAuthor(createdAuthor))

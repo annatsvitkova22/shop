@@ -1,12 +1,12 @@
 import React, { Component, ReactElement, MouseEvent } from 'react';
 import { LoginUserModel, LoginState, LoginProps } from '../type/user.type';
-import { login } from '../actions/login.action';
+import { singIn } from '../actions/login.action';
 import { connect } from 'react-redux';
 import LoginUser from '../components/content/login/login';
 
 const BASE_PATH = 'https://192.168.0.104:443/api/login/';
 
-class Login extends Component<LoginProps, LoginState> {
+class Login extends Component<any, LoginState> {
     state: LoginState = ({
         password: '',
         username: '',
@@ -17,25 +17,25 @@ class Login extends Component<LoginProps, LoginState> {
         emailValid: false,
         passwordValid: false,
         formValid: false,
-        isRegistration: false
+        isRegistration: false,
+        isValidateData: false
     });
 
-    handleInputChangePassword = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
         const { name } = event.target;
-        this.setState({
-            password: value },
-            () => { this.validateField(name, value) });
-    }
-
-    handleInputChangeEmail = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const { value } = event.target;
-        const { name } = event.target;
-        this.setState({
-            username: value,
-        });
-        this.setState({ username: value },
-            () => { this.validateField(name, value) });
+        switch (name) {
+            case 'email':
+                this.setState({ username: value },
+                    () => { this.validateField(name, value) });
+                break;
+            case 'password':
+                this.setState({ password: value },
+                    () => { this.validateField(name, value) });
+                break;
+            default:
+                break;
+        }
     }
 
     validateField(fieldName: string, value: any) {
@@ -44,7 +44,7 @@ class Login extends Component<LoginProps, LoginState> {
         let passwordValid = this.state.passwordValid;
         switch (fieldName) {
             case 'email':
-               emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+                emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
                 fieldValidationErrors.email = emailValid ? '' : 'Email is invalid';
                 break;
             case 'password':
@@ -78,18 +78,31 @@ class Login extends Component<LoginProps, LoginState> {
             username
         };
         this.loginRequestUser(loginUser);
+    }
 
-        this.setState({
-            password: '',
-            username: '',
-            isRegistration: true,
-        });
+    addTokenToLocalStorage = () => {
+        const { login } = this.props;
+        if (login.token.accessToken) {
+            localStorage.setItem('accessToken', login.token.accessToken);
+            this.setState({ password: '', username: '', isRegistration: true });
+        }
+        if (!login.token.accessToken) {
+            this.setState({ password: '', username: '', isValidateData: true });
+        }
+    }
+
+    componentDidUpdate(prevProps: any) {
+        const { login }: any = this.props;
+        if (login !== prevProps.login) {
+            this.addTokenToLocalStorage();
+        }
     }
 
     loginRequestUser = (data: LoginUserModel): void => {
         const json = JSON.stringify(data);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
+
         const options = {
             method: 'POST',
             headers,
@@ -98,16 +111,16 @@ class Login extends Component<LoginProps, LoginState> {
         const request = new Request(BASE_PATH, options);
         fetch(request)
             .then(res => res.json())
-            .then(createdUser => this.props.login(createdUser))
+            .then(createdUser => this.props.singIn(createdUser))
             .catch(error => error);
     }
 
     render(): ReactElement {
-        const { password, username, formErrors, formValid, isRegistration }: LoginState = this.state;
+        const { password, username, formErrors, formValid, isRegistration, isValidateData }: LoginState = this.state;
 
         return (
             <div className="content">
-                <LoginUser isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChangePassword} valuePassword={password} onInputValueUpdateEmail={this.handleInputChangeEmail} valueEmail={username} />
+                <LoginUser isValidateData={isValidateData} isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChange} valuePassword={password} onInputValueUpdateEmail={this.handleInputChange} valueEmail={username} />
             </div>
         );
     }
@@ -116,4 +129,4 @@ class Login extends Component<LoginProps, LoginState> {
 const mapStateToProps = (state: LoginState) => {
     return state;
 }
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { singIn })(Login);

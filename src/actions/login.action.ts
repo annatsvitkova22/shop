@@ -1,7 +1,7 @@
 import { AuthenticationUserType, AuthenticationPayload, LogoutUserType } from "../type/user.type";
 import { LOGIN, LOGOUT } from "../constants";
 
-export const login = (payloadIn: AuthenticationPayload): AuthenticationUserType => ({
+export const singIn = (payloadIn: AuthenticationPayload): AuthenticationUserType => ({
   type: LOGIN,
   payloadIn,
 });

@@ -52,3 +52,16 @@ ul {
   display: flex;
   justify-content: center;
 }
+
+.author-input-wrapper button{
+  height: 29px;
+  width: 20%;
+  border: 1px solid #333333;
+}
+
+.author-input-wrapper input{
+  height: 25px;
+  width: 55%;
+  padding-left: 10px;
+  border: 1px solid #333333;
+}

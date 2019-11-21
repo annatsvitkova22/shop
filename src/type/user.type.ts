@@ -1,7 +1,7 @@
 import React, { MouseEvent, ChangeEvent } from 'react';
 import { ADD_USER, LOGIN, LOGOUT } from '../constants';
 import { addUser } from '../actions/user.action';
-import { login } from '../actions/login.action';
+import { singIn } from '../actions/login.action';
 
 export interface UserPayload {
     id: string,
@@ -41,11 +41,16 @@ export interface UserModel {
     formErrors: {
         email: string, 
         password: string 
+        firstName: string,
+        lastName: string,
        },
    emailValid: boolean,
    passwordValid: boolean,
+   firstNameValid: boolean,
+   lastNameValid: boolean,
    formValid: boolean,
-   isRegistration: boolean
+   isRegistration: boolean,
+   isUser: boolean,
 }
 
 export interface LoginState {
@@ -58,7 +63,8 @@ export interface LoginState {
    emailValid: boolean,
    passwordValid: boolean,
    formValid: boolean,
-   isRegistration: boolean
+   isRegistration: boolean,
+   isValidateData: boolean
 }
 
 export interface User {
@@ -78,7 +84,7 @@ export type UserTypes = AddUserType;
 export type AuthenticationTypes = AuthenticationUserType;
 
 export interface UserState {
-    user: UserPayload[],
+    user: UserPayload,
 }
 
 export interface LoginGlobalState {
@@ -91,7 +97,7 @@ export interface UserProps {
 }
 
 export interface LoginProps {
-    login: typeof login,
+    singIn: typeof singIn,
     token: AuthenticationPayload,
 }
 
@@ -110,6 +116,7 @@ export interface UserInputProps {
     errorPassword: string,
     errorEmail: string,
     isRegistration: boolean,
+    isUser: boolean,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
@@ -124,6 +131,7 @@ export interface AuthenticationInputProps {
     errorPassword: string,
     errorEmail: string,
     isRegistration: boolean,
+    isValidateData: boolean,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 

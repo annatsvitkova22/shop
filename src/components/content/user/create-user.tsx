@@ -3,7 +3,7 @@ import { UserInputProps } from '../../../type/user.type';
 
 import './create-user.css';
 
-const RegistrationUser: FC<UserInputProps> = ({ errorPassword, isRegistration, errorEmail, formValid, onValidateEmail, onValidatePassword, valueFirstName, onInputValueUpdateFirstName, valueLastName, onInputValueUpdateLastName, valuePassword, onInputValueUpdatePassword, valueEmail, onInputValueUpdateEmail, onCreateUser }) => (
+const RegistrationUser: FC<UserInputProps> = ({ isUser, errorPassword, isRegistration, errorEmail, formValid, onValidateEmail, onValidatePassword, valueFirstName, onInputValueUpdateFirstName, valueLastName, onInputValueUpdateLastName, valuePassword, onInputValueUpdatePassword, valueEmail, onInputValueUpdateEmail, onCreateUser }) => (
     <form className="user-input-wrapper">
         {!isRegistration && <div>
             <h2>Registration</h2>
@@ -12,12 +12,14 @@ const RegistrationUser: FC<UserInputProps> = ({ errorPassword, isRegistration, e
                 placeholder='First Name'
                 value={valueFirstName}
                 onChange={onInputValueUpdateFirstName}
+                name='firstName'
             />
             <br />
             <input type='text'
                 placeholder='Last Name'
                 value={valueLastName}
                 onChange={onInputValueUpdateLastName}
+                name='lastName'
             />
             <br />
             <div className={`form-group ${onValidateEmail}`}>
@@ -39,9 +41,10 @@ const RegistrationUser: FC<UserInputProps> = ({ errorPassword, isRegistration, e
                 />
                 <label>{errorPassword}</label>
             </div>
+            {isUser && <div className = "error-message">The data is incorrect or the user with this email is already registered</div>}
             <button onClick={onCreateUser} disabled={formValid}>Create your account</button>
         </div>}
-        {isRegistration && <div><h1>You are successfully registered, confirm your email</h1></div>}
+        {isRegistration && <div className = "successfully-message"><p>You are successfully registered, confirm your email!</p></div>}
     </form>
 );
 

@@ -14,10 +14,6 @@ const loginReducer = (state: LoginGlobalState = TOKEN, action: LogTypes): LoginG
             const { payloadIn }: AuthenticationUserType = action as AuthenticationUserType;
             state.token.accessToken = payloadIn.accessToken;
             state.token.refreshToken = payloadIn.refreshToken;
-            if(state.token) {
-                console.log('dsfdsf')
-                localStorage.setItem('accessToken', state.token.accessToken);
-            }
             return { ...state };
         case LOGOUT:
             const { payloadOut }: LogoutUserType = action as LogoutUserType;

@@ -34,7 +34,7 @@ class AuthorInput extends Component<AuthorInputProps, UserRoleState>  {
                         value={value}
                         onChange={onInputValueUpdate}
                     />
-                    <button onClick={onCreateAuthor}>Add author</button>
+                    <button onClick={onCreateAuthor} placeholder="Author name">Add author</button>
                 </div>
             </div>
         );

@@ -17,7 +17,7 @@ class CreateHeader extends Component<any, UserHeaderState>{
     logOut = (event: MouseEvent<HTMLLIElement>): void => {
         event.preventDefault();
         localStorage.removeItem('accessToken');
-        this.props.logout('');
+        this.props.logout({token: {accessToken: ""}});
     }
 
     componentDidMount = () => {
@@ -25,32 +25,32 @@ class CreateHeader extends Component<any, UserHeaderState>{
     }
 
     componentDidUpdate(prevProps: any) {
-        if (this.props !== prevProps) {
+        if (this.props.login !== prevProps.login) {
             this.roleAuthorInput();
         }
     }
 
 
     roleAuthorInput = (): void => {
-        const token = localStorage.getItem('accessToken');
+        const { login } = this.props;
+        const token = login.token.accessToken; 
         const jwt = require('jsonwebtoken');
         const payload = jwt.decode(token);
     
-        if(token) {
+        if(payload) {
             const isUser: boolean = payload.role === 'user';
             const isAdmin: boolean = payload.role === 'admin';
             const isToken: boolean = token !== null;
             this.setState({isAdmin, isUser, isToken});
         }
         if(!token){
-            const isToken: boolean = token !== null;
-            this.setState({isToken, isAdmin: false, isUser: false});
+            this.setState({isToken: false, isAdmin: false, isUser: false});
         }
     }
 
     render(): ReactElement {
         const { isAdmin, isToken, isUser }: UserHeaderState = this.state;
-
+        console.log(this.state)
         return (
                 <Header onLogOut={this.logOut} isAdmin={isAdmin} isUser={isUser} isToken={isToken} />
         );
