@@ -3,25 +3,31 @@ import { UserInputProps } from '../../../type/user.type';
 
 import './create-user.css';
 
-const RegistrationUser: FC<UserInputProps> = ({ isUser, errorPassword, isRegistration, errorEmail, formValid, onValidateEmail, onValidatePassword, valueFirstName, onInputValueUpdateFirstName, valueLastName, onInputValueUpdateLastName, valuePassword, onInputValueUpdatePassword, valueEmail, onInputValueUpdateEmail, onCreateUser }) => (
+const RegistrationUser: FC<UserInputProps> = ({ onValidateFirstName, onValidateLastName, isUser, errorFirstName, errorLastName, errorPassword, isRegistration, errorEmail, formValid, onValidateEmail, onValidatePassword, valueFirstName, onInputValueUpdateFirstName, valueLastName, onInputValueUpdateLastName, valuePassword, onInputValueUpdatePassword, valueEmail, onInputValueUpdateEmail, onCreateUser }) => (
     <form className="user-input-wrapper">
         {!isRegistration && <div>
             <h2>Registration</h2>
-            <input
-                type='text'
-                placeholder='First Name'
-                value={valueFirstName}
-                onChange={onInputValueUpdateFirstName}
-                name='firstName'
-            />
-            <br />
-            <input type='text'
-                placeholder='Last Name'
-                value={valueLastName}
-                onChange={onInputValueUpdateLastName}
-                name='lastName'
-            />
-            <br />
+            <div className={`form-group ${onValidateFirstName}`}>
+                <input
+                    type='text'
+                    placeholder='First Name'
+                    value={valueFirstName}
+                    onChange={onInputValueUpdateFirstName}
+                    name='firstName'
+                />
+                <br />
+            </div>
+            <label>{errorFirstName}</label>
+            <div className={`form-group ${onValidateLastName}`}>
+                <input type='text'
+                    placeholder='Last Name'
+                    value={valueLastName}
+                    onChange={onInputValueUpdateLastName}
+                    name='lastName'
+                />
+                <br />
+            </div>
+            <label>{errorLastName}</label>
             <div className={`form-group ${onValidateEmail}`}>
                 <input type='email'
                     placeholder='Email'
@@ -41,10 +47,10 @@ const RegistrationUser: FC<UserInputProps> = ({ isUser, errorPassword, isRegistr
                 />
                 <label>{errorPassword}</label>
             </div>
-            {isUser && <div className = "error-message">The data is incorrect or the user with this email is already registered</div>}
+            {isUser && <div className="error-message">The data is incorrect or the user with this email is already registered</div>}
             <button onClick={onCreateUser} disabled={formValid}>Create your account</button>
         </div>}
-        {isRegistration && <div className = "successfully-message"><p>You are successfully registered, confirm your email!</p></div>}
+        {isRegistration && <div className="successfully-message"><p>You are successfully registered, confirm your email!</p></div>}
     </form>
 );
 

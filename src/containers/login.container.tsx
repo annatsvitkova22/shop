@@ -1,10 +1,12 @@
 import React, { Component, ReactElement, MouseEvent } from 'react';
-import { LoginUserModel, LoginState, LoginProps } from '../type/user.type';
+import { LoginUserModel, LoginState } from '../type/user.type';
 import { singIn } from '../actions/login.action';
 import { connect } from 'react-redux';
 import LoginUser from '../components/content/login/login';
+import { ForgotPasswordModel, UserInfoModel } from '../type/forgot-password.type';
 
 const BASE_PATH = 'https://192.168.0.104:443/api/login/';
+const BASE_USER = 'https://192.168.0.104:443/user/';
 
 class Login extends Component<any, LoginState> {
     state: LoginState = ({
@@ -18,7 +20,9 @@ class Login extends Component<any, LoginState> {
         passwordValid: false,
         formValid: false,
         isRegistration: false,
-        isValidateData: false
+        isValidateData: false,
+        isForgotPassword: true,
+        isSendMail: false
     });
 
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -91,6 +95,48 @@ class Login extends Component<any, LoginState> {
         }
     }
 
+    forgotPassword = async (event: MouseEvent<HTMLParagraphElement>) => {
+        event.preventDefault();
+        this.setState({ isForgotPassword: false });
+    }
+
+    sendLetter = async (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        const { username } = this.state;
+        const userName: ForgotPasswordModel = {
+            email: username
+        };
+
+        const user: UserInfoModel = await this.forgotPasswordRequest(userName);
+        if (user) {
+            this.setState({isForgotPassword: true, isSendMail: true})
+        }
+
+    }
+
+    forgotPasswordRequest = async (data: ForgotPasswordModel): Promise<UserInfoModel> => {
+        const json = JSON.stringify(data);
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+
+        let user: UserInfoModel = {};
+
+        const url = BASE_USER + 'forgotPassword/'
+        const request = new Request(url, options);
+        await fetch(request)
+            .then(res => res.json())
+            .then(createdUser => user = createdUser.user )
+            .catch(error => error);
+            
+        console.log(user);
+        return user;
+    }
+
     componentDidUpdate(prevProps: any) {
         const { login }: any = this.props;
         if (login !== prevProps.login) {
@@ -116,11 +162,11 @@ class Login extends Component<any, LoginState> {
     }
 
     render(): ReactElement {
-        const { password, username, formErrors, formValid, isRegistration, isValidateData }: LoginState = this.state;
+        const { password, username, formErrors, isSendMail, formValid, isForgotPassword, isRegistration, isValidateData }: LoginState = this.state;
 
         return (
             <div className="content">
-                <LoginUser isValidateData={isValidateData} isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChange} valuePassword={password} onInputValueUpdateEmail={this.handleInputChange} valueEmail={username} />
+                <LoginUser isSendMail={isSendMail} onSendLetter={this.sendLetter} isForgotPassword={isForgotPassword} onPasswordRecovery={this.forgotPassword} isValidateData={isValidateData} isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleLoginUser} onInputValueUpdatePassword={this.handleInputChange} valuePassword={password} onInputValueUpdateEmail={this.handleInputChange} valueEmail={username} />
             </div>
         );
     }

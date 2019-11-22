@@ -17,7 +17,7 @@ class CreateHeader extends Component<any, UserHeaderState>{
     logOut = (event: MouseEvent<HTMLLIElement>): void => {
         event.preventDefault();
         localStorage.removeItem('accessToken');
-        this.props.logout({token: {accessToken: ""}});
+        this.props.logout({accessToken: "", refreshToken: ""});
     }
 
     componentDidMount = () => {
@@ -50,7 +50,7 @@ class CreateHeader extends Component<any, UserHeaderState>{
 
     render(): ReactElement {
         const { isAdmin, isToken, isUser }: UserHeaderState = this.state;
-        console.log(this.state)
+        console.log(this.props)
         return (
                 <Header onLogOut={this.logOut} isAdmin={isAdmin} isUser={isUser} isToken={isToken} />
         );

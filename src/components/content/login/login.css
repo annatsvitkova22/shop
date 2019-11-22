@@ -11,12 +11,14 @@
 .login-input-wrapper h2 {
     display: flex;
     justify-content: center;
+    margin-block-start: 0;
+    margin-block-end: 0;
 }
 
 .login-input-wrapper input{
     height: 35px;
     width: 97%;
-    margin-top: 10px;
+    margin-top: 15px;
     border-radius: 5px;
     padding-left: 10px;
     border: 2px solid #333333;
@@ -40,6 +42,25 @@
     border-radius: 5px;
 }
 
+.login-input-wrapper .forgot-password{
+    color: #051df5;
+    font-size: 14px;
+    text-align: right;
+    text-decoration: underline;
+}
+
+.send-mail{
+    display: flex;
+    justify-content: center;
+    height: 65px;
+    font-size: 24px;
+    color: #E44815;
+}
+
+.login-input-wrapper .forgot-password:hover{
+    cursor: pointer;
+}
+
 .login-input-wrapper .error-message{
     color: red;
     font-size: 10px;
@@ -51,7 +72,7 @@
 
 .login-input-wrapper .has-error input {
     border-color: #843534;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px #ca5b59;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px #c91310;
 }
 
 .login-input-wrapper label{

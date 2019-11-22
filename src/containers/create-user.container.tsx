@@ -30,6 +30,7 @@ class CreateUser extends Component<any, UserModel> {
     });
 
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        console.log(this.props);
         const { value } = event.target;
         const { name } = event.target;
         switch (name) {
@@ -53,8 +54,8 @@ class CreateUser extends Component<any, UserModel> {
                 break;
         }
     }
-
-    validateField(fieldName: any, value: any) {
+    
+    validateField(fieldName: string, value: any) {
         let fieldValidationErrors = this.state.formErrors;
         let emailValid = this.state.emailValid;
         let passwordValid = this.state.passwordValid;
@@ -71,25 +72,29 @@ class CreateUser extends Component<any, UserModel> {
                 fieldValidationErrors.password = passwordValid ? '' : 'Password is too short';
                 break;
             case 'firstName':
-                passwordValid = value.length >= 2;
+                firstNameValid = value.length >= 2;
                 fieldValidationErrors.firstName = firstNameValid ? '' : 'First name is too short';
                 break;
             case 'lastName':
-                passwordValid = value.length >= 2;
+                lastNameValid = value.length >= 2;
                 fieldValidationErrors.lastName = lastNameValid ? '' : 'Last name is too short';
                 break;
             default:
                 break;
         }
+
         this.setState({
             formErrors: fieldValidationErrors,
             emailValid: emailValid,
-            passwordValid: passwordValid
+            passwordValid: passwordValid,
+            firstNameValid: firstNameValid,
+            lastNameValid: lastNameValid,
         }, this.validateForm);
     }
 
     validateForm() {
-        this.setState({ formValid: this.state.emailValid && this.state.passwordValid });
+        const { emailValid, passwordValid, firstNameValid, lastNameValid } = this.state; 
+        this.setState({ formValid: emailValid && passwordValid && firstNameValid && lastNameValid });
     }
 
     errorClass = (error: string) => {
@@ -130,7 +135,6 @@ class CreateUser extends Component<any, UserModel> {
 
     createUser = async (data: any): Promise<UserPayload> => {
         const json = JSON.stringify(data);
-        console.log(json);
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         const options = {
@@ -162,7 +166,7 @@ class CreateUser extends Component<any, UserModel> {
 
         return (
             <div className="content">
-                <RegistrationUser isUser={isUser} isRegistration={isRegistration} errorEmail={formErrors.email} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleCreateUser} onInputValueUpdateFirstName={this.handleInputChange} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChange} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChange} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChange} valueEmail={email} />
+                <RegistrationUser onValidateFirstName={this.errorClass(formErrors.firstName)} onValidateLastName={this.errorClass(formErrors.lastName)} isUser={isUser} isRegistration={isRegistration} errorEmail={formErrors.email} errorFirstName={formErrors.firstName} errorLastName={formErrors.lastName} errorPassword={formErrors.password} formValid={!formValid} onValidatePassword={this.errorClass(formErrors.password)} onValidateEmail={this.errorClass(formErrors.email)} onCreateUser={this.handleCreateUser} onInputValueUpdateFirstName={this.handleInputChange} valueFirstName={firstName} onInputValueUpdateLastName={this.handleInputChange} valueLastName={lastName} onInputValueUpdatePassword={this.handleInputChange} valuePassword={passwordHash} onInputValueUpdateEmail={this.handleInputChange} valueEmail={email} />
             </div>
         );
     }

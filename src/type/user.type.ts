@@ -64,7 +64,9 @@ export interface LoginState {
    passwordValid: boolean,
    formValid: boolean,
    isRegistration: boolean,
-   isValidateData: boolean
+   isValidateData: boolean,
+   isForgotPassword: boolean,
+   isSendMail: boolean,
 }
 
 export interface User {
@@ -112,9 +114,13 @@ export interface UserInputProps {
     onInputValueUpdateEmail: (event: ChangeEvent<HTMLInputElement>) => void,
     onValidateEmail: string,
     onValidatePassword: string,
+    onValidateLastName: string,
+    onValidateFirstName: string,
     formValid: boolean,
     errorPassword: string,
     errorEmail: string,
+    errorFirstName: string,
+    errorLastName: string,
     isRegistration: boolean,
     isUser: boolean,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
@@ -132,6 +138,10 @@ export interface AuthenticationInputProps {
     errorEmail: string,
     isRegistration: boolean,
     isValidateData: boolean,
+    isForgotPassword: boolean,
+    isSendMail: boolean,
+    onSendLetter: (event: MouseEvent<HTMLButtonElement>) => void,
+    onPasswordRecovery: (event: MouseEvent<HTMLParagraphElement>) => void,
     onCreateUser: (event: MouseEvent<HTMLButtonElement>) => void,
 }
 
