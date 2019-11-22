@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 
 import '../components/author.css';
 import { addUser } from '../actions/user.action';
-import { UserState, UserProps, UserModel, User, UserPayload } from '../type/user.type';
+import { UserState, UserModelState, User, UserPayload, ErrorsModel, userCreateModel } from '../type/user.type';
 import RegistrationUser from '../components/content/user/create-user';
+import { RequestOptionsModel } from '../type/author.type';
 
 const BASE_PATH = 'https://192.168.0.104:443/user/';
 
-class CreateUser extends Component<any, UserModel> {
-    state: UserModel = ({
+class CreateUser extends Component<any, UserModelState> {
+    state: UserModelState = ({
         firstName: '',
         lastName: '',
         passwordHash: '',
@@ -30,7 +31,6 @@ class CreateUser extends Component<any, UserModel> {
     });
 
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        console.log(this.props);
         const { value } = event.target;
         const { name } = event.target;
         switch (name) {
@@ -56,11 +56,11 @@ class CreateUser extends Component<any, UserModel> {
     }
     
     validateField(fieldName: string, value: any) {
-        let fieldValidationErrors = this.state.formErrors;
-        let emailValid = this.state.emailValid;
-        let passwordValid = this.state.passwordValid;
-        let firstNameValid = this.state.firstNameValid;
-        let lastNameValid =this.state.lastNameValid;
+        let fieldValidationErrors: ErrorsModel = this.state.formErrors;
+        let emailValid: boolean = this.state.emailValid;
+        let passwordValid: boolean = this.state.passwordValid;
+        let firstNameValid: boolean = this.state.firstNameValid;
+        let lastNameValid: boolean =this.state.lastNameValid;
 
         switch (fieldName) {
             case 'email':
@@ -103,7 +103,7 @@ class CreateUser extends Component<any, UserModel> {
 
     handleCreateUser = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        const { firstName, lastName, passwordHash, email }: UserModel = this.state;
+        const { firstName, lastName, passwordHash, email }: UserModelState = this.state;
 
         const createUser: User = {
             firstName,
@@ -134,10 +134,10 @@ class CreateUser extends Component<any, UserModel> {
     }
 
     createUser = async (data: any): Promise<UserPayload> => {
-        const json = JSON.stringify(data);
-        const headers = new Headers();
+        const json: string = JSON.stringify(data);
+        const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const options = {
+        const options: RequestOptionsModel = {
             method: 'POST',
             headers,
             body: json,
@@ -146,10 +146,10 @@ class CreateUser extends Component<any, UserModel> {
         let user: UserPayload = {} as UserPayload;
 
         const url: string = BASE_PATH + 'create/';
-        const request = new Request(url, options);
+        const request: Request = new Request(url, options);
         await fetch(request)
-            .then(res => res.json())
-            .then(createdUser => {
+            .then((res: Response)=> res.json())
+            .then((createdUser: userCreateModel) => {
                 user.id = createdUser.userCreateModel.id;
                 user.firstName = createdUser.userCreateModel.firstName;
                 user.lastName = createdUser.userCreateModel.lastName;
@@ -162,7 +162,7 @@ class CreateUser extends Component<any, UserModel> {
     }
 
     render(): ReactElement {
-        const { firstName, isUser, lastName, passwordHash, email, formErrors, formValid, isRegistration }: UserModel = this.state;
+        const { firstName, isUser, lastName, passwordHash, email, formErrors, formValid, isRegistration }: UserModelState = this.state;
 
         return (
             <div className="content">

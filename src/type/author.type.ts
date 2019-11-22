@@ -1,5 +1,5 @@
 import { ADD_AUTHOR, REMOVE_AUTHOR } from '../constants';
-import { addAuthor, removeAuthor } from '../actions/actions';
+import { addAuthor, removeAuthor } from '../actions/author.actions';
 
 export interface AddAuthorPayload {
     name: string,
@@ -29,8 +29,26 @@ export interface AuthorListState {
     authorName: string,
 }
 
+export interface RequestOptionsModel {
+    method: string;
+    headers: Headers;
+    body?: string;
+}
+
+export interface CreateAuthorModel {
+    name: string,
+}
+
 export interface UserRoleState {
     style: AuthorStyle
+}
+
+export interface TokenPayload {
+    firstName: string,
+    userId: string,
+    role: string,
+    iat: Date,
+    exp: Date
 }
 
 export interface UserHeaderState {

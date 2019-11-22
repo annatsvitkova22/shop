@@ -6,7 +6,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './store/store';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Author from './containers/author-list';
+import Author from './containers/author.container';
 import CreateUser from './containers/create-user.container';
 import Login from './containers/login.container';
 

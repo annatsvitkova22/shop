@@ -11,6 +11,16 @@ export interface UserPayload {
     emailConfirmed: boolean
 }
 
+export interface userCreateModel {
+    userCreateModel: {
+        id: string,
+        firstName: string,
+        lastName: string,
+        email: string,
+        emailConfirmed: boolean
+    }
+}
+
 export interface AuthenticationPayload {
     accessToken: string,
     refreshToken: string,
@@ -33,40 +43,53 @@ export interface LogoutUserType {
 
 export type LogTypes = AuthenticationUserType | LogoutUserType;
 
-export interface UserModel {
+export interface ErrorsModel {
+    email: string,
+    password: string
+    firstName: string,
+    lastName: string,
+}
+
+export interface UserModelState {
     firstName: string,
     lastName: string,
     passwordHash: string,
     email: string,
     formErrors: {
-        email: string, 
-        password: string 
+        email: string,
+        password: string
         firstName: string,
         lastName: string,
-       },
-   emailValid: boolean,
-   passwordValid: boolean,
-   firstNameValid: boolean,
-   lastNameValid: boolean,
-   formValid: boolean,
-   isRegistration: boolean,
-   isUser: boolean,
+    },
+    emailValid: boolean,
+    passwordValid: boolean,
+    firstNameValid: boolean,
+    lastNameValid: boolean,
+    formValid: boolean,
+    isRegistration: boolean,
+    isUser: boolean,
+}
+
+export interface fieldValidationErrors {
+    email: string;
+    password: string;
+
 }
 
 export interface LoginState {
     password: string,
     username: string,
     formErrors: {
-        email: string, 
-        password: string 
-       },
-   emailValid: boolean,
-   passwordValid: boolean,
-   formValid: boolean,
-   isRegistration: boolean,
-   isValidateData: boolean,
-   isForgotPassword: boolean,
-   isSendMail: boolean,
+        email: string,
+        password: string
+    },
+    emailValid: boolean,
+    passwordValid: boolean,
+    formValid: boolean,
+    isRegistration: boolean,
+    isValidateData: boolean,
+    isForgotPassword: boolean,
+    isSendMail: boolean,
 }
 
 export interface User {
@@ -95,7 +118,7 @@ export interface LoginGlobalState {
 
 export interface UserProps {
     addUser: typeof addUser,
-    users: UserModel[],
+    users: UserModelState[],
 }
 
 export interface LoginProps {
@@ -151,7 +174,7 @@ export interface Validate {
     email?: string
 }
 
-export interface HeaderProps{
+export interface HeaderProps {
     isAdmin: boolean,
     isUser: boolean,
     isToken: boolean,

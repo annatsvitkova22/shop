@@ -31,7 +31,7 @@ const LoginUser: FC<AuthenticationInputProps> = ({isSendMail, isForgotPassword, 
             {isForgotPassword && <div className="forgot-password" ><p onClick={onPasswordRecovery}>Forgot password</p></div>}
             {isForgotPassword ? <button onClick={onCreateUser} disabled={formValid}>Login</button> : <button onClick={onSendLetter} disabled={formValid}> Send </button>}
         </div>}
-        {isRegistration && <div><p>You have successfully logged in</p></div>}
+        {isRegistration && <div className="login-message"><p>You have successfully logged in</p></div>}
     </form>
 );
 

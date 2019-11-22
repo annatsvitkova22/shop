@@ -8,6 +8,14 @@ export interface UserInfoModel {
     message?: string,
 }
 
+export interface UserModel {
+    user: {
+        user?: User,
+        userCreateModel?: CreateUserModel,
+        message?: string,
+    }
+}
+
 export interface User {
     id: string,
     firstName: string,

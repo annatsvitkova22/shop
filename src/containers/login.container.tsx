@@ -1,9 +1,11 @@
 import React, { Component, ReactElement, MouseEvent } from 'react';
-import { LoginUserModel, LoginState } from '../type/user.type';
-import { singIn } from '../actions/login.action';
 import { connect } from 'react-redux';
+
+import { LoginUserModel, LoginState, fieldValidationErrors, AuthenticationPayload } from '../type/user.type';
+import { singIn } from '../actions/login.action';
 import LoginUser from '../components/content/login/login';
-import { ForgotPasswordModel, UserInfoModel } from '../type/forgot-password.type';
+import { ForgotPasswordModel, UserInfoModel, UserModel } from '../type/forgot-password.type';
+import { RequestOptionsModel } from '../type/author.type';
 
 const BASE_PATH = 'https://192.168.0.104:443/api/login/';
 const BASE_USER = 'https://192.168.0.104:443/user/';
@@ -43,9 +45,9 @@ class Login extends Component<any, LoginState> {
     }
 
     validateField(fieldName: string, value: any) {
-        let fieldValidationErrors = this.state.formErrors;
-        let emailValid = this.state.emailValid;
-        let passwordValid = this.state.passwordValid;
+        let fieldValidationErrors: fieldValidationErrors = this.state.formErrors;
+        let emailValid: boolean = this.state.emailValid;
+        let passwordValid: boolean = this.state.passwordValid;
         switch (fieldName) {
             case 'email':
                 emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
@@ -84,7 +86,7 @@ class Login extends Component<any, LoginState> {
         this.loginRequestUser(loginUser);
     }
 
-    addTokenToLocalStorage = () => {
+    addTokenToLocalStorage = (): void => {
         const { login } = this.props;
         if (login.token.accessToken) {
             localStorage.setItem('accessToken', login.token.accessToken);
@@ -102,7 +104,7 @@ class Login extends Component<any, LoginState> {
 
     sendLetter = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        const { username } = this.state;
+        const { username }: LoginState = this.state;
         const userName: ForgotPasswordModel = {
             email: username
         };
@@ -115,10 +117,10 @@ class Login extends Component<any, LoginState> {
     }
 
     forgotPasswordRequest = async (data: ForgotPasswordModel): Promise<UserInfoModel> => {
-        const json = JSON.stringify(data);
-        const headers = new Headers();
+        const json: string = JSON.stringify(data);
+        const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        const options = {
+        const options: RequestOptionsModel = {
             method: 'POST',
             headers,
             body: json,
@@ -126,14 +128,13 @@ class Login extends Component<any, LoginState> {
 
         let user: UserInfoModel = {};
 
-        const url = BASE_USER + 'forgotPassword/'
-        const request = new Request(url, options);
+        const url: string = BASE_USER + 'forgotPassword/'
+        const request: Request = new Request(url, options);
         await fetch(request)
-            .then(res => res.json())
-            .then(createdUser => user = createdUser.user )
+            .then((res: Response) => res.json())
+            .then((createdUser: UserModel) => user = createdUser.user )
             .catch(error => error);
             
-        console.log(user);
         return user;
     }
 
@@ -145,19 +146,19 @@ class Login extends Component<any, LoginState> {
     }
 
     loginRequestUser = (data: LoginUserModel): void => {
-        const json = JSON.stringify(data);
-        const headers = new Headers();
+        const json: string = JSON.stringify(data);
+        const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
 
-        const options = {
+        const options: RequestOptionsModel = {
             method: 'POST',
             headers,
             body: json,
         };
-        const request = new Request(BASE_PATH, options);
+        const request: Request = new Request(BASE_PATH, options);
         fetch(request)
-            .then(res => res.json())
-            .then(createdUser => this.props.singIn(createdUser))
+            .then((res: Response) => res.json())
+            .then((createdUser: AuthenticationPayload) => this.props.singIn(createdUser))
             .catch(error => error);
     }
 

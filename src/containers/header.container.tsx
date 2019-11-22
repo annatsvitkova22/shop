@@ -2,7 +2,7 @@ import React, { Component, ReactElement, MouseEvent } from 'react';
 import { connect } from 'react-redux';
 
 import { LoginGlobalState } from '../type/user.type';
-import { UserHeaderState } from '../type/author.type';
+import { UserHeaderState, TokenPayload } from '../type/author.type';
 import Header from '../components/header/header';
 import { logout } from '../actions/login.action';
 
@@ -12,7 +12,6 @@ class CreateHeader extends Component<any, UserHeaderState>{
         isAdmin: false,
         isToken: false
     });
-
 
     logOut = (event: MouseEvent<HTMLLIElement>): void => {
         event.preventDefault();
@@ -33,9 +32,9 @@ class CreateHeader extends Component<any, UserHeaderState>{
 
     roleAuthorInput = (): void => {
         const { login } = this.props;
-        const token = login.token.accessToken; 
+        const token: string = login.token.accessToken; 
         const jwt = require('jsonwebtoken');
-        const payload = jwt.decode(token);
+        const payload: TokenPayload = jwt.decode(token);
     
         if(payload) {
             const isUser: boolean = payload.role === 'user';
@@ -50,7 +49,7 @@ class CreateHeader extends Component<any, UserHeaderState>{
 
     render(): ReactElement {
         const { isAdmin, isToken, isUser }: UserHeaderState = this.state;
-        console.log(this.props)
+
         return (
                 <Header onLogOut={this.logOut} isAdmin={isAdmin} isUser={isUser} isToken={isToken} />
         );

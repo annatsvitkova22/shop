@@ -57,6 +57,11 @@
     color: #E44815;
 }
 
+.login-message {
+    font-size: 32px;
+    color: #E44815;
+}
+
 .login-input-wrapper .forgot-password:hover{
     cursor: pointer;
 }
