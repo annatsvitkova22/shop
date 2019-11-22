@@ -15,6 +15,13 @@ export class Author extends Model<Author> {
         allowNull: false})
     name: string;
 
+    @Column({
+        type: DataType.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    })
+    isRemoved: boolean;
+
     @BelongsToMany(() => PrintingEdition, () => AuthorInBooks)
     printingEdition: PrintingEdition[];
 }

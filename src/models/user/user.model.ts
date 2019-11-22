@@ -1,4 +1,4 @@
-import { ApiModelProperty, ApiProduces } from '@nestjs/swagger';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export class User {
     @ApiModelProperty()

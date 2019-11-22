@@ -11,7 +11,7 @@ export class AuthorService {
     constructor(
         private readonly authorRepository: AuthorRepository,
         public uuidHelper: UuidHelper,
-       ) { }
+    ) { }
 
     public async getAuthors(): Promise<Author[]> {
         const gotAuthors: Author[] = await this.authorRepository.getAuthors();
@@ -48,7 +48,16 @@ export class AuthorService {
         const savedAuthor: Author = await this.authorRepository.createAuthor(toUpdate);
 
         return savedAuthor;
-      }
+    }
+
+    public async removeAuthor(authorId: string): Promise<Author> {
+        const removed: Author = await this.authorRepository.getAuthorIById(authorId);
+        removed.isRemoved = true;
+
+        const removedEdition: Author = await this.authorRepository.createAuthor(removed);
+
+        return removedEdition;
+    }
 
     public async deleteAuthor(authorId: string): Promise<number> {
         const result: number = await this.authorRepository.deleteAuthor(authorId);
@@ -57,7 +66,7 @@ export class AuthorService {
     }
 
     public validateName(name: string): string {
-        let validateName: string = name.replace(/\s+/g,' ').trim();
+        let validateName: string = name.replace(/\s+/g, ' ').trim();
         validateName = validateName[0].toUpperCase() + validateName.substring(1, validateName.length).toLowerCase();
 
         return validateName;

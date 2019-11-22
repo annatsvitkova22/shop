@@ -20,17 +20,15 @@ export class AuthService {
 
    public async validateUser(username: string, password: string): Promise<AuthenticatedUserModel> {
     // tslint:disable-next-line: max-line-length
-    let query: string = 'SELECT `users`.`id`, `users`.`firstName`, `users`.`passwordHash`, `users`.`email`, `roles`.`name` FROM `userinroles` INNER JOIN `roles` ON `userinroles`.`roleId` = `roles`.`id` INNER JOIN `users` ON `userinroles`.`userId` = `users`.`id` WHERE `users`.`email` = \'';
+    let query: string = 'SELECT `users`.`id`, `users`.`firstName`, `users`.`passwordHash`, `users`.`email`, `users`.`emailConfirmed`, `roles`.`name` FROM `userinroles` INNER JOIN `roles` ON `userinroles`.`roleId` = `roles`.`id` INNER JOIN `users` ON `userinroles`.`userId` = `users`.`id` WHERE `users`.`email` = \'';
     query += username + '\'';
     const user: UserWithRoleModel[] = await this.userService.findUserWithRoleByEmail(query);
-
-    if (!user) {
+    if (!user || !user[0].emailConfirmed) {
 
       return null;
     }
 
     const isPasswordValid: boolean = await this.hashHelper.compareHash(password, user[0].passwordHash);
-
     if ( isPasswordValid) {
         const result: AuthenticatedUserModel = {};
         result.firstName = user[0].firstName;

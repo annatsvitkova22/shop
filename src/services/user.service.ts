@@ -1,9 +1,14 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { User } from 'src/entity';
-import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel, UserWithRoleModel } from 'src/models';
+import { User, UserInRoles } from 'src/entity';
+import {
+    UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel,
+    UserWithRoleModel,
+    CreateRoleInUsersModel,
+} from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
 import { UserRepository } from 'src/repositories/user.repository';
+import { UserInRoleRepository, RoleRepository } from 'src/repositories';
 
 @Injectable()
 export class UserService {
@@ -12,6 +17,8 @@ export class UserService {
         @Inject(forwardRef(() => MailerHelper)) public emailHelper: MailerHelper,
         @Inject(forwardRef(() => HashHelper)) public readonly hashHelper: HashHelper,
         private readonly userRepository: UserRepository,
+        private readonly roleRepository: RoleRepository,
+        private readonly roleInUsersRepository: UserInRoleRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
 
@@ -21,10 +28,16 @@ export class UserService {
         return getUsers;
     }
 
-    public async getUserById(id: string): Promise<User> {
+    public async getUserById(id: string): Promise<CreateUserModel> {
         const foundUser: User = await this.userRepository.getUserById(id);
+        const showedUser: CreatedUserModel = new CreatedUserModel();
+        showedUser.id = foundUser.id;
+        showedUser.firstName = foundUser.firstName;
+        showedUser.lastName = foundUser.lastName;
+        showedUser.email = foundUser.email;
+        showedUser.emailConfirmed = foundUser.emailConfirmed;
 
-        return foundUser;
+        return showedUser;
     }
 
     public async createUser(createUser: CreateUserModel, req): Promise<UserInfoModel> {
@@ -68,6 +81,10 @@ export class UserService {
             showedUser.email = savedUserWithSaltEmail.email;
             showedUser.emailConfirmed = savedUserWithSaltEmail.emailConfirmed;
             userModel.userCreateModel = showedUser;
+            const savedRoleForUser: CreateRoleInUsersModel = await this.createRoleInUser(showedUser.id);
+            if (!savedRoleForUser) {
+                return null;
+            }
 
             return userModel;
         }
@@ -78,8 +95,24 @@ export class UserService {
         showedUser.email = savedUser.email;
         showedUser.emailConfirmed = savedUser.emailConfirmed;
         userModel.userCreateModel = showedUser;
+        const savedRoleInUser: CreateRoleInUsersModel = await this.createRoleInUser(showedUser.id);
+        if (!savedRoleInUser) {
+            return null;
+        }
 
         return userModel;
+    }
+
+    public async createRoleInUser(userId: string): Promise<CreateRoleInUsersModel> {
+        const roleUser = await this.roleRepository.getRoleByName('user');
+        const roleId = roleUser.getDataValue('id');
+        const roleInUserModel: UserInRoles = new UserInRoles();
+        roleInUserModel.id = this.uuidHelper.uuidv4();
+        roleInUserModel.roleId = roleId;
+        roleInUserModel.userId = userId;
+        const savedRoleInUser: CreateRoleInUsersModel = await this.roleInUsersRepository.createUserInRole(roleInUserModel);
+
+        return savedRoleInUser;
     }
 
     public async updateUser(updateUser: UpdateUserModel): Promise<User> {

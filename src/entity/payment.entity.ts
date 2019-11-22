@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BelongsTo, HasOne } from 'sequelize-typescript';
 import { Order } from 'src/entity';
 
 @Table({timestamps: false})
@@ -14,6 +14,6 @@ export class Payment extends Model<Payment> {
     @Column({ allowNull: false })
     transactionId: string;
 
-    @BelongsTo(() => Order, 'paymentId')
-    order: Order[];
+    @HasOne(() => Order, 'paymentId')
+    order: Order;
 }

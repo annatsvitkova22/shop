@@ -1,5 +1,7 @@
-import { Controller, Post, Body, Get, Put, Delete, Param, Query, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/common';
 
 import { UserService } from 'src/services';
 import { CreateUserModel, UpdateUserModel, ForgotPassword, UserInfoModel } from 'src/models';
@@ -10,7 +12,9 @@ import { User } from 'src/entity';
 export class UsersController {
     constructor(private userService: UserService) { }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get()
+    @Roles('admin')
     @ApiOperation({ title: 'Search all users' })
     public async getAll(): Promise<User[]> {
         const user: User[] = await this.userService.getUsers();
@@ -18,10 +22,12 @@ export class UsersController {
         return user;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
+    @Roles('admin')
     @ApiOperation({ title: 'Search user by id' })
-    public async get(@Param() params): Promise<User> {
-        const user: User = await this.userService.getUserById(params.id);
+    public async get(@Param() params): Promise<CreateUserModel> {
+        const user: CreateUserModel = await this.userService.getUserById(params.id);
 
         return user;
     }
@@ -59,7 +65,9 @@ export class UsersController {
         return user;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Put()
+    @Roles('admin')
     @ApiOperation({ title: 'Update user by id' })
     public async update(@Body() updateUser: UpdateUserModel): Promise<User> {
         const user: User = await this.userService.updateUser(updateUser);
@@ -67,7 +75,9 @@ export class UsersController {
         return user;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
+    @Roles('admin')
     @ApiOperation({ title: 'Delete user by id' })
     public async delete(@Param() params): Promise<number> {
         const deleted: number = await this.userService.deleteUser(params.id);

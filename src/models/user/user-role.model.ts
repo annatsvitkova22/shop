@@ -4,4 +4,5 @@ export interface UserWithRoleModel {
     passwordHash?: string;
     email?: string;
     name?: string;
+    emailConfirmed?: boolean;
 }

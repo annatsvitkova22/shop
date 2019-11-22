@@ -32,29 +32,28 @@ export class PrintingEditionService {
         printingEdition.priceMin = params.priceMin;
         printingEdition.priceMax = params.priceMax;
 
-        // tslint:disable-next-line: max-line-length
-        let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` AS `PrintingEdition` WHERE';
+        let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` WHERE';
 
         if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
-            query += ' `PrintingEdition`.`name` = \'' + printingEdition.name + '\' AND';
+            query += ' `name` = \'' + printingEdition.name + '\' AND';
         }
         if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
-            query += ' `PrintingEdition`.`name` = \'' + printingEdition.name + '\'';
+            query += ' `name` = \'' + printingEdition.name + '\'';
         }
         if (printingEdition.status && (printingEdition.priceMax || printingEdition.priceMin)) {
-            query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\' AND';
+            query += ' `status` = \'' + printingEdition.status + '\' AND';
         }
         if (!printingEdition.priceMax && !printingEdition.priceMin && printingEdition.status) {
-            query += ' `PrintingEdition`.`status` = \'' + printingEdition.status + '\'';
+            query += ' `status` = \'' + printingEdition.status + '\'';
         }
         if (printingEdition.priceMin && printingEdition.priceMax) {
-            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin + ' AND';
+            query += ' `price` > ' + printingEdition.priceMin + ' AND';
         }
         if (printingEdition.priceMin && !printingEdition.priceMax) {
-            query += ' `PrintingEdition`.`price` > ' + printingEdition.priceMin;
+            query += ' `price` > ' + printingEdition.priceMin;
         }
         if (printingEdition.priceMax) {
-            query += ' `PrintingEdition`.`price` < ' + printingEdition.priceMax;
+            query += ' `price` < ' + printingEdition.priceMax;
         }
 
         const foundPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
@@ -115,6 +114,15 @@ export class PrintingEditionService {
         const savedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(toUpdate);
 
         return savedEdition;
+    }
+
+    public async removePrintingEdition(printingEditionId: string): Promise<PrintingEdition> {
+        const removed: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(printingEditionId);
+        removed.isRemoved = true;
+
+        const removedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(removed);
+
+        return removedEdition;
     }
 
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {

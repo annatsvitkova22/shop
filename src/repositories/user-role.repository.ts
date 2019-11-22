@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserInRoles } from 'src/entity';
 
-const db = require('src/entity/user-role.entity');
+import db = require('src/entity/user-role.entity');
 
 @Injectable()
 export class UserInRoleRepository {

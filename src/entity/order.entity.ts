@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany, HasOne } from 'sequelize-typescript';
 import { User, Payment, OrderItem } from 'src/entity';
 
 @Table({timestamps: false})
@@ -35,7 +35,7 @@ export class Order extends Model<Order> {
         allowNull: true,
     })
     paymentId: string;
-    @HasMany(() => Payment, 'paymentId')
+    @BelongsTo(() => Payment, 'paymentId')
     payment: Payment;
 
     @HasMany(() => OrderItem, 'orderId')

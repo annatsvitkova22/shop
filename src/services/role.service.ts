@@ -25,6 +25,12 @@ export class RoleService {
         return foundRole;
     }
 
+    public async getRoleByName(name: string): Promise<UpdateRoleModel> {
+        const foundRole: UpdateRoleModel = await this.roleRepository.getRoleByName(name);
+
+        return foundRole;
+    }
+
     public async createRole(createRole: CreateRoleModel): Promise<Role> {
         const role: Role = new Role();
         role.name = createRole.name;

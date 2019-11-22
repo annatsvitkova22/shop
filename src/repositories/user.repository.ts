@@ -3,7 +3,7 @@ import { User } from 'src/entity';
 import sequelize = require('sequelize');
 import { UserWithRoleModel } from 'src/models';
 
-const db = require('src/entity/user.entity');
+import db = require('src/entity/user.entity');
 
 @Injectable()
 export class UserRepository {
