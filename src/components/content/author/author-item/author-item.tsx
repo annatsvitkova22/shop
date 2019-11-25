@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 
 import '../author.css';
 import { AuthorItemProps, UserRoleState } from '../../../../type/author.type';
@@ -26,8 +27,8 @@ class AuthorItem extends Component<AuthorItemProps, UserRoleState>  {
     const { id, name, onRemoveAuthor } = this.props;
     const { style } = this.state;
     return (
-      <li className="author-item">
-        <span>{name}</span>
+      <li className="author-item" key={id}><Link to={`/author/${id}`}>
+        <span>{name}</span></Link>
         <button style={style} onClick={() => onRemoveAuthor(id)} className="fas fa-times" >delete</button>
       </li>
     )

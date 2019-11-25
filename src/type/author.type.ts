@@ -1,3 +1,5 @@
+import React, { MouseEvent } from 'react';
+
 import { ADD_AUTHOR, REMOVE_AUTHOR } from '../constants';
 import { addAuthor, removeAuthor } from '../actions/author.actions';
 
@@ -27,6 +29,13 @@ export interface AuthorModel {
 export interface AuthorListState {
     authors: AuthorModel[],
     authorName: string,
+    check?: boolean,
+}
+
+export interface AuthorPostState {
+    author: AuthorModel,
+    authorName: string,
+    labelChangeName: string,
 }
 
 export interface RequestOptionsModel {
@@ -36,6 +45,11 @@ export interface RequestOptionsModel {
 }
 
 export interface CreateAuthorModel {
+    name: string,
+}
+
+export interface EditAuthorModel {
+    id: string,
     name: string,
 }
 
@@ -71,6 +85,7 @@ export interface AuthorInputProps {
     value: string,
     onCreateAuthor: () => void,
     onInputValueUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    onCheck: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export interface AuthorListProps {

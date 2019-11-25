@@ -13,6 +13,7 @@ class CreateHeader extends Component<any, UserHeaderState>{
         isToken: false
     });
 
+
     logOut = (event: MouseEvent<HTMLLIElement>): void => {
         event.preventDefault();
         localStorage.removeItem('accessToken');
@@ -20,7 +21,19 @@ class CreateHeader extends Component<any, UserHeaderState>{
     }
 
     componentDidMount = () => {
-        this.roleAuthorInput();
+        const  token  = localStorage.getItem('accessToken');
+        const jwt = require('jsonwebtoken');
+        const payload: TokenPayload = jwt.decode(token);
+    
+        if(payload) {
+            const isUser: boolean = payload.role === 'user';
+            const isAdmin: boolean = payload.role === 'admin';
+            const isToken: boolean = token !== null;
+            this.setState({isAdmin, isUser, isToken});
+        }
+        if(!token){
+            this.setState({isToken: false, isAdmin: false, isUser: false});
+        }
     }
 
     componentDidUpdate(prevProps: any) {

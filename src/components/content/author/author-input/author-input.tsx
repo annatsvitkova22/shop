@@ -23,18 +23,25 @@ class AuthorInput extends Component<AuthorInputProps, UserRoleState>  {
     }
 
     render() {
-        const { value, onInputValueUpdate, onCreateAuthor} = this.props;
+        const { value, onInputValueUpdate, onCheck, onCreateAuthor} = this.props;
         const { style } = this.state
         return (
             <div className="author-input-wrapper">
                 <h2>Authors</h2>
-                <div id='author-input-wrapper' style={style} className='author-input'>
+                <div id='author-wrapper' style={style} className='author-input'>
                     <input
+                        className="add-author-input"
                         type='text'
                         value={value}
                         onChange={onInputValueUpdate}
                     />
                     <button onClick={onCreateAuthor} placeholder="Author name">Add author</button>
+                    <input
+                    type='checkbox'
+                    onChange={onCheck}
+                    className="isRemoved"
+                    />
+                    <label>isRemoved</label>
                 </div>
             </div>
         );

@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from 'react';
+import React, { Component, ChangeEvent, ReactElement } from 'react';
 import { connect } from 'react-redux';
 
 import { addAuthor, removeAuthor } from '../actions/author.actions';
@@ -10,19 +10,30 @@ import '../components/author.css';
 
 const BASE_PATH = 'https://192.168.0.104:443/author/';
 
-
 class Author extends Component<AuthorProps, AuthorListState> {
     state: AuthorListState = ({
         authors: [],
         authorName: '',
+        check: false,
     });
 
-    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
 
         this.setState({
             authorName: value,
         });
+    }
+
+    handleInputCheck = (event: ChangeEvent<HTMLInputElement>): void => {
+        const check = event.target.checked;
+        this.setState({check})
+        if (check) {
+            this.getAllAuthors();
+        }
+        if( !check) {
+            this.getAllAuthorsWithoutRemoved();
+        }
     }
 
     handleAddAuthor = () => {
@@ -38,25 +49,49 @@ class Author extends Component<AuthorProps, AuthorListState> {
     }
 
     componentDidMount = () => {
-        this.getAllAuthors();
+        this.getAllAuthorsWithoutRemoved();
     }
 
     componentDidUpdate(prevProps: any) {
         const { author }: any = this.props;
+        const { check }: AuthorListState = this.state;
 
         if (author !== prevProps.author) {
-            this.getAllAuthors();
+            if (check) {
+                this.getAllAuthors();
+            }
+            if(!check) {
+                this.getAllAuthorsWithoutRemoved();
+            }
         }
+    }
+
+    getAllAuthorsWithoutRemoved = (): void => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + token);
+        const options: RequestOptionsModel = {
+            method: 'GET',
+            headers,
+        };
+
+        const url = BASE_PATH + 'isRemoved';
+        const request: Request = new Request(url, options);
+        fetch(request)
+            .then((res: Response) => res.json())
+            .then((authors: AuthorModel[]) => this.setState({ authors }))
+            .catch(error => error);
     }
 
     getAllAuthors = (): void => {
         const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
-        headers.append('Authorization', 'Bearer '+ token);
+        headers.append('Authorization', 'Bearer ' + token);
         const options: RequestOptionsModel = {
             method: 'GET',
             headers,
         };
+
         const request: Request = new Request(BASE_PATH, options);
         fetch(request)
             .then((res: Response) => res.json())
@@ -64,10 +99,13 @@ class Author extends Component<AuthorProps, AuthorListState> {
             .catch(error => error);
     }
 
-    createAuthor = (data: any): void => {
-        const json: string = JSON.stringify(data);
+    createAuthor = (data: CreateAuthorModel): void => {
+        const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(data);
+
         const options: RequestOptionsModel = {
             method: 'POST',
             headers,
@@ -81,9 +119,9 @@ class Author extends Component<AuthorProps, AuthorListState> {
     }
 
     removeAuthor = (id: string): void => {
-        const token: string | null  = localStorage.getItem('accessToken');
+        const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
-        headers.append('Authorization', 'Bearer '+ token);
+        headers.append('Authorization', 'Bearer ' + token);
         const options: RequestOptionsModel = {
             method: 'DELETE',
             headers,
@@ -102,7 +140,7 @@ class Author extends Component<AuthorProps, AuthorListState> {
 
         return (
             <div className="content">
-                <AuthorInput onCreateAuthor={this.handleAddAuthor} onInputValueUpdate={this.handleInputChange} value={authorName} />
+                <AuthorInput onCheck={this.handleInputCheck} onCreateAuthor={this.handleAddAuthor} onInputValueUpdate={this.handleInputChange} value={authorName} />
                 <AuthorList onRemoveAuthor={this.removeAuthor} authors={authors} />
             </div>
         );

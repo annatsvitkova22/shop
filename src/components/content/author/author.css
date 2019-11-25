@@ -65,3 +65,13 @@ ul {
   padding-left: 10px;
   border: 1px solid #333333;
 }
+
+.author-input-wrapper .add-author-input{
+  width: 50%;
+}
+
+.author-input-wrapper .isRemoved{
+  height: 15px;
+  width: 15px;
+  margin-left: 25px;
+}
