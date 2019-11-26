@@ -23,11 +23,31 @@ export interface EditBookModel {
     type: string
 }
 
+export interface AuthorModel {
+    id: string,
+    name: string,
+    isRemoved: boolean,
+}
+
+export interface BookWithAuthorsModel {
+    printingEdition: BookModel,
+    authors: AuthorModel[]
+}
+
+export interface SelectModel {
+    value: string,
+    label: string
+}
+
 export interface BookPostState {
     book: BookModel,
+    authors: AuthorModel[],
     bookName: string,
     labelChangeName: string,
-    isRoleUser: boolean
+    filterOptions: SelectModel[] ,
+    multiValue: string[],
+    isRoleUser: boolean,
+    isEdit: boolean
 }
 
 export interface BookListState {

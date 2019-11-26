@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
+import Select from "react-select";
 
-import { RequestOptionsModel } from '../../../../type/author.type';
-import { BookPostState, BookModel, EditBookModel } from '../../../../type/book.type';
+
+import { RequestOptionsModel, AuthorModel, AuthorListState } from '../../../../type/author.type';
+import { BookPostState, BookModel, EditBookModel, BookWithAuthorsModel, SelectModel } from '../../../../type/book.type';
+import { Link } from 'react-router-dom';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
+const BASE_AUTHOR = 'https://192.168.0.104:443/author/';
 
 class BookPost extends Component<any, BookPostState> {
+    // constructor(props: any) {
+    //     super(props);
+    //     this.handleMultiChange = this.handleMultiChange.bind(this);
+    // }
     state: BookPostState = ({
         book: {
             isRemoved: false,
@@ -17,15 +25,20 @@ class BookPost extends Component<any, BookPostState> {
             currency: '',
             type: ''
         },
+        filterOptions: [],
+        multiValue: [],
+        authors: [],
         bookName: '',
         labelChangeName: '',
-        isRoleUser: false
+        isRoleUser: false,
+        isEdit: false,
     });
 
     componentDidMount = (): void => {
         const { id } = this.props.match.params;
         this.requestGetBook(id);
         this.roleUser();
+        this.requestGetAllAuthors();
     }
 
     roleUser = (): void => {
@@ -54,6 +67,10 @@ class BookPost extends Component<any, BookPostState> {
         });
     }
 
+    handleEdit = () => {
+        this.setState({ isEdit: true });
+    }
+
     handleEditBook = () => {
         const { book, bookName }: BookPostState = this.state;
         const editBook: EditBookModel = {
@@ -67,7 +84,7 @@ class BookPost extends Component<any, BookPostState> {
 
         };
         this.requestEditBook(editBook);
-        this.setState({ labelChangeName: 'Book changed' })
+        this.setState({ labelChangeName: 'Book changed' });
     }
 
     handleRemovaBook = (): void => {
@@ -75,6 +92,15 @@ class BookPost extends Component<any, BookPostState> {
         this.requestRemoveBook(id);
 
     }
+
+    // handleMultiChange(option: any) {
+    //     this.setState(state => {
+    //       this.handleMultiChange = this.handleMultiChange.bind(this);
+    //       return {
+    //         multiValue: option
+    //       };
+    //     });
+    //   }
 
     requestGetBook = (id: string): void => {
         const token: string | null = localStorage.getItem('accessToken');
@@ -90,7 +116,7 @@ class BookPost extends Component<any, BookPostState> {
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
-            .then((book: BookModel) => this.setState({ book, bookName: book.name }))
+            .then((bookWithAuthor: BookWithAuthorsModel) => this.setState({ book: bookWithAuthor.printingEdition, bookName: bookWithAuthor.printingEdition.name, authors: bookWithAuthor.authors }))
             .catch(error => error);
     }
 
@@ -131,12 +157,38 @@ class BookPost extends Component<any, BookPostState> {
             .catch(error => error);
     }
 
+    requestGetAllAuthors = (): void => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Authorization', 'Bearer ' + token);
+        const options: RequestOptionsModel = {
+            method: 'GET',
+            headers,
+        };
+
+        const request: Request = new Request(BASE_AUTHOR, options);
+        fetch(request)
+            .then((res: Response) => res.json())
+            .then((authors: AuthorModel[]) => {
+                const mas: BookPostState = {} as BookPostState;
+                mas.filterOptions = [];
+            for (let i = 0; i < authors.length; i++) {
+                const sel : SelectModel = {} as SelectModel;
+                 sel.value = authors[i].name;
+                 sel.label = authors[i].name;
+
+                 mas.filterOptions.push(sel);
+            }
+            this.setState({filterOptions: mas.filterOptions})})
+            .catch(error => error);
+    }
+
     render() {
-        const { bookName, book, labelChangeName, isRoleUser } = this.state;
-        console.log(isRoleUser);
+        const { bookName, book, labelChangeName, isRoleUser, authors, isEdit, filterOptions } = this.state;
+        console.log(this.state);
         return (
             <div className="book-post">
-                {isRoleUser && <div className="edit-book">
+                {isRoleUser && isEdit && <div className="edit-book">
                     <h2>Book</h2>
                     <div id='book-input-wrapper' className='book-input'>
                         <input
@@ -145,26 +197,36 @@ class BookPost extends Component<any, BookPostState> {
                             onChange={this.handleInputChange}
                         />
                         <br />
+                        <Select
+                            placeholder="Authors"
+                            closeMenuOnSelect={false}
+                            defaultValue={[filterOptions[1]]}
+                            isMulti
+                            options={filterOptions}
+                        />
                         <label>{labelChangeName}</label>
                         <br />
                     </div>
                     {book.isRemoved && <label>Book {book.name} deleted</label>}
                 </div>}
 
-                <div>
+                {!isEdit && <div>
                     <div>
                         <p><span>Name: </span> {bookName}</p>
+                        <p><span>Authors: </span> {authors.map(({ name, id }) => (
+                            <Link to={`/author/${id}`}><span>{name} </span></Link>))}</p>
                         <p><span>Description: </span>{book.description}</p>
                         <p><span>Type: </span> {book.type}</p>
                         <p><span>Status: </span>{book.status}</p>
                         <p><span>Price: </span> {book.price}</p>
                         <p><span>Currency: </span>{book.currency}</p>
                     </div>
-                </div>
-                {isRoleUser && <div className="button">
-                    <button onClick={this.handleEditBook} >Edit</button>
+                </div>}
+                {isRoleUser && !isEdit && <div className="button">
+                    <button onClick={this.handleEdit} >Edit</button>
                     <button onClick={this.handleRemovaBook} >Remove</button>
                 </div>}
+                {isEdit && <button onClick={this.handleEditBook} >Edit</button>}
             </div>
         );
     }
