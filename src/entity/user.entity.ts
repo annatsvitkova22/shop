@@ -1,7 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsEmail } from 'class-validator';
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import { Order } from 'src/entity';
+import { Order, UserInRoles } from 'src/entity';
 
 @Table({timestamps: false})
 export class User extends Model<User> {
@@ -54,4 +54,7 @@ export class User extends Model<User> {
 
     @HasMany(() => Order, 'userId')
     order: Order[];
+
+    @HasMany(() => UserInRoles, 'userId')
+    userInRoles: UserInRoles[];
 }

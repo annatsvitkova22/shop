@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OrderItem } from 'src/entity';
 
-const db = require('src/entity/order-item.entity');
+import db = require('src/entity/order-item.entity');
 
 @Injectable()
 export class OrderItemRepository {

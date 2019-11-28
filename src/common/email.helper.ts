@@ -47,4 +47,36 @@ export class MailerHelper {
       return messegeError;
     }
   }
+
+  public async sendEmailForgotPassword(email: string): Promise<string> {
+    try {
+      const transporter: CreateTransporterModel = nodemailer.createTransport({
+        service: myEnvitonment.serviceMail,
+        port: myEnvitonment.portMail,
+        secure: myEnvitonment.secureMail,
+        auth: {
+          user: myEnvitonment.userMail,
+          pass: myEnvitonment.passMail,
+        },
+      });
+
+      const token: string = Math.random().toString(36).substring(2) + Math.max(1, Math.min(10));
+
+      const mailOptions: MailOptionModel = {
+        from: myEnvitonment.userMail,
+        to: email,
+        subject: 'IT works',
+        html: `<p>Ваш пароль: ${token}</p>`,
+      };
+
+      await transporter.sendMail(mailOptions);
+
+      return token;
+
+    } catch (error) {
+      const messegeError: string = error;
+
+      return messegeError;
+    }
+  }
 }

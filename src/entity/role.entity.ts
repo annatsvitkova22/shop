@@ -1,5 +1,5 @@
-import { Table, Column, Model, DataType, BelongsToMany } from 'sequelize-typescript';
-import { UserInRoles, User } from 'src/entity';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { UserInRoles } from 'src/entity';
 
 @Table({timestamps: false})
 export class Role extends Model<Role> {
@@ -14,6 +14,9 @@ export class Role extends Model<Role> {
     @Column({ allowNull: false })
     name: string;
 
-    @BelongsToMany(() => User, () => UserInRoles)
-    users: User[];
+    // @BelongsToMany(() => User, () => UserInRoles)
+    // users: User[];
+
+    @HasMany(() => UserInRoles, 'roleId')
+    userInRoles: UserInRoles[];
 }

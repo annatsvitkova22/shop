@@ -1,5 +1,5 @@
-import { Table, Column, Model, DataType, BelongsToMany, HasMany } from 'sequelize-typescript';
-import { OrderItem, AuthorInBooks, Author } from 'src/entity';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import { OrderItem, AuthorInBooks } from 'src/entity';
 
 @Table({timestamps: false})
 export class PrintingEdition extends Model<PrintingEdition> {
@@ -36,9 +36,9 @@ export class PrintingEdition extends Model<PrintingEdition> {
     @Column({ allowNull: false })
     type: string;
 
-    @BelongsToMany(() => Author, () => AuthorInBooks)
-    authors: Author[];
-
     @HasMany(() => OrderItem, 'pritingEditionId')
     orderItems: OrderItem[];
+
+    @HasMany(() => AuthorInBooks, 'bookId')
+    authorInBooks: AuthorInBooks[];
 }

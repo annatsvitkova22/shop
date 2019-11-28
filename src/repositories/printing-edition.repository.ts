@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrintingEdition } from 'src/entity';
+import { PrintingEdition, Author } from 'src/entity';
 import sequelize = require('sequelize');
 
 import db = require('src/entity/printing-edition.entity');
@@ -13,12 +13,40 @@ export class PrintingEditionRepository {
         return getPrintingEditions;
     }
 
-    public async getPrintingEditionrById(printingEditionId: string): Promise<PrintingEdition> {
+    public async getPrintingEditionsByIsRemomed(): Promise<PrintingEdition[]> {
+        const getPrintingEditions: PrintingEdition[] = await db.PrintingEdition.findAll({
+            where: { isRemoved: false },
+        });
+
+        return getPrintingEditions;
+    }
+
+    public async getPrintingEditionrById(id: string): Promise<PrintingEdition> {
         const printingEdition: PrintingEdition = await db.PrintingEdition.findOne({
-            where: { id: printingEditionId },
+            where: { id },
         });
 
         return printingEdition;
+    }
+
+    public async getAuthroByPrintingEditionrId(query: string): Promise<Author[]> {
+        const author: Author[] = await db.PrintingEdition.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
+        });
+
+        return author;
+    }
+
+    public async getPrintingEditionById(query: string): Promise<PrintingEdition[]> {
+        const printingEditions: PrintingEdition[] = await db.PrintingEdition.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
+        });
+
+        return printingEditions;
     }
 
     public async getPaginationPrintingEdition(take: number, skip: number): Promise<PrintingEdition[]> {

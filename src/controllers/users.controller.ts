@@ -51,16 +51,8 @@ export class UsersController {
 
     @Post('forgotPassword')
     @ApiOperation({ title: 'Forgot password, enter email' })
-    public async forgotPassword(@Request() req, @Body() forgotPassword: ForgotPassword): Promise<UserInfoModel> {
-        const user: UserInfoModel = await this.userService.forgotPassword(forgotPassword, req);
-
-        return user;
-    }
-
-    @Post('validateCode')
-    @ApiOperation({ title: 'Forgot password, enter password' })
-    public async validateForgotPassword(@Query('mail') mail: string, @Body() forgotPassword: ForgotPassword): Promise<UserInfoModel> {
-        const user: UserInfoModel = await this.userService.validateForgotPassword(forgotPassword, mail);
+    public async forgotPassword(@Body() forgotPassword: ForgotPassword): Promise<UserInfoModel> {
+        const user: UserInfoModel = await this.userService.forgotPassword(forgotPassword);
 
         return user;
     }

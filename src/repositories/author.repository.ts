@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { Author } from 'src/entity';
 
-const db = require('src/entity/author.entity');
+import db = require('src/entity/author.entity');
 
 @Injectable()
 export class AuthorRepository {
 
     public async getAuthors(): Promise<Author[]> {
         const getAuthors: Author[] = await db.Author.findAll();
+
+        return getAuthors;
+    }
+
+    public async getAuthorsByIsRemoved(): Promise<Author[]> {
+        const getAuthors: Author[] = await db.Author.findAll({
+            where: { isRemoved: false },
+        });
 
         return getAuthors;
     }

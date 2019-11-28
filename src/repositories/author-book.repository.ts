@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import sequelize = require('sequelize');
+
 import { AuthorInBooks } from 'src/entity';
 
-const db = require('src/entity/author-book.entity');
+import db = require('src/entity/author-book.entity');
 
 @Injectable()
 export class AuthorInBookRepository {
@@ -24,6 +26,21 @@ export class AuthorInBookRepository {
         const authorInBook: AuthorInBooks = await createAuthorInBook.save();
 
         return authorInBook;
+    }
+
+    public async ccreateAuthorInBook(query: string): Promise<AuthorInBooks[]> {
+        try {
+            const authorInBook: AuthorInBooks[] = await db.AuthorInBooks.sequelize.query(query, {
+                plain: false,
+                raw: false,
+                type: sequelize.QueryTypes.SELECT,
+            });
+            return authorInBook;
+        }
+        catch (e) {
+            // инструкции для работы с ошибками
+            console.log(e); // передает объект ошибки для управления им
+        }
     }
 
     public async deleteAuthorInBook(authorInBookId: string): Promise<number> {

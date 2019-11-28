@@ -15,12 +15,23 @@ export class AuthorsController {
     @UseGuards(AuthGuard('jwt'))
     @Get()
     @Roles('admin')
-    @ApiOperation({ title: 'Search all authors by id'})
+    @ApiOperation({ title: 'Search all authors'})
     public async getAll(): Promise<Author[]> {
         const author: Author[] = await this.authorService.getAuthors();
 
         return author;
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('isRemoved')
+    @Roles('admin')
+    @ApiOperation({ title: 'Search all authors by IsRemoved'})
+    public async getAllByIsRemoved(): Promise<Author[]> {
+        const author: Author[] = await this.authorService.getAuthorsByIsRemoved();
+
+        return author;
+    }
+
     @UseGuards(AuthGuard('jwt'))
     @Get(':id')
     @Roles('admin')
@@ -31,7 +42,9 @@ export class AuthorsController {
         return author;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post()
+    @Roles('admin')
     @ApiOperation({ title: 'Create author'})
     public async create(@Body() createAuthor: CreateAuthorModel): Promise<Author> {
         const author: Author = await this.authorService.createAuthor(createAuthor);

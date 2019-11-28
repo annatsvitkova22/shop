@@ -4,6 +4,7 @@ import { Author } from 'src/entity';
 import { UpdateAuthorModel, CreateAuthorModel } from 'src/models';
 import { UuidHelper } from 'src/common/uuid.helper';
 import { AuthorRepository } from 'src/repositories/author.repository';
+import { tsConstructSignatureDeclaration } from '@babel/types';
 
 @Injectable()
 export class AuthorService {
@@ -19,6 +20,12 @@ export class AuthorService {
         return gotAuthors;
     }
 
+    public async getAuthorsByIsRemoved(): Promise<Author[]> {
+        const gotAuthors: Author[] = await this.authorRepository.getAuthorsByIsRemoved();
+
+        return gotAuthors;
+    }
+
     public async getAuthorById(id: string): Promise<Author> {
         const foundAuthor: Author = await this.authorRepository.getAuthorIById(id);
 
@@ -30,7 +37,6 @@ export class AuthorService {
         const validateName: string = await this.validateName(CreateAuthor.name);
         author.name = validateName;
         author.id = this.uuidHelper.uuidv4();
-
         const savedAuthor: Author = await this.authorRepository.createAuthor(author);
 
         return savedAuthor;

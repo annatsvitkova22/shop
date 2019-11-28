@@ -1,5 +1,6 @@
 import { Enviroment } from 'src/environment/environment';
 
+// tslint:disable-next-line: no-var-requires
 const fs = require('fs');
 
 export const environmentProd: Enviroment = {
@@ -9,13 +10,12 @@ export const environmentProd: Enviroment = {
   port: 80,
   tokenLife: 1800,
   refreshTokenLife: 15768000,
-  mongoConnection: 'mongodb+srv://Anna:6aYOKYnIED9VFj1c@cluster0-ucmvx.mongodb.net/printing-editions?retryWrites=true&w=majority',
   databaseType: 'mysql',
   databaseHost: '127.0.0.1',
   databasePort: 3306,
   databaseUsername: 'root',
   databasePassword: '1111',
-  database: 'book-shop',
+  database: 'new-shop',
   serviceMail: 'gmail',
   portMail: 587,
   secureMail: false,

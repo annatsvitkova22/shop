@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/entity';
 import sequelize = require('sequelize');
+
+import { User } from 'src/entity';
 import { UserWithRoleModel } from 'src/models';
 
 import db = require('src/entity/user.entity');

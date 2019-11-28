@@ -1,5 +1,5 @@
 import { Author, PrintingEdition } from 'src/entity';
-import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 
 @Table({timestamps: false})
 export class AuthorInBooks extends Model<AuthorInBooks> {
@@ -12,10 +12,20 @@ export class AuthorInBooks extends Model<AuthorInBooks> {
     id: string;
 
     @ForeignKey(() => Author)
-    @Column({allowNull: false})
+    @Column({
+        type: DataType.UUID,
+        allowNull: false,
+    })
     authorId: string;
+    @BelongsTo(() => Author, 'authorId')
+    author: Author;
 
     @ForeignKey(() => PrintingEdition)
-    @Column({allowNull: false})
+    @Column({
+        type: DataType.UUID,
+        allowNull: false,
+    })
     bookId: string;
+    @BelongsTo(() => PrintingEdition, 'bookId')
+    printingEdition: PrintingEdition;
 }

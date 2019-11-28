@@ -177,13 +177,13 @@ export class UserService {
         return info;
     }
 
-    public async forgotPassword(forgotPassword: ForgotPassword, req): Promise<UserInfoModel> {
-        const url = req.protocol + '://' + req.hostname + req.url;
+    public async forgotPassword(forgotPassword: ForgotPassword): Promise<UserInfoModel> {
         const user = await this.userRepository.getUserByEmail(forgotPassword.email);
-
-        const saltForEmail: string = await this.emailHelper.sendEmail(user.email, url);
-        user.saltForEmail = saltForEmail;
-        user.emailConfirmed = false;
+        const randomPassword: string = await this.emailHelper.sendEmailForgotPassword(user.email);
+        const randomSalt: string = await this.hashHelper.getRandomSalt();
+        user.salt = randomSalt;
+        const pass: string = await this.hashHelper.getHash(randomPassword, randomSalt);
+        user.passwordHash = pass;
 
         const savedUser: User = await this.userRepository.createUser(user);
         const userModel = new UserInfoModel();
