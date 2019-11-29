@@ -1,7 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { AuthorInBooks } from 'src/entity';
-import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
 import { UuidHelper } from 'src/common';
 import { AuthorInBookRepository } from 'src/repositories/';
 

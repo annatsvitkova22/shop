@@ -2,7 +2,6 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD, APP_FILTER } from '@nestjs/core';
-import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from 'src/app.controller';
 import { AuthenticationController, PrintingEditionsController, UsersController, OrdersController, OrderItemsController,

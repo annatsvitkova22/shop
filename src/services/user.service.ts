@@ -1,14 +1,10 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { User, UserInRoles } from 'src/entity';
-import {
-    UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel,
-    UserWithRoleModel,
-    CreateRoleInUsersModel,
-} from 'src/models';
+import { UpdateUserModel, CreateUserModel, ForgotPassword, CreatedUserModel, UserInfoModel,
+    UserWithRoleModel, CreateRoleInUsersModel } from 'src/models';
 import { HashHelper, MailerHelper, UuidHelper } from 'src/common/';
-import { UserRepository } from 'src/repositories/user.repository';
-import { UserInRoleRepository, RoleRepository } from 'src/repositories';
+import { UserInRoleRepository, RoleRepository, UserRepository } from 'src/repositories';
 
 @Injectable()
 export class UserService {

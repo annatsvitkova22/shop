@@ -4,9 +4,9 @@ import { Roles } from 'src/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { PrintingEditionService } from 'src/services';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionInfoModel, PrintingEditionFilterModel } from 'src/models';
+import { CreatePrintingEditionWithAuthorModel, UpdatePrintingEditionWithAuthorModel, PrintingEditionInfoModel,
+    PrintingEditionFilterModel } from 'src/models';
 import { PrintingEdition } from 'src/entity';
-import { PrintingEditionWithAuthorModel } from 'src/models/book/printing-edition-author.model';
 
 @ApiUseTags('Printing edition')
 @Controller('printingEdition')
@@ -32,8 +32,8 @@ export class PrintingEditionsController {
 
     @Get('author/:id')
     @ApiOperation({ title: 'Search all printing editions by IsRemoved' })
-    public async getByIdWithAuthor(@Param() params): Promise<PrintingEditionWithAuthorModel> {
-        const printingEdition: PrintingEditionWithAuthorModel = await this.printingEditionService.getPrintingEditionByIdWithAuthor(params.id);
+    public async getByIdWithAuthor(@Param() params): Promise<UpdatePrintingEditionWithAuthorModel> {
+        const printingEdition: UpdatePrintingEditionWithAuthorModel = await this.printingEditionService.getPrintingEditionByIdWithAuthor(params.id);
 
         return printingEdition;
     }
@@ -67,7 +67,7 @@ export class PrintingEditionsController {
     @Post()
     @Roles('admin')
     @ApiOperation({ title: 'Create printing edition' })
-    public async create(@Body() createEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
+    public async create(@Body() createEdition: CreatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: PrintingEdition = await this.printingEditionService.createPrintingEdition(createEdition);
 
         return edition;
@@ -77,7 +77,7 @@ export class PrintingEditionsController {
     @Put()
     @Roles('admin')
     @ApiOperation({ title: 'Update printing edition by id' })
-    public async update(@Body() updateEdition: PrintingEditionWithAuthorModel): Promise<PrintingEdition> {
+    public async update(@Body() updateEdition: UpdatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: PrintingEdition = await this.printingEditionService.updatePrintingEdition(updateEdition);
 
         return edition;

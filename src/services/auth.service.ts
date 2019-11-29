@@ -2,11 +2,10 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import { AuthenticatedUserModel, UserWithRoleModel, TokenModel } from 'src/models';
+import { AuthenticatedUserModel, UserWithRoleModel, TokenModel, AccessTokenModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
 import { UserService } from './user.service';
-import { AccessTokenModel } from 'src/models/access-token.model';
 
 const jwt = jsonwebtoken;
 const myEnvitonment: Enviroment = getEnv();

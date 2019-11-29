@@ -2,11 +2,11 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class PrintingEditionFilterModel {
     @ApiModelProperty()
-    name?: string;
+    name: string;
     @ApiModelProperty()
-    priceMin?: number;
+    priceMin: number;
     @ApiModelProperty()
-    priceMax?: number;
+    priceMax: number;
     @ApiModelProperty()
-    status?: string;
+    status: string;
 }

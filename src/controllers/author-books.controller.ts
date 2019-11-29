@@ -1,8 +1,7 @@
-import { Controller, Post, Body, Get, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Delete, Param } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { AuthorInBookService } from 'src/services';
-import { UpdateAuthorInBooksModel, CreateAuthorInBooksModel } from 'src/models';
 import { AuthorInBooks } from 'src/entity';
 
 @ApiUseTags('Author in book')

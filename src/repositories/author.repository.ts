@@ -28,6 +28,14 @@ export class AuthorRepository {
         return author;
     }
 
+    public async getAuthorIByName(authorName: string): Promise<Author> {
+        const author: Author = await db.Author.findOne({
+            where: { name: authorName },
+        });
+
+        return author;
+    }
+
     public async createAuthor(createAuthor: Author): Promise<Author> {
         const author: Author = await createAuthor.save();
 

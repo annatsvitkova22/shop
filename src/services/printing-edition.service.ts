@@ -1,16 +1,17 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PrintingEdition, Author, AuthorInBooks } from 'src/entity';
-import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel } from 'src/models';
+import { UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel, UpdatePrintingEditionWithAuthorModel,
+    CreatePrintingEditionWithAuthorModel } from 'src/models';
 import { UuidHelper } from 'src/common';
-import { PrintingEditionRepository, AuthorInBookRepository } from 'src/repositories';
-import { PrintingEditionWithAuthorModel } from 'src/models/book/printing-edition-author.model';
+import { PrintingEditionRepository, AuthorInBookRepository, AuthorRepository } from 'src/repositories';
 
 @Injectable()
 export class PrintingEditionService {
 
     constructor(
         private readonly authorInBookRepository: AuthorInBookRepository,
+        private readonly authorRepository: AuthorRepository,
         private readonly printingEditionRepository: PrintingEditionRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
@@ -27,7 +28,7 @@ export class PrintingEditionService {
         return getEditions;
     }
 
-    public async getPrintingEditionByIdWithAuthor(id: string): Promise<PrintingEditionWithAuthorModel> {
+    public async getPrintingEditionByIdWithAuthor(id: string): Promise<UpdatePrintingEditionWithAuthorModel> {
         // tslint:disable-next-line: max-line-length
         let authorQuery: string = 'SELECT `authors`.`id`, `authors`.`name`, `authors`.`isRemoved` FROM `authorinbooks` INNER JOIN `authors` ON `authorinbooks`.`authorId` = `authors`.`id` INNER JOIN `printingeditions` ON `authorinbooks`.`bookId` = `printingeditions`.`id` WHERE `printingeditions`.`id` = \'';
         authorQuery += id + '\'';
@@ -36,7 +37,7 @@ export class PrintingEditionService {
         let printingEditionQuery = 'SELECT `printingeditions`.`id`, `printingeditions`.`name`, `printingeditions`.`description`, `printingeditions`.`price`, `printingeditions`.`isRemoved`, `printingeditions`.`status`, `printingeditions`.`currency`, `printingeditions`.`type` FROM `authorinbooks` INNER JOIN `authors` ON `authorinbooks`.`authorId` = `authors`.`id` INNER JOIN `printingeditions` ON `authorinbooks`.`bookId` = `printingeditions`.`id` WHERE `printingeditions`.`id` = \'';
         printingEditionQuery += id + '\'';
         const foundPrintingEditionById: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditionById(printingEditionQuery);
-        const foundPrintingEditionByIdWithAuthors: PrintingEditionWithAuthorModel = new PrintingEditionWithAuthorModel();
+        const foundPrintingEditionByIdWithAuthors: UpdatePrintingEditionWithAuthorModel = new UpdatePrintingEditionWithAuthorModel();
         foundPrintingEditionByIdWithAuthors.printingEdition = foundPrintingEditionById[0];
         foundPrintingEditionByIdWithAuthors.authors = foundAuthorByPrintingEditionId;
 
@@ -100,22 +101,51 @@ export class PrintingEditionService {
         return printingEditionModel;
     }
 
-    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionModel): Promise<PrintingEdition> {
+    public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: PrintingEdition = new PrintingEdition();
-        edition.name = createPrintingEdition.name;
-        edition.description = createPrintingEdition.description;
-        edition.price = createPrintingEdition.price;
-        edition.status = createPrintingEdition.status;
-        edition.currency = createPrintingEdition.currency;
-        edition.type = createPrintingEdition.type;
         edition.id = this.uuidHelper.uuidv4();
+        edition.name = createPrintingEdition.printingEdition.name;
+        edition.description = createPrintingEdition.printingEdition.description;
+        edition.price = createPrintingEdition.printingEdition.price;
+        edition.status = createPrintingEdition.printingEdition.status;
+        edition.currency = createPrintingEdition.printingEdition.currency;
+        edition.type = createPrintingEdition.printingEdition.type;
 
-        const savedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
+        const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
 
-        return savedEdition;
+        let query: string = 'INSERT INTO `AuthorInBooks` (`id`, `authorId`, `bookId`) VALUES';
+        const count: number = createPrintingEdition.authors.length;
+        let i: number = 1;
+
+        if (createPrintingEdition.authors) {
+            for (const author of createPrintingEdition.authors) {
+                const generatedId: string = this.uuidHelper.uuidv4();
+                // tslint:disable-next-line: max-line-length
+                query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + edition.id + '\')';
+                if (i < count) {
+                    query += ', ';
+                }
+                if (i === count) {
+                    query += ';';
+                }
+                i++;
+            }
+        }
+        if (createPrintingEdition.authors && !createPrintingEdition.authors.length) {
+            const author: Author = await this.authorRepository.getAuthorIByName('Unknown');
+            const generatedId: string = this.uuidHelper.uuidv4();
+            query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + edition.id + '\')';
+        }
+
+        const authors: AuthorInBooks[] = await this.authorInBookRepository.createAuthorInBook(query);
+        if (!authors || !savedPrintingEdition) {
+            return null;
+        }
+
+        return savedPrintingEdition;
     }
 
-    public async updatePrintingEdition(updatePrintingEdition: PrintingEditionWithAuthorModel): Promise<PrintingEdition> {
+    public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: UpdatePrintingEditionModel = new UpdatePrintingEditionModel();
         edition.id = updatePrintingEdition.printingEdition.id;
         edition.name = updatePrintingEdition.printingEdition.name;
