@@ -11,7 +11,7 @@ export class AuthorInBookService {
     constructor(
         private readonly authorInBooksRepository: AuthorInBookRepository,
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
-        ) { }
+    ) { }
 
     public async getAuthorInBooks(): Promise<AuthorInBooks[]> {
         const getAuthorInBooks: AuthorInBooks[] = await this.authorInBooksRepository.getAuthorInBooks();
@@ -25,32 +25,7 @@ export class AuthorInBookService {
         return authorInBook;
     }
 
-    public async createAuthorInBook(createdAuthorInBook: CreateAuthorInBooksModel): Promise<string> {
-        const authorInBook: AuthorInBooks = new AuthorInBooks();
-        authorInBook.authorId = createdAuthorInBook.authorId;
-        authorInBook.bookId = createdAuthorInBook.bookId;
-        authorInBook.id = this.uuidHelper.uuidv4();
-        const savedAuthorInBook: AuthorInBooks = await this.authorInBooksRepository.createAuthorInBook(authorInBook);
-
-        return(savedAuthorInBook.id);
-    }
-
-    public async updateAuthorInBook(authorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const updateAuthorInBook: AuthorInBooks = new AuthorInBooks();
-        updateAuthorInBook.id = authorInBook.id;
-        updateAuthorInBook.authorId = authorInBook.authorId;
-        updateAuthorInBook.bookId = authorInBook.bookId;
-
-        const toUpdate: AuthorInBooks = await this.authorInBooksRepository.getAuthorInBookById(updateAuthorInBook.id);
-        toUpdate.authorId = updateAuthorInBook.authorId;
-        toUpdate.bookId = updateAuthorInBook.bookId;
-
-        const savedAuthorInBook: AuthorInBooks = await this.authorInBooksRepository.createAuthorInBook(toUpdate);
-
-        return savedAuthorInBook;
-      }
-
-      public async deleteAuthorInBook(authorInBookId: string): Promise<number> {
+    public async deleteAuthorInBook(authorInBookId: string): Promise<number> {
         const result: number = await this.authorInBooksRepository.deleteAuthorInBook(authorInBookId);
 
         return result;

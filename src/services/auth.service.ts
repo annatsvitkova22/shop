@@ -2,10 +2,11 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import * as jsonwebtoken from 'jsonwebtoken';
 
-import { AuthenticatedUserModel, UserWithRoleModel } from 'src/models';
+import { AuthenticatedUserModel, UserWithRoleModel, TokenModel } from 'src/models';
 import { Enviroment, getEnv } from 'src/environment/environment';
 import { HashHelper } from 'src/common';
 import { UserService } from './user.service';
+import { AccessTokenModel } from 'src/models/access-token.model';
 
 const jwt = jsonwebtoken;
 const myEnvitonment: Enviroment = getEnv();
@@ -47,9 +48,18 @@ export class AuthService {
     return accessToken;
   }
 
-  public getRefresh(user: AuthenticatedUserModel): string {
-    const refreshToken: string = jwt.sign(user, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
+  public  getRefresh(user: AuthenticatedUserModel): TokenModel {
+    const accessToken: string = this.getToken(user);
+    const token: AccessTokenModel = {
+      accessToken,
+    };
 
-    return refreshToken;
+    const refreshToken: string = jwt.sign(token, myEnvitonment.tokenSecret, { expiresIn: myEnvitonment.refreshTokenLife });
+    const tokens: TokenModel = {
+      accessToken,
+      refreshToken,
+    };
+
+    return tokens;
   }
 }

@@ -22,30 +22,19 @@ export class AuthorInBookRepository {
         return authorInBook;
     }
 
-    public async createAuthorInBook(createAuthorInBook: AuthorInBooks): Promise<AuthorInBooks> {
-        const authorInBook: AuthorInBooks = await createAuthorInBook.save();
+    public async createAuthorInBook(query: string): Promise<AuthorInBooks[]> {
+        const authorInBook: AuthorInBooks[] = await db.AuthorInBooks.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
+        });
 
         return authorInBook;
     }
 
-    public async ccreateAuthorInBook(query: string): Promise<AuthorInBooks[]> {
-        try {
-            const authorInBook: AuthorInBooks[] = await db.AuthorInBooks.sequelize.query(query, {
-                plain: false,
-                raw: false,
-                type: sequelize.QueryTypes.SELECT,
-            });
-            return authorInBook;
-        }
-        catch (e) {
-            // инструкции для работы с ошибками
-            console.log(e); // передает объект ошибки для управления им
-        }
-    }
-
-    public async deleteAuthorInBook(authorInBookId: string): Promise<number> {
+    public async deleteAuthorInBook(bookId: string): Promise<number> {
         const deleted: number = await db.AuthorInBooks.destroy({
-            where: { id: authorInBookId },
+            where: { bookId },
         });
 
         return deleted;

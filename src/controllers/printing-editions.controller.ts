@@ -77,20 +77,10 @@ export class PrintingEditionsController {
     @Put()
     @Roles('admin')
     @ApiOperation({ title: 'Update printing edition by id' })
-    public update(@Body() updateEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const edition: Promise<PrintingEdition> = this.printingEditionService.updatePrintingEdition(updateEdition);
+    public async update(@Body() updateEdition: PrintingEditionWithAuthorModel): Promise<PrintingEdition> {
+        const edition: PrintingEdition = await this.printingEditionService.updatePrintingEdition(updateEdition);
 
         return edition;
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Put('update')
-    @Roles('admin')
-    @ApiOperation({ title: 'Update printing edition by id' })
-    public uupdate(@Body() updateEdition: PrintingEditionWithAuthorModel) {
-      this.printingEditionService.uupdatePrintingEdition(updateEdition);
-
-        console.log(updateEdition);
     }
 
     @UseGuards(AuthGuard('jwt'))

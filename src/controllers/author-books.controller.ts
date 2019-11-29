@@ -27,22 +27,6 @@ export class AuthorInBookController {
         return authorInBook;
     }
 
-    @Post()
-    @ApiOperation({ title: 'Create author in book' })
-    public async create(@Body() createAuthorInBook: CreateAuthorInBooksModel): Promise<string> {
-        const authorInBook: string = await this.authorInBookService.createAuthorInBook(createAuthorInBook);
-
-        return authorInBook;
-    }
-
-    @Put()
-    @ApiOperation({ title: 'Update author in books by id' })
-    public update(@Body() updateAuthorInBook: UpdateAuthorInBooksModel): Promise<AuthorInBooks> {
-        const authorInBook: Promise<AuthorInBooks> = this.authorInBookService.updateAuthorInBook(updateAuthorInBook);
-
-        return authorInBook;
-    }
-
     @Delete(':id')
     @ApiOperation({ title: 'Delete author in book by id' })
     public async delete(@Param() params): Promise<number> {

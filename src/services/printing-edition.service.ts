@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { PrintingEdition, Author } from 'src/entity';
+import { PrintingEdition, Author, AuthorInBooks } from 'src/entity';
 import { CreatePrintingEditionModel, UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel } from 'src/models';
 import { UuidHelper } from 'src/common';
 import { PrintingEditionRepository, AuthorInBookRepository } from 'src/repositories';
@@ -115,30 +115,7 @@ export class PrintingEditionService {
         return savedEdition;
     }
 
-    public async updatePrintingEdition(updatePrintingEdition: UpdatePrintingEditionModel): Promise<PrintingEdition> {
-        const edition: UpdatePrintingEditionModel = new UpdatePrintingEditionModel();
-        edition.id = updatePrintingEdition.id;
-        edition.name = updatePrintingEdition.name;
-        edition.description = updatePrintingEdition.description;
-        edition.price = updatePrintingEdition.price;
-        edition.status = updatePrintingEdition.status;
-        edition.currency = updatePrintingEdition.currency;
-        edition.type = updatePrintingEdition.type;
-
-        const toUpdate: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(edition.id);
-        toUpdate.name = edition.name;
-        toUpdate.description = edition.description;
-        toUpdate.price = edition.price;
-        toUpdate.status = edition.status;
-        toUpdate.currency = edition.currency;
-        toUpdate.type = edition.type;
-
-        const savedEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(toUpdate);
-
-        return savedEdition;
-    }
-
-    public async uupdatePrintingEdition(updatePrintingEdition: PrintingEditionWithAuthorModel) {
+    public async updatePrintingEdition(updatePrintingEdition: PrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: UpdatePrintingEditionModel = new UpdatePrintingEditionModel();
         edition.id = updatePrintingEdition.printingEdition.id;
         edition.name = updatePrintingEdition.printingEdition.name;
@@ -156,27 +133,31 @@ export class PrintingEditionService {
         toUpdate.currency = edition.currency;
         toUpdate.type = edition.type;
 
+        const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(toUpdate);
+        const deletedAuthors: number = await this.authorInBookRepository.deleteAuthorInBook(toUpdate.id);
+
         let query: string = 'INSERT INTO `AuthorInBooks` (`id`, `authorId`, `bookId`) VALUES';
         const count: number = updatePrintingEdition.authors.length;
         let i: number = 1;
         for (const author of updatePrintingEdition.authors) {
             const generatedId: string = this.uuidHelper.uuidv4();
-            console.log(author.id);
-            console.log(updatePrintingEdition.printingEdition.id);
             // tslint:disable-next-line: max-line-length
             query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + updatePrintingEdition.printingEdition.id + '\')';
             if (i < count) {
-                query +=  ', ';
+                query += ', ';
             }
-            if ( i === count) {
-                query +=  ';';
+            if (i === count) {
+                query += ';';
             }
-            console.log(i);
-            console.log(count);
             i++;
         }
-        const user = await this.authorInBookRepository.ccreateAuthorInBook(query);
-        // return savedEdition;
+
+        const authors: AuthorInBooks[] = await this.authorInBookRepository.createAuthorInBook(query);
+        if (!authors || !savedPrintingEdition || deletedAuthors) {
+            return null;
+        }
+
+        return savedPrintingEdition;
     }
 
     public async removePrintingEdition(printingEditionId: string): Promise<PrintingEdition> {
