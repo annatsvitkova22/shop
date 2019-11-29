@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@progress/kendo-react-dropdowns": "^3.9.0",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/jwt-decode": "^2.2.1",
     "@types/node": "^12.12.7",

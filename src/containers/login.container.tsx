@@ -44,7 +44,7 @@ class Login extends Component<any, LoginState> {
         }
     }
 
-    validateField(fieldName: string, value: any) {
+    validateField = (fieldName: string, value: any): void => {
         let fieldValidationErrors: fieldValidationErrors = this.state.formErrors;
         let emailValid: boolean = this.state.emailValid;
         let passwordValid: boolean = this.state.passwordValid;
@@ -67,15 +67,15 @@ class Login extends Component<any, LoginState> {
         }, this.validateForm);
     }
 
-    validateForm() {
+    validateForm = (): void => {
         this.setState({ formValid: this.state.emailValid && this.state.passwordValid });
     }
 
-    errorClass = (error: string) => {
+    errorClass = (error: string): string => {
         return (error.length === 0 ? '' : 'has-error');
     }
 
-    handleLoginUser = (event: MouseEvent<HTMLButtonElement>) => {
+    handleLoginUser = (event: MouseEvent<HTMLButtonElement>): void => {
         event.preventDefault();
         const { password, username }: LoginState = this.state;
 
@@ -97,12 +97,12 @@ class Login extends Component<any, LoginState> {
         }
     }
 
-    forgotPassword = async (event: MouseEvent<HTMLParagraphElement>) => {
+    forgotPassword = async (event: MouseEvent<HTMLParagraphElement>): Promise<void> => {
         event.preventDefault();
         this.setState({ isForgotPassword: false });
     }
 
-    sendLetter = async (event: MouseEvent<HTMLButtonElement>) => {
+    sendLetter = async (event: MouseEvent<HTMLButtonElement>): Promise<void> => {
         event.preventDefault();
         const { username }: LoginState = this.state;
         const userName: ForgotPasswordModel = {

@@ -1,19 +1,13 @@
-import React, { Component } from 'react';
-import Select from "react-select";
+import React, { Component, ChangeEvent } from 'react';
 
-
-import { RequestOptionsModel, AuthorModel, AuthorListState } from '../../../../type/author.type';
-import { BookPostState, BookModel, EditBookModel, BookWithAuthorsModel, SelectModel } from '../../../../type/book.type';
+import { RequestOptionsModel } from '../../../../type/author.type';
+import { BookPostState, BookModel, AuthorModel, BookWithAuthorsModel, SelectModel } from '../../../../type/book.type';
 import { Link } from 'react-router-dom';
+import NewBook from '../new-book/new-book';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
-const BASE_AUTHOR = 'https://192.168.0.104:443/author/';
 
 class BookPost extends Component<any, BookPostState> {
-    // constructor(props: any) {
-    //     super(props);
-    //     this.handleMultiChange = this.handleMultiChange.bind(this);
-    // }
     state: BookPostState = ({
         book: {
             isRemoved: false,
@@ -25,20 +19,24 @@ class BookPost extends Component<any, BookPostState> {
             currency: '',
             type: ''
         },
-        filterOptions: [],
+        authorDefaultOptions: [],
         multiValue: [],
         authors: [],
         bookName: '',
-        labelChangeName: '',
+        bookDescription: '',
+        bookPrice: 0,
+        bookStatus: '',
+        bookCurrency: '',
+        bookType: '',
+        labelChangeName: false,
         isRoleUser: false,
         isEdit: false,
     });
 
     componentDidMount = (): void => {
         const { id } = this.props.match.params;
-        this.requestGetBook(id);
+        this.requestGetBookWithAuthor(id);
         this.roleUser();
-        this.requestGetAllAuthors();
     }
 
     roleUser = (): void => {
@@ -61,48 +59,99 @@ class BookPost extends Component<any, BookPostState> {
 
     handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
-
-        this.setState({
-            bookName: value,
-        });
+        const { name } = event.target;
+        switch (name) {
+            case 'bookName':
+                this.setState({ bookName: value });
+                break;
+            case 'bookType':
+                this.setState({ bookType: value });
+                break;
+            case 'bookPrice':
+                this.setState({ bookPrice: +value });
+                break;
+            default:
+                break;
+        }
     }
 
-    handleEdit = () => {
+    handleEdit = (): void => {
         this.setState({ isEdit: true });
     }
 
-    handleEditBook = () => {
-        const { book, bookName }: BookPostState = this.state;
-        const editBook: EditBookModel = {
-            id: book.id,
-            name: bookName,
-            description: book.description,
-            price: book.price,
-            status: book.status,
-            currency: book.currency,
-            type: book.type
+    handleEditBook = async (): Promise<void> => {
+        const { book, bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookPostState = this.state;
 
-        };
-        this.requestEditBook(editBook);
-        this.setState({ labelChangeName: 'Book changed' });
+        const eeditBook: BookWithAuthorsModel = {
+            printingEdition: {
+                id: book.id,
+                name: bookName,
+                description: bookDescription,
+                price: bookPrice,
+                status: bookStatus,
+                currency: bookCurrency,
+                type: bookType,
+                isRemoved: book.isRemoved,
+            },
+            authors
+        }
+
+        const updatedBook = await this.requestEditBook(eeditBook);
+        if (updatedBook) {
+            this.setState({ labelChangeName: true });
+        }
     }
 
-    handleRemovaBook = (): void => {
+    handleRemoveBook = (): void => {
         const { id } = this.props.match.params;
         this.requestRemoveBook(id);
 
     }
 
-    // handleMultiChange(option: any) {
-    //     this.setState(state => {
-    //       this.handleMultiChange = this.handleMultiChange.bind(this);
-    //       return {
-    //         multiValue: option
-    //       };
-    //     });
-    //   }
+    handleSelectAuthor = (event: any): void => {
+        const value: any = event;
 
-    requestGetBook = (id: string): void => {
+        const mas: BookPostState = {} as BookPostState;
+        mas.authors = [];
+        if (value) {
+            for (let i = 0; i < value.length; i++) {
+                const author: AuthorModel = {} as AuthorModel;
+                author.name = value[i].label;
+                author.id = value[i].value;
+                author.isRemoved = false;
+
+                mas.authors.push(author);
+            }
+
+        }
+        this.setState({ authors: mas.authors })
+    }
+
+    handleSelectStatusBook = (event: any): void => {
+        const value: any = event.value;
+
+        this.setState({
+            bookStatus: value
+        });
+    }
+
+    handleSelectCurrencyBook = (event: any): void => {
+        const value: any = event.value;
+
+        this.setState({
+            bookCurrency: value
+        });
+    }
+
+    handleInputDescription = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+        const { value } = event.target;
+
+        this.setState({
+            bookDescription: value,
+        });
+    }
+
+    requestGetBookWithAuthor = (id: string): void => {
         const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
         headers.append('Authorization', 'Bearer ' + token);
@@ -111,32 +160,50 @@ class BookPost extends Component<any, BookPostState> {
             headers,
         };
 
-        const url = BASE_PATH + 'Author/' + id;
+        const url = BASE_PATH + 'author/' + id;
 
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
-            .then((bookWithAuthor: BookWithAuthorsModel) => this.setState({ book: bookWithAuthor.printingEdition, bookName: bookWithAuthor.printingEdition.name, authors: bookWithAuthor.authors }))
+            .then((bookWithAuthor: BookWithAuthorsModel) => {
+                this.setState({ book: bookWithAuthor.printingEdition, bookName: bookWithAuthor.printingEdition.name, bookCurrency: bookWithAuthor.printingEdition.currency, bookDescription: bookWithAuthor.printingEdition.description, bookPrice: bookWithAuthor.printingEdition.price, bookStatus: bookWithAuthor.printingEdition.status, bookType: bookWithAuthor.printingEdition.type, authors: bookWithAuthor.authors })
+                const mas: BookPostState = {} as BookPostState;
+                mas.authorDefaultOptions = [];
+                for (let i = 0; i < bookWithAuthor.authors.length; i++) {
+                    const sel: SelectModel = {} as SelectModel;
+                    sel.value = bookWithAuthor.authors[i].id;
+                    sel.label = bookWithAuthor.authors[i].name;
+
+                    mas.authorDefaultOptions.push(sel);
+                }
+                this.setState({ authorDefaultOptions: mas.authorDefaultOptions })
+            })
             .catch(error => error);
     }
 
-    requestEditBook = (data: EditBookModel): void => {
+
+
+    requestEditBook = async (data: BookWithAuthorsModel): Promise<BookModel> => {
         const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Bearer ' + token);
         const json: string = JSON.stringify(data);
-
+        console.log(json);
         const options: RequestOptionsModel = {
             method: 'PUT',
             headers,
             body: json,
         };
+
+        let book: BookModel = {} as BookModel;
         const request: Request = new Request(BASE_PATH, options);
-        fetch(request)
+        await fetch(request)
             .then((res: Response) => res.json())
-            .then((book: BookModel) => this.setState({ book }))
+            .then((cratedBook: BookModel) => book = cratedBook)
             .catch(error => error);
+
+        return book;
     }
 
     requestRemoveBook = (id: string): void => {
@@ -157,75 +224,29 @@ class BookPost extends Component<any, BookPostState> {
             .catch(error => error);
     }
 
-    requestGetAllAuthors = (): void => {
-        const token: string | null = localStorage.getItem('accessToken');
-        const headers: Headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + token);
-        const options: RequestOptionsModel = {
-            method: 'GET',
-            headers,
-        };
-
-        const request: Request = new Request(BASE_AUTHOR, options);
-        fetch(request)
-            .then((res: Response) => res.json())
-            .then((authors: AuthorModel[]) => {
-                const mas: BookPostState = {} as BookPostState;
-                mas.filterOptions = [];
-            for (let i = 0; i < authors.length; i++) {
-                const sel : SelectModel = {} as SelectModel;
-                 sel.value = authors[i].name;
-                 sel.label = authors[i].name;
-
-                 mas.filterOptions.push(sel);
-            }
-            this.setState({filterOptions: mas.filterOptions})})
-            .catch(error => error);
-    }
-
     render() {
-        const { bookName, book, labelChangeName, isRoleUser, authors, isEdit, filterOptions } = this.state;
-        console.log(this.state);
+        const { bookName, book, labelChangeName, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription, isRoleUser, authors, isEdit } = this.state;
+        console.log('value', this.state);
         return (
             <div className="book-post">
-                {isRoleUser && isEdit && <div className="edit-book">
-                    <h2>Book</h2>
-                    <div id='book-input-wrapper' className='book-input'>
-                        <input
-                            type='text'
-                            value={bookName}
-                            onChange={this.handleInputChange}
-                        />
-                        <br />
-                        <Select
-                            placeholder="Authors"
-                            closeMenuOnSelect={false}
-                            defaultValue={[filterOptions[1]]}
-                            isMulti
-                            options={filterOptions}
-                        />
-                        <label>{labelChangeName}</label>
-                        <br />
-                    </div>
-                    {book.isRemoved && <label>Book {book.name} deleted</label>}
-                </div>}
-
-                {!isEdit && <div>
+                {isRoleUser && isEdit && <NewBook onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} bookName={bookName} labelChangeName={labelChangeName} bookStatus={bookStatus} onSelectCurrencyBook={this.handleSelectCurrencyBook} bookCurrency={bookCurrency} bookPrice={bookPrice} bookType={bookType} onInputDescription={this.handleInputDescription}  bookDescription={bookDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
+                {!isEdit && !book.isRemoved && <div>
                     <div>
                         <p><span>Name: </span> {bookName}</p>
                         <p><span>Authors: </span> {authors.map(({ name, id }) => (
                             <Link to={`/author/${id}`}><span>{name} </span></Link>))}</p>
-                        <p><span>Description: </span>{book.description}</p>
-                        <p><span>Type: </span> {book.type}</p>
-                        <p><span>Status: </span>{book.status}</p>
-                        <p><span>Price: </span> {book.price}</p>
-                        <p><span>Currency: </span>{book.currency}</p>
+                        <p><span>Description: </span>{bookDescription}</p>
+                        <p><span>Type: </span> {bookType}</p>
+                        <p><span>Status: </span>{bookStatus}</p>
+                        <p><span>Price: </span> {bookPrice}</p>
+                        <p><span>Currency: </span>{bookCurrency}</p>
                     </div>
                 </div>}
-                {isRoleUser && !isEdit && <div className="button">
+                {isRoleUser && !isEdit && !book.isRemoved && <div className="button">
                     <button onClick={this.handleEdit} >Edit</button>
-                    <button onClick={this.handleRemovaBook} >Remove</button>
+                    <button onClick={this.handleRemoveBook} >Remove</button>
                 </div>}
+                {book.isRemoved ? <label>Book {book.name} deleted</label> : <br />}
                 {isEdit && <button onClick={this.handleEditBook} >Edit</button>}
             </div>
         );
