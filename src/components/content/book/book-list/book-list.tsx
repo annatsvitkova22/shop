@@ -6,6 +6,8 @@ import NewBook from '../new-book/new-book';
 import BookCart from '../book-cart/book-cart';
 
 import './book-list.css';
+import { CartModel, CartItemModel } from '../../../../type/cart.type';
+import { threadId } from 'worker_threads';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 const ORDER_PATH = 'https://192.168.0.104:443/order/';
@@ -27,6 +29,7 @@ class BookList extends Component<BookListProps, BookListState> {
         isCreated: false,
         userId: '',
         orderId: '',
+        cart: [],
     });
 
     roleUser = (): void => {
@@ -61,88 +64,48 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     handleAddBookToCart = async (id: any) => {
-        const { userId, books, orderId } = this.state;
+        const { userId, books, cart } = this.state;
 
-        let date: Date = new Date();
-        const onlyDate: string = date.toUTCString();
-        const order: CreateOrderModel = {
-            userId,
-            date: onlyDate
-        }
-        const foundBook: BookModel = {} as BookModel;
-        const createdOrder: OrderModel = await this.createOrder(order);
-
+        const foundBook: CartItemModel = {} as CartItemModel;
         books.forEach((book) => {
             if (book.id === id) {
-                foundBook.id = book.id;
-                foundBook.currency = book.currency;
-                foundBook.price = book.price;
+                foundBook.printingEditionId = book.id as string;
+                foundBook.printingEditionName = book.name
+                foundBook.printingEditionCurrency = book.currency;
+                foundBook.printingEditionPrice = book.price;
+                foundBook.printingEditionCount = 1;
             }
         });
-
-        const orderItem: CreateOrderItemModel = {
-            orderId: createdOrder.id,
-            printingEditionId: foundBook.id as string,
-            currency: foundBook.currency,
-            count: 1,
-            amount: foundBook.price,
+        const prevCartState: CartModel[] = [...cart];
+        const foundUserCart: CartModel = prevCartState.find(item => item.userId === userId) as CartModel;
+        if (foundUserCart) {
+            const prevUserPrintingEdition: CartItemModel[] = [...foundUserCart.printingEdition]
+            const foundUserCartIndex: number = cart.indexOf(foundUserCart);
+            prevUserPrintingEdition.push(foundBook);
+            foundUserCart.printingEdition = prevUserPrintingEdition;
+            prevCartState.splice(foundUserCartIndex, 1, foundUserCart);
         }
-        const createdOrderItem: OrderItemModel = await this.createOrderItem(orderItem);
-    }
-
-    createOrder = async (order: CreateOrderModel): Promise<OrderModel> => {
-        const token: string | null = localStorage.getItem('accessToken');
-        const headers: Headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('Authorization', 'Bearer ' + token);
-        const json: string = JSON.stringify(order);
-        console.log(json);
-
-        const options: RequestOptionsModel = {
-            method: 'POST',
-            headers,
-            body: json,
-        };
-
-        let createdOrder: OrderModel = {} as OrderModel;
-        const request: Request = new Request(ORDER_PATH, options);
-        await fetch(request)
-            .then((res: Response) => res.json())
-            .then((createOrder: OrderModel) =>{
-                createdOrder = createOrder;
-                this.setState({orderId: createOrder.id});
-            } )
-            .catch(error => error);
-
-        return createdOrder;
-    }
-
-    createOrderItem = async (orderItem: CreateOrderItemModel): Promise<OrderItemModel> => {
-        const token: string | null = localStorage.getItem('accessToken');
-        const headers: Headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        headers.append('Authorization', 'Bearer ' + token);
-        const json: string = JSON.stringify(orderItem);
-
-        const options: RequestOptionsModel = {
-            method: 'POST',
-            headers,
-            body: json,
-        };
-
-        let createdOrderItem: OrderItemModel = {} as OrderItemModel;
-        const request: Request = new Request(ORDER_ITEM_PATH, options);
-        await fetch(request)
-            .then((res: Response) => res.json())
-            .then((createdOrderItem: OrderItemModel) => createdOrderItem)
-            .catch(error => error);
-
-        return createdOrderItem;
+        if (!foundUserCart) {
+            let newCard: CartModel = {} as CartModel;
+            newCard = {
+                userId: '',
+                printingEdition: [],
+            }
+            newCard.userId = userId;
+            newCard.printingEdition.push(foundBook);
+            prevCartState.push(newCard);
+        }
+        this.setState({ cart: prevCartState });
+        const json: string = JSON.stringify(prevCartState);
+        localStorage.setItem('cart', json);
     }
 
     componentDidMount = () => {
         this.roleUser();
         this.getAllBooksWithoutRemoved();
+        const localStorageCart: string = localStorage.getItem('cart') as string;
+        const cart: CartModel[] = JSON.parse(localStorageCart);
+        this.setState({ cart });
     }
 
     componentDidUpdate(prevProps: any) {
@@ -311,7 +274,6 @@ class BookList extends Component<BookListProps, BookListState> {
                                 className="option-input"
                             />}
                             {!isRoleUser && <label>isRemoved</label>}
-                            {/* {!isRoleUser && <button onClick={this.handleCreateBook}>Create book</button>} */}
                             {!isRoleUser && <a href="#" className="button-create" onClick={this.handleCreateBook}>
                                 <span className="button__line button__line--top"></span>
                                 <span className="button__line button__line--right"></span>
@@ -329,7 +291,6 @@ class BookList extends Component<BookListProps, BookListState> {
                     </div>}
                     {isCreate && <div>
                         <NewBook isCreated={isCreated} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
-                        {/* {!isCreated && <button onClick={this.handleSaveBook}>Create</button>} */}
                         {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>

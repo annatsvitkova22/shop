@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { CartModel } from "./cart.type";
 
 export interface BookListProps {
     books: BookModel[],
@@ -78,6 +79,7 @@ export interface BookListState {
     isCreated: boolean,
     userId: string,
     orderId: string,
+    cart: CartModel[],
 }
 
 export interface BookProps {
