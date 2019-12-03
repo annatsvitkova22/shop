@@ -20,15 +20,24 @@ export class OrderRepository {
         return order;
     }
 
+    public async getOrderByUserId(userId: string): Promise<Order> {
+        const order: Order = await db.Order.findOne({
+            where: { userId,
+            paymentId: null },
+        });
+
+        return order;
+    }
+
     public async createOrder(createOrder: Order): Promise<Order> {
         const order: Order = await createOrder.save();
 
         return order;
     }
 
-    public async deleteOrder(orderId: string): Promise<number> {
+    public async deleteOrder(userId: string): Promise<number> {
         const deleted: number = await db.Order.destroy({
-            where: { id: orderId },
+            where: { userId },
         });
 
         return deleted;

@@ -2,8 +2,6 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateOrderModel {
     @ApiModelProperty()
-    description: string;
-    @ApiModelProperty()
     userId: string;
     @ApiModelProperty({
         example: new Date(Date.now()),
@@ -11,6 +9,4 @@ export class CreateOrderModel {
         required: true,
     })
     date: Date;
-    @ApiModelProperty()
-    paymentId: string;
 }

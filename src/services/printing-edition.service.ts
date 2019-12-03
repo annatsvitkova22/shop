@@ -37,7 +37,7 @@ export class PrintingEditionService {
         let printingEditionQuery = 'SELECT `printingeditions`.`id`, `printingeditions`.`name`, `printingeditions`.`description`, `printingeditions`.`price`, `printingeditions`.`isRemoved`, `printingeditions`.`status`, `printingeditions`.`currency`, `printingeditions`.`type` FROM `authorinbooks` INNER JOIN `authors` ON `authorinbooks`.`authorId` = `authors`.`id` INNER JOIN `printingeditions` ON `authorinbooks`.`bookId` = `printingeditions`.`id` WHERE `printingeditions`.`id` = \'';
         printingEditionQuery += id + '\'';
         const foundPrintingEditionById: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditionById(printingEditionQuery);
-        const foundPrintingEditionByIdWithAuthors: UpdatePrintingEditionWithAuthorModel = new UpdatePrintingEditionWithAuthorModel();
+        const foundPrintingEditionByIdWithAuthors: UpdatePrintingEditionWithAuthorModel = {};
         foundPrintingEditionByIdWithAuthors.printingEdition = foundPrintingEditionById[0];
         foundPrintingEditionByIdWithAuthors.authors = foundAuthorByPrintingEditionId;
 
@@ -111,6 +111,14 @@ export class PrintingEditionService {
         edition.currency = createPrintingEdition.printingEdition.currency;
         edition.type = createPrintingEdition.printingEdition.type;
 
+        const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrByName(edition.name);
+        if (foundPrintingEdition) {
+            foundPrintingEdition.isRemoved = false;
+            const updatedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(foundPrintingEdition);
+
+            return updatedPrintingEdition;
+        }
+
         const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
 
         let query: string = 'INSERT INTO `AuthorInBooks` (`id`, `authorId`, `bookId`) VALUES';
@@ -181,8 +189,14 @@ export class PrintingEditionService {
             }
             i++;
         }
+        if (updatePrintingEdition.authors && !updatePrintingEdition.authors.length) {
+            const author: Author = await this.authorRepository.getAuthorIByName('Unknown');
+            const generatedId: string = this.uuidHelper.uuidv4();
+            query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + edition.id + '\')';
+        }
 
-        const authors: AuthorInBooks[] = await this.authorInBookRepository.createAuthorInBook(query);
+        const authors: any = await this.authorInBookRepository.createAuthorInBook(query);
+
         if (!authors || !savedPrintingEdition || deletedAuthors) {
             return null;
         }

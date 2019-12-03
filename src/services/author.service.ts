@@ -35,6 +35,14 @@ export class AuthorService {
         const author: Author = new Author();
         const validateName: string = await this.validateName(CreateAuthor.name);
         author.name = validateName;
+        const foundAuthor: Author = await this.authorRepository.getAuthorIByName(author.name);
+        if (foundAuthor) {
+            foundAuthor.isRemoved = false;
+            const updatedAuthor: Author = await this.authorRepository.createAuthor(foundAuthor);
+
+            return updatedAuthor;
+        }
+
         author.id = this.uuidHelper.uuidv4();
         const savedAuthor: Author = await this.authorRepository.createAuthor(author);
 

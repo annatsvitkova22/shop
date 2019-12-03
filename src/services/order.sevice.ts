@@ -27,12 +27,13 @@ export class OrderService {
 
     public async createOrder(createOrder: CreateOrderModel): Promise<Order> {
         const order: Order = new Order();
-        order.description = createOrder.description;
         order.userId = createOrder.userId;
         order.date = createOrder.date;
-        order.paymentId = createOrder.paymentId;
         order.id = this.uuidHelper.uuidv4();
-
+        const foundUser: Order = await this.orderRepository.getOrderByUserId(order.userId);
+        if (foundUser) {
+            return foundUser;
+        }
         const savedOrder: Order = await this.orderRepository.createOrder(order);
 
         return savedOrder;
@@ -57,8 +58,8 @@ export class OrderService {
         return savedOrder;
       }
 
-    public async deleteOrder(orderId: string): Promise<number> {
-        const deleted: number = await this.orderRepository.deleteOrder(orderId);
+    public async deleteOrder(userId: string): Promise<number> {
+        const deleted: number = await this.orderRepository.deleteOrder(userId);
 
         return deleted;
     }

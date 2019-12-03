@@ -56,7 +56,6 @@ export class PrintingEditionsController {
 
     @Get('filter')
     @ApiOperation({ title: 'Filter by name, status, price' })
-    // tslint:disable-next-line: max-line-length
     public async filter(@Query() params: PrintingEditionFilterModel): Promise<PrintingEdition[]> {
         const filteredEdition: PrintingEdition[] = await this.printingEditionService.getFiltered(params);
 

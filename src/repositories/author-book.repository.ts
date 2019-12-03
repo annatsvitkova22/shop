@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import sequelize = require('sequelize');
 
-import { AuthorInBooks } from 'src/entity';
+import { AuthorInBooks, Author } from 'src/entity';
 
 import db = require('src/entity/author-book.entity');
 
@@ -22,8 +22,8 @@ export class AuthorInBookRepository {
         return authorInBook;
     }
 
-    public async createAuthorInBook(query: string): Promise<AuthorInBooks[]> {
-        const authorInBook: AuthorInBooks[] = await db.AuthorInBooks.sequelize.query(query, {
+    public async createAuthorInBook(query: string): Promise<any> {
+        const authorInBook: any = await db.AuthorInBooks.sequelize.query(query, {
             plain: false,
             raw: false,
             type: sequelize.QueryTypes.SELECT,

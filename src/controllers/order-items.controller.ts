@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { OrderItemService } from 'src/services';
-import { CreateOrderItemModel, UpdateOrderItemModel } from 'src/models';
+import { CreateOrderItemModel, UpdateOrderItemModel, OrderItemModel } from 'src/models';
 import { OrderItem } from 'src/entity';
 
 @ApiUseTags('Order Item')
@@ -21,8 +21,8 @@ export class OrderItemsController {
 
     @Get(':id')
     @ApiOperation({ title: 'Search order item by id'})
-    public async get(@Param() params): Promise<OrderItem> {
-        const orderItem: OrderItem = await this.orderItemService.getOrderItemById(params.id);
+    public async get(@Param() params): Promise<OrderItemModel[]> {
+        const orderItem: OrderItemModel[] = await this.orderItemService.getOrderItemByUserId(params.id);
 
         return orderItem;
     }

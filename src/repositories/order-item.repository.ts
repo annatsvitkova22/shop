@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { OrderItem } from 'src/entity';
 
 import db = require('src/entity/order-item.entity');
+import sequelize = require('sequelize');
+import { OrderItemModel } from 'src/models/';
 
 @Injectable()
 export class OrderItemRepository {
@@ -15,6 +17,24 @@ export class OrderItemRepository {
     public async getOrderItemById(orderItemId: string): Promise<OrderItem> {
         const orderItem: OrderItem = await db.OrderItem.findOne({
             where: { id: orderItemId },
+        });
+
+        return orderItem;
+    }
+
+    public async getOrderItemByPrintingEditionId(pritingEditionId: string): Promise<OrderItem> {
+        const orderItem: OrderItem = await db.OrderItem.findOne({
+            where: { pritingEditionId },
+        });
+
+        return orderItem;
+    }
+
+    public async getOrderItemByUserId(query: string): Promise<OrderItemModel[]> {
+        const orderItem: OrderItemModel[] = await db.OrderItem.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
         });
 
         return orderItem;

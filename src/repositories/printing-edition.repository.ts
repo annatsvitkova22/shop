@@ -29,6 +29,14 @@ export class PrintingEditionRepository {
         return printingEdition;
     }
 
+    public async getPrintingEditionrByName(name: string): Promise<PrintingEdition> {
+        const printingEdition: PrintingEdition = await db.PrintingEdition.findOne({
+            where: { name },
+        });
+
+        return printingEdition;
+    }
+
     public async getAuthroByPrintingEditionrId(query: string): Promise<Author[]> {
         const author: Author[] = await db.PrintingEdition.sequelize.query(query, {
             plain: false,

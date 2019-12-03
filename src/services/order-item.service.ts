@@ -1,7 +1,7 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { OrderItem } from 'src/entity';
-import { UpdateOrderItemModel, CreateOrderItemModel } from 'src/models';
+import { UpdateOrderItemModel, CreateOrderItemModel, OrderItemModel } from 'src/models';
 import { UuidHelper } from 'src/common';
 import { OrderItemRepository } from 'src/repositories/order-item.repository';
 
@@ -19,20 +19,32 @@ export class OrderItemService {
         return getOrderItems;
     }
 
-    public async getOrderItemById(id: string): Promise<OrderItem> {
-        const foundOrderItem: OrderItem = await this.orderItemRepository.getOrderItemById(id);
+    public async getOrderItemByUserId(userId: string): Promise<OrderItemModel[]> {
+        // tslint:disable-next-line: max-line-length
+        let query = 'SELECT orderitems.*, printingeditions.name, orders.userId FROM orderitems INNER JOIN printingeditions ON orderitems.pritingEditionId = printingeditions.id INNER JOIN orders ON orderitems.orderId = orders.id WHERE orders.userId = \'';
+        query += userId + '\' AND orders.paymentId IS NULL';
+        const foundOrderItem: OrderItemModel[] = await this.orderItemRepository.getOrderItemByUserId(query);
 
         return foundOrderItem;
     }
 
     public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<OrderItem> {
         const orderItem: OrderItem = new OrderItem();
-        orderItem.pritingEditionId = createOrderItem.pritingEditionId;
+        orderItem.pritingEditionId = createOrderItem.printingEditionId;
         orderItem.amount = createOrderItem.amount;
         orderItem.currency = createOrderItem.currency;
         orderItem.count = createOrderItem.count;
+        orderItem.orderId = createOrderItem.orderId;
         orderItem.id = this.uuidHelper.uuidv4();
 
+        const foundOrdetItem: OrderItem = await this.orderItemRepository.getOrderItemByPrintingEditionId(orderItem.pritingEditionId);
+        if (foundOrdetItem) {
+            foundOrdetItem.count ++;
+            foundOrdetItem.amount += orderItem.amount;
+            const updatedOrderItem: OrderItem = await this.orderItemRepository.createOrderItem(foundOrdetItem);
+
+            return updatedOrderItem;
+        }
         const savedOrderItem: OrderItem = await this.orderItemRepository.createOrderItem(orderItem);
 
         return savedOrderItem;

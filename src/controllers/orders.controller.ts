@@ -25,7 +25,7 @@ export class OrdersController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get(':id')
-    @Roles('admin')
+    @Roles('user')
     @ApiOperation({ title: 'Search order by id'})
     public async get(@Param() params): Promise<Order> {
         const order: Order = await this.orderService.getOrderById(params.id);
@@ -45,7 +45,7 @@ export class OrdersController {
 
     @UseGuards(AuthGuard('jwt'))
     @Put()
-    @Roles('admin')
+    @Roles('user')
     @ApiOperation({ title: 'Update order by id'})
     public update(@Body() updateOrder: UpdateOrderModel): Promise<Order> {
         const order: Promise<Order> = this.orderService.updateOrder(updateOrder);
@@ -55,7 +55,7 @@ export class OrdersController {
 
     @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
-    @Roles('admin')
+    @Roles('user')
     @ApiOperation({ title: 'Delete order by id'})
     public async delete(@Param() params): Promise<number>  {
         const deleted: number  = await this.orderService.deleteOrder(params.id);

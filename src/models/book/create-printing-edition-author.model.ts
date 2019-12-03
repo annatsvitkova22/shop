@@ -1,9 +1,6 @@
-import { ApiModelProperty } from '@nestjs/swagger';
-import { UpdateAuthorModel, CreatePrintingEditionModel } from 'src/models';
+import { AuthorModel, CreatePrintingEditionModel } from 'src/models';
 
-export class CreatePrintingEditionWithAuthorModel {
-    @ApiModelProperty()
-    printingEdition: CreatePrintingEditionModel;
-    @ApiModelProperty()
-    authors: UpdateAuthorModel[];
+export interface CreatePrintingEditionWithAuthorModel {
+    printingEdition?: CreatePrintingEditionModel;
+    authors?: AuthorModel[];
 }
