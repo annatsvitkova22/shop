@@ -12,6 +12,7 @@ import Login from './containers/login.container';
 import AuthorPost from './components/content/author/author-post/author-post';
 import BookList from './components/content/book/book-list/book-list';
 import BookPost from './components/content/book/book-post/book-post';
+import CartTable from './components/content/cart/cart-table/cart-table';
 
 ReactDOM.render((
   <BrowserRouter>
@@ -24,6 +25,7 @@ ReactDOM.render((
         <Route exact path='/authors' component={Author} />
         <Route path='/author/:id' component={AuthorPost} />
         <Route path='/login' component={Login} />
+        <Route path='/cart' component={CartTable} />
       </Provider>
     </Switch>
   </BrowserRouter>

@@ -1,11 +1,15 @@
 import React, { Component, ChangeEvent } from 'react';
-import { Link } from "react-router-dom";
 
-import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel } from "../../../../type/book.type";
+import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel, CreateOrderModel, OrderModel, CreateOrderItemModel, OrderItemModel, OrderItemsWithPrintingEditionModel } from "../../../../type/book.type";
 import { RequestOptionsModel } from '../../../../type/author.type';
 import NewBook from '../new-book/new-book';
+import BookCart from '../book-cart/book-cart';
+
+import './book-list.css';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
+const ORDER_PATH = 'https://192.168.0.104:443/order/';
+const ORDER_ITEM_PATH = 'https://192.168.0.104:443/orderItem/';
 
 class BookList extends Component<BookListProps, BookListState> {
     state: BookListState = ({
@@ -20,21 +24,23 @@ class BookList extends Component<BookListProps, BookListState> {
         isRoleUser: false,
         isCreate: false,
         authors: [],
-        isCreated: false
+        isCreated: false,
+        userId: '',
+        orderId: '',
     });
 
     roleUser = (): void => {
         const token = localStorage.getItem('accessToken');
         const jwt = require('jsonwebtoken');
         const payload = jwt.decode(token);
-
-        if(token) {
+        if (token) {
             if (payload.role === 'user') {
-                this.setState({isRoleUser: true});
+
+                this.setState({ isRoleUser: true, userId: payload.userId });
             }
         }
-        if(!token) { 
-            this.setState({isRoleUser: true});
+        if (!token) {
+            this.setState({ isRoleUser: true });
         }
     }
 
@@ -49,8 +55,89 @@ class BookList extends Component<BookListProps, BookListState> {
         }
     }
 
-    handleCreateBook = () => {
-        this.setState({isCreate: true});
+    handleCreateBook = (event: any) => {
+        event.preventDefault();
+        this.setState({ isCreate: true });
+    }
+
+    handleAddBookToCart = async (id: any) => {
+        const { userId, books, orderId } = this.state;
+
+        let date: Date = new Date();
+        const onlyDate: string = date.toUTCString();
+        const order: CreateOrderModel = {
+            userId,
+            date: onlyDate
+        }
+        const foundBook: BookModel = {} as BookModel;
+        const createdOrder: OrderModel = await this.createOrder(order);
+
+        books.forEach((book) => {
+            if (book.id === id) {
+                foundBook.id = book.id;
+                foundBook.currency = book.currency;
+                foundBook.price = book.price;
+            }
+        });
+
+        const orderItem: CreateOrderItemModel = {
+            orderId: createdOrder.id,
+            printingEditionId: foundBook.id as string,
+            currency: foundBook.currency,
+            count: 1,
+            amount: foundBook.price,
+        }
+        const createdOrderItem: OrderItemModel = await this.createOrderItem(orderItem);
+    }
+
+    createOrder = async (order: CreateOrderModel): Promise<OrderModel> => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(order);
+        console.log(json);
+
+        const options: RequestOptionsModel = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+
+        let createdOrder: OrderModel = {} as OrderModel;
+        const request: Request = new Request(ORDER_PATH, options);
+        await fetch(request)
+            .then((res: Response) => res.json())
+            .then((createOrder: OrderModel) =>{
+                createdOrder = createOrder;
+                this.setState({orderId: createOrder.id});
+            } )
+            .catch(error => error);
+
+        return createdOrder;
+    }
+
+    createOrderItem = async (orderItem: CreateOrderItemModel): Promise<OrderItemModel> => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(orderItem);
+
+        const options: RequestOptionsModel = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+
+        let createdOrderItem: OrderItemModel = {} as OrderItemModel;
+        const request: Request = new Request(ORDER_ITEM_PATH, options);
+        await fetch(request)
+            .then((res: Response) => res.json())
+            .then((createdOrderItem: OrderItemModel) => createdOrderItem)
+            .catch(error => error);
+
+        return createdOrderItem;
     }
 
     componentDidMount = () => {
@@ -72,7 +159,7 @@ class BookList extends Component<BookListProps, BookListState> {
         }
     }
 
-    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
         const { name } = event.target;
         switch (name) {
@@ -92,7 +179,6 @@ class BookList extends Component<BookListProps, BookListState> {
 
     handleSelectAuthor = (event: any): void => {
         const value: any = event;
-
         const mas: BookPostState = {} as BookPostState;
         mas.authors = [];
         if (value) {
@@ -104,7 +190,6 @@ class BookList extends Component<BookListProps, BookListState> {
 
                 mas.authors.push(author);
             }
-
         }
         this.setState({ authors: mas.authors })
     }
@@ -133,7 +218,8 @@ class BookList extends Component<BookListProps, BookListState> {
         });
     }
 
-    handleSaveBook = async (): Promise<void> => {
+    handleSaveBook = async (event: any): Promise<void> => {
+        event.preventDefault();
         const { bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
 
         const eeditBook: BookWithAuthorsModel = {
@@ -215,27 +301,44 @@ class BookList extends Component<BookListProps, BookListState> {
         const { books, isCreated, isRoleUser, isCreate } = this.state;
         console.log(this.state);
         return (
-            <div className="book-input-wrapper">
-                {!isCreate && <div>
-                    {!isRoleUser && <input
-                        type='checkbox'
-                        onChange={this.handleInputCheck}
-                        className="isRemoved"
-                    />}
-                    {!isRoleUser &&<label>isRemoved</label>}
-                    {!isRoleUser && <button onClick={this.handleCreateBook}>Create book</button>}
-                    <ul className="book-list">
-                        {books.map(({ id, name }) => (
-                            <li className="book-item" key={id}><Link to={`/book/${id}`}>
-                                <span>{name}</span></Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>}
-                {isCreate && <div>
-                    <NewBook isCreated={isCreated} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange}/>
-                    {!isCreated &&<button onClick={this.handleSaveBook}>Create</button>}
-                </div>}
+            <div className="content">
+                <div className="book-input-wrapper">
+                    {!isCreate && <div>
+                        <div className="title">
+                            {!isRoleUser && <input
+                                type='checkbox'
+                                onChange={this.handleInputCheck}
+                                className="option-input"
+                            />}
+                            {!isRoleUser && <label>isRemoved</label>}
+                            {/* {!isRoleUser && <button onClick={this.handleCreateBook}>Create book</button>} */}
+                            {!isRoleUser && <a href="#" className="button-create" onClick={this.handleCreateBook}>
+                                <span className="button__line button__line--top"></span>
+                                <span className="button__line button__line--right"></span>
+                                <span className="button__line button__line--bottom"></span>
+                                <span className="button__line button__line--left"></span>
+                                Create book
+                        </a>}
+                        </div>
+                        <div className="hover-table-layout">
+                            {books.map(({ id, name, price, currency, type }) => (
+                                <BookCart isRoleUser={isRoleUser} onAddToCart={this.handleAddBookToCart} id={id} name={name} price={price} currency={currency} type={type} />
+                            ))}
+
+                        </div>
+                    </div>}
+                    {isCreate && <div>
+                        <NewBook isCreated={isCreated} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        {/* {!isCreated && <button onClick={this.handleSaveBook}>Create</button>} */}
+                        {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
+                            <span className="button__line button__line--top"></span>
+                            <span className="button__line button__line--right"></span>
+                            <span className="button__line button__line--bottom"></span>
+                            <span className="button__line button__line--left"></span>
+                            Create
+                        </a>}
+                    </div>}
+                </div>
             </div>
         );
     }

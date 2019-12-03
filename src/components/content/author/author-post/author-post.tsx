@@ -118,7 +118,6 @@ class AuthorPost extends Component<any, AuthorPostState> {
           <button onClick={this.handleRemovaAuthor} >Remove</button>
         </div>}
         {author.isRemoved && <label>Author {author.name} deleted</label>}
-
       </div>
     );
   }

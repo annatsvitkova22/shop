@@ -39,7 +39,7 @@ class AuthorInput extends Component<AuthorInputProps, UserRoleState>  {
                     <input
                     type='checkbox'
                     onChange={onCheck}
-                    className="isRemoved"
+                    className="option-input isRemoved"
                     />
                     <label>isRemoved</label>
                 </div>

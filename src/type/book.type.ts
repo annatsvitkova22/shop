@@ -75,7 +75,9 @@ export interface BookListState {
     check?: boolean,
     isRoleUser?: boolean,
     isCreate: boolean,
-    isCreated: boolean
+    isCreated: boolean,
+    userId: string,
+    orderId: string,
 }
 
 export interface BookProps {
@@ -93,4 +95,44 @@ export interface BookProps {
     onSelectStatusBook: (event: any) => void,
     onSelectCurrencyBook: (event: any) => void,
     onSelectAuthor: (event: any) => void,
+}
+
+export interface CreateOrderModel {
+    date: string,
+    userId: string,
+}
+
+export interface OrderModel{
+    id: string,
+    userId: string,
+    date: Date,
+    paymentId?: string,
+    description?: string,
+}
+
+export interface CreateOrderItemModel {
+    orderId: string;
+    printingEditionId: string;
+    currency: string;
+    count: number;
+    amount: number;
+}
+
+export interface OrderItemModel {
+    id: string,
+    pritingEditionId: string,
+    amount: number,
+    currency: string,
+    count: number,
+    orderId: string,
+}
+
+export interface OrderItemsWithPrintingEditionModel {
+    id: string,
+    amount: number,
+    count: number,
+    currency: string,
+    pritingEditionId: string,
+    orderId: string,
+    userId: string,
 }

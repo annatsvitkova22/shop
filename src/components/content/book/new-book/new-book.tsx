@@ -3,6 +3,8 @@ import Select, { } from "react-select";
 import { BookProps, SelectModel, NewBookState } from '../../../../type/book.type';
 import { RequestOptionsModel, AuthorModel } from '../../../../type/author.type';
 
+import './new-book.css';
+
 const BASE_AUTHOR = 'https://192.168.0.104:443/author/';
 
 class NewBook extends Component<BookProps, NewBookState> {
@@ -57,58 +59,84 @@ class NewBook extends Component<BookProps, NewBookState> {
 
         return (
             <div className="edit-book">
-                {!isCreated &&<div id='book-input-wrapper' className='book-input'>
+                {!isCreated && <div id='book-input-wrapper' className='book-input'>
                     <p>Book</p>
-                    <input
-                        type='text'
-                        value={bookName}
-                        onChange={onInputChange}
-                        name="bookName"
-                    />
-                    <br /><br />
-                    <Select
-                        placeholder="Authors"
-                        closeMenuOnSelect={false}
-                        defaultValue={authorDefaultOptions}
-                        isMulti
-                        options={authorOptions}
-                        onChange={onSelectAuthor}
-                        name="authors"
-                    />
-                    <textarea name="Description"
-                        value={bookDescription}
-                        onChange={onInputDescription} />
+                    <div className="group">
+                        <input
+                            type='text'
+                            value={bookName}
+                            onChange={onInputChange}
+                            name="bookName"
+                            required
+                        />
+                        <span className="bar"></span>
+                        <label>Name</label>
+                    </div>
                     <br />
-                    <input
-                        placeholder="Type"
-                        type='text'
-                        value={bookType}
-                        onChange={onInputChange}
-                        name="bookType"
-                    />
+                    <div>
+                        <Select
+                            placeholder="Authors"
+                            closeMenuOnSelect={false}
+                            defaultValue={authorDefaultOptions}
+                            isMulti
+                            options={authorOptions}
+                            onChange={onSelectAuthor}
+                            name="authors"
+                        />
+                    </div>
+                    <div>
+                        <textarea name="Description"
+                            value={bookDescription}
+                            onChange={onInputDescription} />
+                    </div>
                     <br />
-                    <input
-                        type='number'
-                        value={bookPrice}
-                        onChange={onInputChange}
-                        name="bookPrice"
-                    />
-                    <Select
-                        placeholder="Currency"
-                        options={currencyBookOptions}
-                        defaultValue={[{ value: bookCurrency, label: bookCurrency }]}
-                        onChange={onSelectCurrencyBook}
-                    />
-                    <Select
-                        placeholder="Status"
-                        options={typeBookOptions}
-                        defaultValue={[{ value: bookStatus, label: bookStatus }]}
-                        onChange={onSelectStatusBook}
-                    />
-                    {labelChangeName && <label>Book updated</label>}
+                    <div className="group">
+                        <input
+                            type='text'
+                            value={bookType}
+                            onChange={onInputChange}
+                            name="bookType"
+                            required
+                        />
+                        <span className="bar"></span>
+                        <label>Type</label>
+                    </div>
                     <br />
+                    <div>
+                        <div>
+                            <label>Price:</label>
+                            <input
+                                type='number'
+                                value={bookPrice}
+                                onChange={onInputChange}
+                                name="bookPrice"
+                                min="0"
+                                step="1"
+                            />
+                        </div>
+                        <div>
+                            <label>Currency:</label>
+                            <Select
+                                placeholder="Currency"
+                                options={currencyBookOptions}
+                                defaultValue={[{ value: bookCurrency, label: bookCurrency }]}
+                                onChange={onSelectCurrencyBook}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Status:</label>
+                        <Select
+                            placeholder="Status"
+                            options={typeBookOptions}
+                            defaultValue={[{ value: bookStatus, label: bookStatus }]}
+                            onChange={onSelectStatusBook}
+                        />
+                        {labelChangeName && <label>Book updated</label>}
+                        <br />
+                    </div>
                 </div>}
-                {isCreated && <div> 
+                {isCreated && <div>
                     <label>Book saved</label>
                 </div>}
             </div>

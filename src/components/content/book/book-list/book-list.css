@@ -1,0 +1,190 @@
+.book-input-wrapper .button {
+    position: relative;
+    display: flex;
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    color: #2196f3;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 4px;
+    overflow: hidden;
+    background-color:#3F3D3D;
+    transition: 0.2s;
+    align-items: center;
+    justify-content: center;
+}
+.book-input-wrapper .button__line {
+    position: absolute;
+    display: block;
+}
+.book-input-wrapper .button__line--top {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #2196f3);
+}
+.book-input-wrapper .button:hover .button__line--top {
+    left: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button__line--bottom {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #2196f3);
+}
+.book-input-wrapper .button:hover .button__line--bottom {
+    right: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+  }
+.book-input-wrapper .button__line--left {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(0deg, transparent, #2196f3);
+}
+.book-input-wrapper .button:hover .button__line--left {
+    bottom: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button__line--right {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #2196f3);
+}
+.book-input-wrapper .button:hover .button__line--right {
+    top: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button:hover {
+    box-shadow: 0 0 10px #2196f3, 0 0 40px #2196f3, 0 0 60px #2196f3;
+    background-color: #2196f3;
+    color: #333;
+    transition-delay: 1s;
+}
+
+.book-input-wrapper .button-create:hover .button__line--left {
+    bottom: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button-create:hover .button__line--right {
+    top: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button-create:hover .button__line--bottom {
+    right: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+.book-input-wrapper .button-create:hover .button__line--top {
+    left: 100%;
+    transition: 1s;
+    transition-delay: 0.25s;
+}
+
+.book-input-wrapper .button-create {
+    position: relative;
+    display: flex;
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    color: #2196f3;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 3px;
+    overflow: hidden;
+    background-color:rgb(77, 72, 72);
+    transition: 0.2s;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.book-input-wrapper .button-create:hover {
+    box-shadow: 0 0 20px #2196f3;
+    transition: 0.75s;
+    transition-delay: 0.75s;
+}
+
+@keyframes click-wave {
+    0% {
+      height: 30px;
+      width: 30px;
+      opacity: 0.35;
+      position: relative;
+    }
+    100% {
+      height: 100px;
+      width: 100px;
+      margin-left: -40px;
+      margin-top: -40px;
+      opacity: 0;
+    }
+  }
+  
+  .option-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    position: relative;
+  
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    transition: all 0.15s ease-out 0s;
+    background: #cbd1d8;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
+    outline: none;
+    position: relative;
+    z-index: 1000;
+  }
+  .option-input:hover {
+    background: #9faab7;
+  }
+  .option-input:checked {
+    background: #2196f3;
+  }
+  .option-input:checked::before {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    content: '✔';
+    display: inline-block;
+    font-size: 26.66667px;
+    text-align: center;
+    line-height: 30px;
+  }
+  .option-input:checked::after {
+    -webkit-animation: click-wave 0.65s;
+    -moz-animation: click-wave 0.65s;
+    animation: click-wave 0.65s;
+    background: #2196f3;
+    content: '';
+    display: block;
+    position: relative;
+    z-index: 100;
+  }

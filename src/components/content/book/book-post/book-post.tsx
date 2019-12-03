@@ -91,7 +91,6 @@ class BookPost extends Component<any, BookPostState> {
                 status: bookStatus,
                 currency: bookCurrency,
                 type: bookType,
-                isRemoved: book.isRemoved,
             },
             authors
         }
@@ -200,7 +199,9 @@ class BookPost extends Component<any, BookPostState> {
         const request: Request = new Request(BASE_PATH, options);
         await fetch(request)
             .then((res: Response) => res.json())
-            .then((cratedBook: BookModel) => book = cratedBook)
+            .then((cratedBook: BookModel) => {
+                book = cratedBook
+                console.log(book)})
             .catch(error => error);
 
         return book;
