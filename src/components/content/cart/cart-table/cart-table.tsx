@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import Select, { } from "react-select";
+
+import { RequestOptionsModel } from '../../../../type/author.type';
+import { CartModel, CartItemModel, CartState } from '../../../../type/cart.type';
 
 import './cart-table.css';
-import { RequestOptionsModel } from '../../../../type/author.type';
-import { OrderItemsWithPrintingEditionModel } from '../../../../type/book.type';
-import { CartModel, CartItemModel, CartState } from '../../../../type/cart.type';
 
 const ORDER_ITEM_PATH = 'https://192.168.0.104:443/orderItem/';
 const ORDER_PATH = 'https://192.168.0.104:443/order/';
@@ -14,6 +15,10 @@ class CartTable extends Component<any, CartState> {
         userId: '',
         totalAmount: 0,
         isOrderItem: false,
+        currencyBookOptions: [
+            { value: 'USD', label: 'USD' },
+            { value: 'EUR', label: 'EUR' },
+            { value: 'UAH', label: 'UAH' }],
         cart: {
             userId: '',
             printingEdition: []
@@ -46,11 +51,13 @@ class CartTable extends Component<any, CartState> {
         const cart: CartModel[] = JSON.parse(localStorageCart);
         const foundUserCart: CartModel = cart.find(item => item.userId === userId) as CartModel;
         this.setState({ cart: foundUserCart });
+
     }
 
     componentDidMount = async (): Promise<void> => {
         await this.roleUser();
         this.getUserCartItem();
+        this.getTotalAmount();
     }
 
     roleUser = async (): Promise<void> => {
@@ -59,9 +66,7 @@ class CartTable extends Component<any, CartState> {
         const payload = jwt.decode(token);
         if (token) {
             if (payload.role === 'user') {
-
                 await this.setState({ isRoleUser: true, userId: payload.userId });
-                // this.getOrderItemsWithPrintingEdition(payload.userId);
             }
         }
         if (!token) {
@@ -73,91 +78,89 @@ class CartTable extends Component<any, CartState> {
 
     }
 
-    getTotalAmount = (prevprintingEditionState: CartItemModel[]) => {
-        const { cart, userId } = this.state;
+    getTotalAmount = () => {
+        const { cart } = this.state;
 
         let totalAmount: number = 0;
         cart.printingEdition.forEach((printingEdition: CartItemModel) => {
             totalAmount += printingEdition.printingEditionPrice;
         });
-        let updateCard: CartModel = {} as CartModel;
-        updateCard = {
+
+        this.setState({ totalAmount });
+    }
+
+    setToLocalStorage = (cart: CartModel) => {
+        const { userId } = this.state;
+        const localStorageCart: string = localStorage.getItem('cart') as string;
+        const carts: CartModel[] = JSON.parse(localStorageCart);
+        const foundUserCart: CartModel = carts.find(item => item.userId === userId) as CartModel;
+        const foundUserCartIndex: number = carts.indexOf(foundUserCart);
+        carts[foundUserCartIndex] = cart;
+        const json: string = JSON.stringify(carts);
+        localStorage.setItem('cart', json);
+    }
+
+    updateCart = (prevprintingEditionState: CartItemModel[]) => {
+        const { userId } = this.state;
+
+        let updateCart: CartModel = {} as CartModel;
+        updateCart = {
             userId: '',
             printingEdition: [],
         }
-        updateCard.userId = userId;
-        updateCard.printingEdition = prevprintingEditionState;
-        this.setState({ cart: updateCard, totalAmount });
+        updateCart.userId = userId;
+        updateCart.printingEdition = prevprintingEditionState;
+        this.setState({ cart: updateCart });
+        this.getTotalAmount();
+        this.setToLocalStorage(updateCart);
     }
 
     incrementCount = (id: string) => {
         const { cart } = this.state;
-    
-        //const book: any[] = printingEdition;
+
         const printingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
         const printingEditionIndex: number = cart.printingEdition.indexOf(printingEdition);
         const prevprintingEditionState: CartItemModel[] = [...cart.printingEdition];
+        const price: number = printingEdition.printingEditionPrice / printingEdition.printingEditionCount;
         printingEdition.printingEditionCount++;
-        printingEdition.printingEditionPrice += printingEdition.printingEditionPrice;
+        printingEdition.printingEditionPrice += price;
         prevprintingEditionState.splice(printingEditionIndex, 1, printingEdition);
 
-        this.getTotalAmount(prevprintingEditionState);
-
-
-        // const orderItem: any = orderItems.find(item => item.id === id);
-        // const price = orderItem.amount / orderItem.count;
-        // const orderItemIndex: number = orderItems.indexOf(orderItem);
-        // const prevOrderItemsState: any[] = [...orderItems];
-        // orderItem.count++;
-        // orderItem.amount += price;
-        // prevOrderItemsState.splice(orderItemIndex, 1, orderItem);
-        // let totalAmount: number = 0;
-        // orderItems.forEach((orderItem) => {
-        //     totalAmount += orderItem.amount;
-        // });
-        // this.setState({ orderItems: prevOrderItemsState, totalAmount });
+        this.updateCart(prevprintingEditionState);
     }
 
     decrementCount = (id: string) => {
-        //const { orderItems } = this.state;
+        const { cart } = this.state;
 
-        // const orderItem: any = orderItems.find(item => item.id === id);
-        // const price = orderItem.amount / orderItem.count
-        // const orderItemIndex: number = orderItems.indexOf(orderItem);
-        // const prevOrderItemsState: any[] = [...orderItems];
+        const printingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
+        const printingEditionIndex: number = cart.printingEdition.indexOf(printingEdition);
+        const prevprintingEditionState: CartItemModel[] = [...cart.printingEdition];
+        const price: number = printingEdition.printingEditionPrice / printingEdition.printingEditionCount;
 
-        // if (orderItem.count > 1) {
-        //     orderItem.count--;
-        //     orderItem.amount -= price;
-        // }
-        // let totalAmount: number = 0;
-        // orderItems.forEach((orderItem) => {
-        //     totalAmount += orderItem.amount;
-        // });
-        // prevOrderItemsState.splice(orderItemIndex, 1, orderItem);
-        // this.setState({ orderItems: prevOrderItemsState, totalAmount });
+        if (printingEdition.printingEditionCount > 1) {
+            printingEdition.printingEditionCount--;
+            printingEdition.printingEditionPrice -= price;
+        }
+        prevprintingEditionState.splice(printingEditionIndex, 1, printingEdition);
+
+        this.updateCart(prevprintingEditionState);
     }
 
     handleDeleteItem = (id: string) => {
-        // const { userId } = this.state;
-        // const token: string | null = localStorage.getItem('accessToken');
-        // const headers: Headers = new Headers();
-        // headers.append('Authorization', 'Bearer ' + token);
-        // const options: RequestOptionsModel = {
-        //     method: 'DELETE',
-        //     headers,
-        // };
+        const { cart } = this.state;
+        const foundPrintingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
+        const foundPrintingEditionIndex = cart.printingEdition.indexOf(foundPrintingEdition);
+        if (foundPrintingEditionIndex !== -1) {
 
-        // const url = ORDER_ITEM_PATH + id;
-        // const request: Request = new Request(url, options);
-        // fetch(request)
-        //     .then((res: Response) => res.json())
-        //     .then((deleted: boolean) => {
-        //         if (deleted) {
-        //             this.getOrderItemsWithPrintingEdition(userId);
-        //         }
-        //     })
-        //     .catch(error => error);
+            cart.printingEdition.splice(foundPrintingEditionIndex, 1);
+            this.setState({ cart });
+            this.getTotalAmount();
+            this.setToLocalStorage(cart);
+        }
+    }
+
+    hangleSelectCurrencyBook = () => {
+
     }
 
     // getOrderItemsWithPrintingEdition = (userId: string): void => {
@@ -206,7 +209,7 @@ class CartTable extends Component<any, CartState> {
     }
 
     render() {
-        const { isRoleUser, totalAmount, isOrderItem, cart } = this.state;
+        const { isRoleUser, totalAmount, isOrderItem, cart, currencyBookOptions } = this.state;
 
         return (
             <div className="content">
@@ -234,8 +237,14 @@ class CartTable extends Component<any, CartState> {
                             </tr>
                         ))}
                         <tfoot>
-                            <th></th>
-                            <th></th>
+                            <th>Currency:</th>
+                            <th>
+                                <Select
+                                    options={currencyBookOptions}
+                                    defaultValue={[currencyBookOptions[0]]}
+                                    onChange={this.hangleSelectCurrencyBook}
+                                />
+                            </th>
                             <th>Total amount:</th>
                             <th>{totalAmount}</th>
                             <th><button className="button-create" onClick={this.handlePay}>Pay</button></th>

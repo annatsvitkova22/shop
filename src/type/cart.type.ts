@@ -1,4 +1,4 @@
-import { BookModel } from "./book.type";
+import { BookModel, SelectModel } from "./book.type";
 
 export interface CartModel {
     userId: string,
@@ -19,4 +19,5 @@ export interface CartState {
     totalAmount: number,
     isOrderItem: boolean,
     cart: CartModel,
+    currencyBookOptions: SelectModel[],
 }

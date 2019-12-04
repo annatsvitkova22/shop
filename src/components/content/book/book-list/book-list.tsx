@@ -7,7 +7,6 @@ import BookCart from '../book-cart/book-cart';
 
 import './book-list.css';
 import { CartModel, CartItemModel } from '../../../../type/cart.type';
-import { threadId } from 'worker_threads';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 const ORDER_PATH = 'https://192.168.0.104:443/order/';
@@ -63,7 +62,7 @@ class BookList extends Component<BookListProps, BookListState> {
         this.setState({ isCreate: true });
     }
 
-    handleAddBookToCart = async (id: any) => {
+    handleAddBookToCart = async (id: string) => {
         const { userId, books, cart } = this.state;
 
         const foundBook: CartItemModel = {} as CartItemModel;
@@ -76,14 +75,30 @@ class BookList extends Component<BookListProps, BookListState> {
                 foundBook.printingEditionCount = 1;
             }
         });
-        const prevCartState: CartModel[] = [...cart];
+        const prevCartState: CartModel[] = cart;
         const foundUserCart: CartModel = prevCartState.find(item => item.userId === userId) as CartModel;
+      
+        console.log('foundUserCart', foundUserCart);
         if (foundUserCart) {
-            const prevUserPrintingEdition: CartItemModel[] = [...foundUserCart.printingEdition]
-            const foundUserCartIndex: number = cart.indexOf(foundUserCart);
-            prevUserPrintingEdition.push(foundBook);
-            foundUserCart.printingEdition = prevUserPrintingEdition;
-            prevCartState.splice(foundUserCartIndex, 1, foundUserCart);
+            const foundPrintingEdition: CartItemModel = foundUserCart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
+
+            if(foundPrintingEdition) {
+                const foundPrintingEditionIndex: number = foundUserCart.printingEdition.indexOf(foundPrintingEdition);
+                const prevPrintingEditionState: CartItemModel[] = [...foundUserCart.printingEdition];
+                const price: number =  foundPrintingEdition.printingEditionPrice / foundPrintingEdition.printingEditionCount;
+                foundPrintingEdition.printingEditionCount ++;
+                foundPrintingEdition.printingEditionPrice += price;
+                prevPrintingEditionState.splice(foundPrintingEditionIndex, 1, foundPrintingEdition)
+                foundUserCart.printingEdition = prevPrintingEditionState;
+
+            }
+            if(!foundPrintingEdition){
+                const prevUserPrintingEdition: CartItemModel[] = [...foundUserCart.printingEdition]
+                const foundUserCartIndex: number = cart.indexOf(foundUserCart);
+                prevUserPrintingEdition.push(foundBook);
+                foundUserCart.printingEdition = prevUserPrintingEdition;
+                prevCartState.splice(foundUserCartIndex, 1, foundUserCart);
+            }
         }
         if (!foundUserCart) {
             let newCard: CartModel = {} as CartModel;
@@ -105,7 +120,9 @@ class BookList extends Component<BookListProps, BookListState> {
         this.getAllBooksWithoutRemoved();
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
-        this.setState({ cart });
+        if( cart ) {
+            this.setState({ cart });
+        }
     }
 
     componentDidUpdate(prevProps: any) {
