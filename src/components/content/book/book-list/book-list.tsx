@@ -78,7 +78,6 @@ class BookList extends Component<BookListProps, BookListState> {
         const prevCartState: CartModel[] = cart;
         const foundUserCart: CartModel = prevCartState.find(item => item.userId === userId) as CartModel;
       
-        console.log('foundUserCart', foundUserCart);
         if (foundUserCart) {
             const foundPrintingEdition: CartItemModel = foundUserCart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
 
@@ -202,7 +201,7 @@ class BookList extends Component<BookListProps, BookListState> {
         event.preventDefault();
         const { bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
 
-        const eeditBook: BookWithAuthorsModel = {
+        const editBook: BookWithAuthorsModel = {
             printingEdition: {
                 name: bookName,
                 description: bookDescription,
@@ -214,7 +213,7 @@ class BookList extends Component<BookListProps, BookListState> {
             authors
         }
 
-        const savedBook = await this.saveBookwithAuthor(eeditBook);
+        const savedBook = await this.saveBookwithAuthor(editBook);
         if (savedBook) {
             this.setState({ isCreated: true });
         }
@@ -226,7 +225,7 @@ class BookList extends Component<BookListProps, BookListState> {
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Bearer ' + token);
         const json: string = JSON.stringify(data);
-        console.log(json);
+
         const options: RequestOptionsModel = {
             method: 'POST',
             headers,
@@ -279,7 +278,7 @@ class BookList extends Component<BookListProps, BookListState> {
 
     render() {
         const { books, isCreated, isRoleUser, isCreate } = this.state;
-        console.log(this.state);
+
         return (
             <div className="content">
                 <div className="book-input-wrapper">

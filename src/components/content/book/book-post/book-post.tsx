@@ -96,6 +96,7 @@ class BookPost extends Component<any, BookPostState> {
         }
 
         const updatedBook = await this.requestEditBook(eeditBook);
+        console.log('updated', updatedBook);
         if (updatedBook) {
             this.setState({ labelChangeName: true });
         }
@@ -188,7 +189,7 @@ class BookPost extends Component<any, BookPostState> {
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Bearer ' + token);
         const json: string = JSON.stringify(data);
-        console.log(json);
+
         const options: RequestOptionsModel = {
             method: 'PUT',
             headers,
@@ -201,7 +202,7 @@ class BookPost extends Component<any, BookPostState> {
             .then((res: Response) => res.json())
             .then((cratedBook: BookModel) => {
                 book = cratedBook
-                console.log(book)})
+                console.log('book',cratedBook)})
             .catch(error => error);
 
         return book;
@@ -212,6 +213,7 @@ class BookPost extends Component<any, BookPostState> {
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Bearer ' + token);
+
         const options: RequestOptionsModel = {
             method: 'PUT',
             headers,
@@ -227,7 +229,7 @@ class BookPost extends Component<any, BookPostState> {
 
     render() {
         const { bookName, book, labelChangeName, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription, isRoleUser, authors, isEdit } = this.state;
-        console.log('value', this.state);
+
         return (
             <div className="book-post">
                 {isRoleUser && isEdit && <NewBook onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} bookName={bookName} labelChangeName={labelChangeName} bookStatus={bookStatus} onSelectCurrencyBook={this.handleSelectCurrencyBook} bookCurrency={bookCurrency} bookPrice={bookPrice} bookType={bookType} onInputDescription={this.handleInputDescription}  bookDescription={bookDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}

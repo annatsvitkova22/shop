@@ -151,7 +151,6 @@ class CartTable extends Component<any, CartState> {
         const foundPrintingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
         const foundPrintingEditionIndex = cart.printingEdition.indexOf(foundPrintingEdition);
         if (foundPrintingEditionIndex !== -1) {
-
             cart.printingEdition.splice(foundPrintingEditionIndex, 1);
             this.setState({ cart });
             this.getTotalAmount();
@@ -159,8 +158,46 @@ class CartTable extends Component<any, CartState> {
         }
     }
 
-    hangleSelectCurrencyBook = () => {
+    hangleSelectCurrencyBook = (event: any): void => {
+        const value: any = event.value;
 
+        const { cart } = this.state;
+
+        let totalAmount: number = 0;
+        cart.printingEdition.forEach((printingEdition: CartItemModel) => {
+            let price: number = 0
+            if (printingEdition.printingEditionCurrency === 'USD') {
+                if (value === 'EUR') {
+                    price = printingEdition.printingEditionPrice / 1.107;
+                }
+                if (value === 'UAH') {
+                    price = printingEdition.printingEditionPrice * 23.94;
+                }
+            }
+            if (printingEdition.printingEditionCurrency === 'EUR') {
+                if (value === 'USD') {
+                    price = printingEdition.printingEditionPrice * 1.107;
+                }
+                if (value === 'UAH') {
+                    price = printingEdition.printingEditionPrice * 26.5;
+                }
+            }
+            if (printingEdition.printingEditionCurrency === 'UAH') {
+                if (value === 'EUR') {
+                    price = printingEdition.printingEditionPrice / 26.5;
+                }
+                if (value === 'USD') {
+                    price = printingEdition.printingEditionPrice / 23.94;
+
+                }
+            }
+            printingEdition.printingEditionPrice = +price.toFixed(2);
+            printingEdition.printingEditionCurrency = value;
+            totalAmount += printingEdition.printingEditionPrice;
+        });
+    
+        totalAmount = +totalAmount.toFixed(2);
+        this.setState({ totalAmount });
     }
 
     // getOrderItemsWithPrintingEdition = (userId: string): void => {
