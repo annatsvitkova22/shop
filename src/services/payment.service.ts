@@ -67,7 +67,6 @@ export class PaymentService {
         });
         const charge = await stripe.charges.create({
           amount: payment.amount,
-          description: payment.description,
           currency: payment.currency,
           customer: customer.id,
         });

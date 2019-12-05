@@ -6,8 +6,6 @@ export class CreatePaymentModel {
     @ApiModelProperty()
     source?: string;
     @ApiModelProperty()
-    description?: string;
-    @ApiModelProperty()
     currency?: string;
     @ApiModelProperty()
     amount?: number;

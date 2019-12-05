@@ -22,11 +22,11 @@ export class AuthorInBookRepository {
         return authorInBook;
     }
 
-    public async createAuthorInBook(query: string): Promise<any> {
-        const authorInBook: any = await db.AuthorInBooks.sequelize.query(query, {
+    public async createAuthorInBook(query: string): Promise<[number, number]> {
+        const authorInBook: [number, number] = await db.AuthorInBooks.sequelize.query(query, {
             plain: false,
             raw: false,
-            type: sequelize.QueryTypes.SELECT,
+            type: sequelize.QueryTypes.INSERT,
         });
 
         return authorInBook;

@@ -36,6 +36,11 @@ export class PrintingEdition extends Model<PrintingEdition> {
     @Column({ allowNull: false })
     type: string;
 
+    @Column({
+        type: DataType.STRING(10000),
+        allowNull: false })
+    image: string;
+
     @HasMany(() => OrderItem, 'pritingEditionId')
     orderItems: OrderItem[];
 

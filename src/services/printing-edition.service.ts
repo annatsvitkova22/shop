@@ -1,10 +1,14 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
-import { PrintingEdition, Author, AuthorInBooks } from 'src/entity';
+import { PrintingEdition, Author } from 'src/entity';
 import { UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel, UpdatePrintingEditionWithAuthorModel,
-    CreatePrintingEditionWithAuthorModel } from 'src/models';
+    CreatePrintingEditionWithAuthorModel, 
+    CreatePrintingEditionModel} from 'src/models';
 import { UuidHelper } from 'src/common';
 import { PrintingEditionRepository, AuthorInBookRepository, AuthorRepository } from 'src/repositories';
+
+// tslint:disable-next-line: no-var-requires
+const fs = require('fs');
 
 @Injectable()
 export class PrintingEditionService {
@@ -101,6 +105,22 @@ export class PrintingEditionService {
         return printingEditionModel;
     }
 
+    public async createPrintingEditionn(createPrintingEdition: CreatePrintingEditionModel, file): Promise<PrintingEdition> {
+        const edition: PrintingEdition = new PrintingEdition();
+        edition.id = this.uuidHelper.uuidv4();
+        edition.name = createPrintingEdition.name;
+        edition.description = createPrintingEdition.description;
+        edition.price = createPrintingEdition.price;
+        edition.status = createPrintingEdition.status;
+        edition.currency = createPrintingEdition.currency;
+        edition.type = createPrintingEdition.type;
+        edition.image = fs.readFileSync(file.path).toString('base64');
+
+        const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
+
+        return savedPrintingEdition;
+    }
+
     public async createPrintingEdition(createPrintingEdition: CreatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: PrintingEdition = new PrintingEdition();
         edition.id = this.uuidHelper.uuidv4();
@@ -145,7 +165,7 @@ export class PrintingEditionService {
             query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + edition.id + '\')';
         }
 
-        const authors: AuthorInBooks[] = await this.authorInBookRepository.createAuthorInBook(query);
+        const authors: [number, number]  = await this.authorInBookRepository.createAuthorInBook(query);
         if (!authors || !savedPrintingEdition) {
             return null;
         }
@@ -195,9 +215,8 @@ export class PrintingEditionService {
             query += ' (\'' + generatedId + '\', \'' + author.id + '\', \'' + edition.id + '\')';
         }
 
-        const authors: any = await this.authorInBookRepository.createAuthorInBook(query);
-
-        if (!authors || !savedPrintingEdition || deletedAuthors) {
+        const authors: [number, number] = await this.authorInBookRepository.createAuthorInBook(query);
+        if (!authors[0] || !savedPrintingEdition || deletedAuthors) {
             return null;
         }
 

@@ -1,12 +1,29 @@
-import { Controller, Post, Body, Get, Put, Delete, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 import { Roles } from 'src/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { PrintingEditionService } from 'src/services';
-import { CreatePrintingEditionWithAuthorModel, UpdatePrintingEditionWithAuthorModel, PrintingEditionInfoModel,
-    PrintingEditionFilterModel } from 'src/models';
+import {
+    CreatePrintingEditionWithAuthorModel, UpdatePrintingEditionWithAuthorModel, PrintingEditionInfoModel,
+    PrintingEditionFilterModel,
+    CreatePrintingEditionModel
+} from 'src/models';
 import { PrintingEdition } from 'src/entity';
+
+import { FileInterceptor, AnyFilesInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
+
+export const editFileName = (req, file, callback) => {
+    const name = file.originalname.split('.')[0];
+    const fileExtName = extname(file.originalname);
+    const randomName = Array(4)
+        .fill(null)
+        .map(() => Math.round(Math.random() * 16).toString(16))
+        .join('');
+    callback(null, `${name}-${randomName}${fileExtName}`);
+};
 
 @ApiUseTags('Printing edition')
 @Controller('printingEdition')
@@ -68,6 +85,21 @@ export class PrintingEditionsController {
     @ApiOperation({ title: 'Create printing edition' })
     public async create(@Body() createEdition: CreatePrintingEditionWithAuthorModel): Promise<PrintingEdition> {
         const edition: PrintingEdition = await this.printingEditionService.createPrintingEdition(createEdition);
+
+        return edition;
+    }
+
+    @Post('file')
+    @UseInterceptors(
+        FileInterceptor('image', {
+            storage: diskStorage({
+                destination: 'src/image',
+                filename: editFileName,
+            }),
+        }),
+    )
+    public async uploadedFile(@UploadedFile() file, @Body() createBook: CreatePrintingEditionModel): Promise<PrintingEdition> {
+        const edition: PrintingEdition = await this.printingEditionService.createPrintingEditionn(createBook, file);
 
         return edition;
     }

@@ -35,8 +35,8 @@ export class PaymentsController {
 
     @UseGuards(AuthGuard('jwt'))
     @Post()
-    @Roles('admin')
-    @ApiOperation({ title: 'Create payment by id'})
+    @Roles('user')
+    @ApiOperation({ title: 'Create payment'})
     public async create(@Body() createPayment: CreatePaymentModel): Promise<Payment> {
         const payment: Payment = await this.paymentService.createPayment(createPayment);
 

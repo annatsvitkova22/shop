@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Payment } from 'src/entity';
 
-const db = require('src/entity/payment.entity');
+import db = require('src/entity/payment.entity');
 
 @Injectable()
 export class PaymentRepository {
