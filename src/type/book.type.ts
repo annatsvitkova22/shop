@@ -13,7 +13,8 @@ export interface BookModel {
     price: number,
     status: string,
     currency: string,
-    type: string
+    type: string,
+    image?: string
 }
 
 export interface EditBookModel {
@@ -89,6 +90,7 @@ export interface BookProps {
     bookCurrency?: string,
     bookType?: string,
     bookName?: string,
+    bookImage?: string,
     labelChangeName?: boolean,
     isCreated?: boolean,
     authorDefaultOptions?: SelectModel[],
@@ -97,6 +99,7 @@ export interface BookProps {
     onSelectStatusBook: (event: any) => void,
     onSelectCurrencyBook: (event: any) => void,
     onSelectAuthor: (event: any) => void,
+    onInputImageChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
 export interface CreateOrderModel {

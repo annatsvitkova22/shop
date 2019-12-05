@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 
 import './book-cart.css';
 
-const BookCart: FC<any> = ({ id, name, price, currency, type, onAddToCart, isRoleUser }) => (
-
+const BookCart: FC<any> = ({ image, id, name, price, currency, type, onAddToCart, isRoleUser }) => (
     <div className="listing-item">
         <figure className="image">
-            <img src="https://i.ytimg.com/vi/MTrzTABzLfY/maxresdefault.jpg" alt="image" />
+            <img src={`data:image/jpeg;base64,${image}`} alt="image" />
             <figcaption>
                 <div className="caption">
                     <p><span>{name}</span></p>

@@ -55,7 +55,7 @@ class NewBook extends Component<BookProps, NewBookState> {
 
     render() {
         const { authorOptions, typeBookOptions, currencyBookOptions } = this.state;
-        const { bookName, isCreated, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription } = this.props;
+        const { bookName, isCreated, bookImage, onInputImageChange, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription } = this.props;
 
         return (
             <div className="edit-book">
@@ -71,6 +71,13 @@ class NewBook extends Component<BookProps, NewBookState> {
                         />
                         <span className="bar"></span>
                         <label>Name</label>
+                    </div>
+                    <div>
+                        <input
+                            type="file"
+                            value={bookImage}
+                            onChange={onInputImageChange}
+                        />
                     </div>
                     <br />
                     <div>

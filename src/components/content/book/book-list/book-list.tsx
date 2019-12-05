@@ -197,6 +197,10 @@ class BookList extends Component<BookListProps, BookListState> {
         });
     }
 
+    handleInputImageChange = (event: any) => {
+        console.log(event);
+    }
+
     handleSaveBook = async (event: any): Promise<void> => {
         event.preventDefault();
         const { bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
@@ -278,7 +282,7 @@ class BookList extends Component<BookListProps, BookListState> {
 
     render() {
         const { books, isCreated, isRoleUser, isCreate } = this.state;
-
+        console.log(books[0]);
         return (
             <div className="content">
                 <div className="book-input-wrapper">
@@ -299,14 +303,14 @@ class BookList extends Component<BookListProps, BookListState> {
                         </a>}
                         </div>
                         <div className="hover-table-layout">
-                            {books.map(({ id, name, price, currency, type }) => (
-                                <BookCart isRoleUser={isRoleUser} onAddToCart={this.handleAddBookToCart} id={id} name={name} price={price} currency={currency} type={type} />
+                            {books.map(({ id, name, price, currency, type, image }) => (
+                                <BookCart isRoleUser={isRoleUser} onAddToCart={this.handleAddBookToCart} image={image} id={id} name={name} price={price} currency={currency} type={type} />
                             ))}
 
                         </div>
                     </div>}
                     {isCreate && <div>
-                        <NewBook isCreated={isCreated} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        <NewBook isCreated={isCreated} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
                         {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>
