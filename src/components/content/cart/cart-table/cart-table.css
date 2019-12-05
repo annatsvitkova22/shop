@@ -11,7 +11,7 @@
   color: white;
   padding: 10px 15px;
   position: relative;
-  width: 100px;
+  width: 130px;
 }
 .table_blur th:after {
   content: "";

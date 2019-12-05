@@ -5,8 +5,8 @@ import { RequestOptionsModel } from '../../../../type/author.type';
 import { CartModel, CartItemModel, CartState } from '../../../../type/cart.type';
 
 import './cart-table.css';
+import PaymentCart from '../stripe/stripe';
 
-const ORDER_ITEM_PATH = 'https://192.168.0.104:443/orderItem/';
 const ORDER_PATH = 'https://192.168.0.104:443/order/';
 
 class CartTable extends Component<any, CartState> {
@@ -23,6 +23,8 @@ class CartTable extends Component<any, CartState> {
             userId: '',
             printingEdition: []
         },
+        isPay: false,
+        currencyCart: 'USD'
     });
 
     /**
@@ -75,7 +77,7 @@ class CartTable extends Component<any, CartState> {
     }
 
     handlePay = (): void => {
-
+        this.setState({isPay: true});
     }
 
     getTotalAmount = () => {
@@ -197,7 +199,7 @@ class CartTable extends Component<any, CartState> {
         });
     
         totalAmount = +totalAmount.toFixed(2);
-        this.setState({ totalAmount });
+        this.setState({ totalAmount, currencyCart: value });
     }
 
     // getOrderItemsWithPrintingEdition = (userId: string): void => {
@@ -246,7 +248,7 @@ class CartTable extends Component<any, CartState> {
     }
 
     render() {
-        const { isRoleUser, totalAmount, isOrderItem, cart, currencyBookOptions } = this.state;
+        const { isRoleUser, totalAmount, isOrderItem, cart, currencyBookOptions, currencyCart, isPay } = this.state;
 
         return (
             <div className="content">
@@ -284,7 +286,7 @@ class CartTable extends Component<any, CartState> {
                             </th>
                             <th>Total amount:</th>
                             <th>{totalAmount}</th>
-                            <th><button className="button-create" onClick={this.handlePay}>Pay</button></th>
+                            <th><PaymentCart currencyCart={currencyCart} totalAmount={totalAmount}/></th>
                         </tfoot>
                     </table>
                 </div>}

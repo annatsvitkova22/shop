@@ -20,4 +20,27 @@ export interface CartState {
     isOrderItem: boolean,
     cart: CartModel,
     currencyBookOptions: SelectModel[],
+    isPay: boolean,
+    currencyCart: string,
+}
+
+export interface PaymentModel {
+    id: string;
+    transactionId: string
+}
+
+export interface CreateTransactionModel {
+    email: string,
+    source: string,
+    currency: string,
+    amount: number
+}
+
+export interface PaymentCartState {
+    transactionId: string
+}
+
+export interface PaymentCartProps {
+    totalAmount: number,
+    currencyCart: string
 }
