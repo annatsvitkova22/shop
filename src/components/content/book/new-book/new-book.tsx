@@ -55,7 +55,7 @@ class NewBook extends Component<BookProps, NewBookState> {
 
     render() {
         const { authorOptions, typeBookOptions, currencyBookOptions } = this.state;
-        const { bookName, isCreated, bookImage, onInputImageChange, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription } = this.props;
+        const { bookName, isCreated, bookImage, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription } = this.props;
 
         return (
             <div className="edit-book">
@@ -78,6 +78,7 @@ class NewBook extends Component<BookProps, NewBookState> {
                             value={bookImage}
                             onChange={onInputImageChange}
                         />
+                        {isLoadImage &&<img src={loadImage} alt="image" className="load-image"/>}
                     </div>
                     <br />
                     <div>

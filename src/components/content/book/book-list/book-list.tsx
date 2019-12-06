@@ -1,6 +1,6 @@
 import React, { Component, ChangeEvent } from 'react';
 
-import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel, CreateOrderModel, OrderModel, CreateOrderItemModel, OrderItemModel, OrderItemsWithPrintingEditionModel } from "../../../../type/book.type";
+import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel, CreateOrderModel, OrderModel, CreateOrderItemModel, OrderItemModel, OrderItemsWithPrintingEditionModel, FileModel } from "../../../../type/book.type";
 import { RequestOptionsModel } from '../../../../type/author.type';
 import NewBook from '../new-book/new-book';
 import BookCart from '../book-cart/book-cart';
@@ -29,6 +29,16 @@ class BookList extends Component<BookListProps, BookListState> {
         userId: '',
         orderId: '',
         cart: [],
+        file: {
+            lastModified: 0,
+            name: '',
+            lastModifiedDate: Date,
+            size: 0,
+            webkitRelativePath: '',
+            type: '',
+        },
+        image: '',
+        isLoadImage: false
     });
 
     roleUser = (): void => {
@@ -77,21 +87,21 @@ class BookList extends Component<BookListProps, BookListState> {
         });
         const prevCartState: CartModel[] = cart;
         const foundUserCart: CartModel = prevCartState.find(item => item.userId === userId) as CartModel;
-      
+
         if (foundUserCart) {
             const foundPrintingEdition: CartItemModel = foundUserCart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
 
-            if(foundPrintingEdition) {
+            if (foundPrintingEdition) {
                 const foundPrintingEditionIndex: number = foundUserCart.printingEdition.indexOf(foundPrintingEdition);
                 const prevPrintingEditionState: CartItemModel[] = [...foundUserCart.printingEdition];
-                const price: number =  foundPrintingEdition.printingEditionPrice / foundPrintingEdition.printingEditionCount;
-                foundPrintingEdition.printingEditionCount ++;
+                const price: number = foundPrintingEdition.printingEditionPrice / foundPrintingEdition.printingEditionCount;
+                foundPrintingEdition.printingEditionCount++;
                 foundPrintingEdition.printingEditionPrice += price;
                 prevPrintingEditionState.splice(foundPrintingEditionIndex, 1, foundPrintingEdition)
                 foundUserCart.printingEdition = prevPrintingEditionState;
 
             }
-            if(!foundPrintingEdition){
+            if (!foundPrintingEdition) {
                 const prevUserPrintingEdition: CartItemModel[] = [...foundUserCart.printingEdition]
                 const foundUserCartIndex: number = cart.indexOf(foundUserCart);
                 prevUserPrintingEdition.push(foundBook);
@@ -119,7 +129,7 @@ class BookList extends Component<BookListProps, BookListState> {
         this.getAllBooksWithoutRemoved();
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
-        if( cart ) {
+        if (cart) {
             this.setState({ cart });
         }
     }
@@ -198,12 +208,21 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     handleInputImageChange = (event: any) => {
-        console.log(event);
+        event.preventDefault();
+        let file = event.target.files[0];
+        this.setState({ file });
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            const loadImage: string = reader.result as string;
+            this.setState({image: loadImage, isLoadImage: true})
+            console.log(loadImage);
+        };
     }
 
     handleSaveBook = async (event: any): Promise<void> => {
         event.preventDefault();
-        const { bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
+        const { bookName, image, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
 
         const editBook: BookWithAuthorsModel = {
             printingEdition: {
@@ -213,6 +232,7 @@ class BookList extends Component<BookListProps, BookListState> {
                 status: bookStatus,
                 currency: bookCurrency,
                 type: bookType,
+                image
             },
             authors
         }
@@ -222,6 +242,29 @@ class BookList extends Component<BookListProps, BookListState> {
             this.setState({ isCreated: true });
         }
     }
+
+
+    // handleSaveBook = async (event: any): Promise<void> => {
+    //     event.preventDefault();
+
+    //     const { bookName, file, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
+
+    //     console.log('file', file);
+
+    //     const editBook: BookModel = {
+    //         name: bookName,
+    //         description: bookDescription,
+    //         price: bookPrice,
+    //         status: bookStatus,
+    //         currency: bookCurrency,
+    //         type: bookType,
+    //     }
+
+    //     const savedBook = await this.saveBookwithAuthor(editBook, file);
+    //     if (savedBook) {
+    //         this.setState({ isCreated: true });
+    //     }
+    // }
 
     saveBookwithAuthor = async (data: BookWithAuthorsModel): Promise<BookModel> => {
         const token: string | null = localStorage.getItem('accessToken');
@@ -245,6 +288,39 @@ class BookList extends Component<BookListProps, BookListState> {
 
         return book;
     }
+
+    // saveBookwithAuthor = async (data: BookModel, file: any): Promise<BookModel> => {
+    //     const token: string | null = localStorage.getItem('accessToken');
+    //     const headers: Headers = new Headers();
+    //     headers.append('Authorization', 'Bearer ' + token);
+    //     const formData = new FormData();
+    //     formData.append('image', file);
+    //     formData.append('name', data.name);
+    //     formData.append('description', data.description);
+    //     formData.append('price', data.price.toString());
+    //     formData.append('status', data.status);
+    //     formData.append('currency', data.currency);
+    //     formData.append('type', data.type);
+
+    //     const options = {
+    //         method: 'POST',
+    //         headers,
+    //         body: formData,
+    //     };
+
+    //     console.log('options', options);
+
+    //     let book: BookModel = {} as BookModel;
+    //     const url = BASE_PATH + 'file';
+    //     console.log(url);
+    //     const request: Request = new Request(url, options);
+    //     await fetch(request)
+    //         .then((res: Response) => res.json())
+    //         .then((cratedBook: BookModel) => book = cratedBook)
+    //         .catch(error => error);
+
+    //     return book;
+    // }
 
     getAllBooksWithoutRemoved = (): void => {
         const token: string | null = localStorage.getItem('accessToken');
@@ -281,8 +357,8 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     render() {
-        const { books, isCreated, isRoleUser, isCreate } = this.state;
-        console.log(books[0]);
+        const { books, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
+
         return (
             <div className="content">
                 <div className="book-input-wrapper">
@@ -300,7 +376,7 @@ class BookList extends Component<BookListProps, BookListState> {
                                 <span className="button__line button__line--bottom"></span>
                                 <span className="button__line button__line--left"></span>
                                 Create book
-                        </a>}
+                            </a>}
                         </div>
                         <div className="hover-table-layout">
                             {books.map(({ id, name, price, currency, type, image }) => (
@@ -310,7 +386,7 @@ class BookList extends Component<BookListProps, BookListState> {
                         </div>
                     </div>}
                     {isCreate && <div>
-                        <NewBook isCreated={isCreated} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        <NewBook isCreated={isCreated} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
                         {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>

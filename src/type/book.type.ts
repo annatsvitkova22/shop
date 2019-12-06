@@ -65,6 +65,15 @@ export interface NewBookState {
     currencyBookOptions: SelectModel[],
 }
 
+export interface FileModel {
+    lastModified: number;
+    name: string;
+    lastModifiedDate: Object;
+    size: number;
+    webkitRelativePath: string;
+    type: string
+}
+
 export interface BookListState {
     books: BookModel[],
     authors: AuthorModel[],
@@ -81,6 +90,9 @@ export interface BookListState {
     userId: string,
     orderId: string,
     cart: CartModel[],
+    file: FileModel,
+    image: string,
+    isLoadImage?: boolean,
 }
 
 export interface BookProps {
@@ -94,6 +106,8 @@ export interface BookProps {
     labelChangeName?: boolean,
     isCreated?: boolean,
     authorDefaultOptions?: SelectModel[],
+    loadImage?: string,
+    isLoadImage?: boolean,
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     onInputDescription: (event: ChangeEvent<HTMLTextAreaElement>) => void,
     onSelectStatusBook: (event: any) => void,

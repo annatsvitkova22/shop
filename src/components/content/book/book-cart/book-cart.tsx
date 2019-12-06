@@ -6,7 +6,7 @@ import './book-cart.css';
 const BookCart: FC<any> = ({ image, id, name, price, currency, type, onAddToCart, isRoleUser }) => (
     <div className="listing-item">
         <figure className="image">
-            <img src={`data:image/jpeg;base64,${image}`} alt="image" />
+            <img src={image} alt="image" />
             <figcaption>
                 <div className="caption">
                     <p><span>{name}</span></p>

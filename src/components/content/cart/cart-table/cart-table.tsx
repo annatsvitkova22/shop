@@ -27,33 +27,14 @@ class CartTable extends Component<any, CartState> {
         currencyCart: 'USD'
     });
 
-    /**
-     *
-     */
-    // constructor(props: any) {
-    //     super(props);
-
-    //     const currentState = {
-    //         isRoleUser: false,
-    //         userId: '',
-    //         totalAmount: 0,
-    //         isOrderItem: false,
-    //         cart: {
-    //             userId: '',
-    //             printingEdition: []
-    //         },
-    //     };
-
-    //     this.state = currentState;
-    // }
-
     getUserCartItem = (): void => {
         const { userId } = this.state;
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
         const foundUserCart: CartModel = cart.find(item => item.userId === userId) as CartModel;
-        this.setState({ cart: foundUserCart });
-
+        if(foundUserCart) {
+            this.setState({ cart: foundUserCart });
+        }
     }
 
     componentDidMount = async (): Promise<void> => {

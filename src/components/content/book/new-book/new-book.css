@@ -2,7 +2,13 @@
     position: relative;
     margin-bottom: 30px;
     margin-top: 30px;
-  }
+}
+
+.load-image {
+  width: 100px;
+  height: 100px;
+}
+
   
 .edit-book input {
     font-size: 16px;
@@ -11,11 +17,11 @@
     width: 300px;
     border: none;
     border-bottom: 1px solid #ccc;
-  }
+}
 
 .edit-book  input:focus {
     outline: none;
-  }
+}
 
 .edit-book label {
     color: #999;
@@ -27,7 +33,7 @@
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
     -webkit-transition: 0.2s ease all;
-  }
+}
   
 .edit-book  input:focus ~ label, input:valid ~ label{
     top: -15px;
@@ -39,7 +45,7 @@
     position: relative;
     display: block;
     width: 320px;
-  }
+}
 
 .edit-book .bar:before, .bar:after {
     content: "";
