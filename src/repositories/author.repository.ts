@@ -38,7 +38,7 @@ export class AuthorRepository {
 
     public async createAuthor(createAuthor: Author): Promise<Author> {
         const author: Author = await createAuthor.save();
-        console.log('author', author);
+
         return author;
     }
 

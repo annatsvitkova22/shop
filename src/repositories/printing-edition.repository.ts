@@ -78,9 +78,8 @@ export class PrintingEditionRepository {
 
     public async createPrintingEdition(createPrintingEdition: PrintingEdition): Promise<PrintingEdition> {
         const printingEdition: PrintingEdition = await createPrintingEdition.save();
-        console.log('printingEdition', printingEdition);
-        return printingEdition;
 
+        return printingEdition;
     }
 
     public async deletePrintingEdition(printingEditionId: string): Promise<number> {

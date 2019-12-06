@@ -2,8 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import { PrintingEdition, Author } from 'src/entity';
 import { UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEditionInfoModel, UpdatePrintingEditionWithAuthorModel,
-    CreatePrintingEditionWithAuthorModel, 
-    CreatePrintingEditionModel} from 'src/models';
+    CreatePrintingEditionWithAuthorModel, CreatePrintingEditionModel} from 'src/models';
 import { UuidHelper } from 'src/common';
 import { PrintingEditionRepository, AuthorInBookRepository, AuthorRepository } from 'src/repositories';
 
@@ -114,7 +113,7 @@ export class PrintingEditionService {
         edition.status = createPrintingEdition.status;
         edition.currency = createPrintingEdition.currency;
         edition.type = createPrintingEdition.type;
-        edition.image = fs.readFileSync(file.path).toString('base64');
+        edition.image = file.buffer.toString('base64');
 
         const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(edition);
 
@@ -130,6 +129,7 @@ export class PrintingEditionService {
         edition.status = createPrintingEdition.printingEdition.status;
         edition.currency = createPrintingEdition.printingEdition.currency;
         edition.type = createPrintingEdition.printingEdition.type;
+        edition.image = createPrintingEdition.printingEdition.image;
 
         const foundPrintingEdition: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrByName(edition.name);
         if (foundPrintingEdition) {
