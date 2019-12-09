@@ -38,11 +38,10 @@ export class RoleInUsersService {
 
     public async updateRoleInUser(updateRole: UpdateRoleInUsersModel): Promise<UserInRoles> {
         const roleInUser: UserInRoles = new UserInRoles();
-        roleInUser.id = updateRole.id;
         roleInUser.roleId = updateRole.roleId;
         roleInUser.userId = updateRole.userId;
 
-        const toUpdate: UserInRoles = await this.roleInUsersRepository.getUserInRoleById(roleInUser.id);
+        const toUpdate: UserInRoles = await this.roleInUsersRepository.getUserInRoleByUserId(roleInUser.userId);
         toUpdate.roleId = roleInUser.roleId;
         toUpdate.userId = roleInUser.userId;
 

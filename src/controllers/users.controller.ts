@@ -4,7 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/common';
 
 import { UserService } from 'src/services';
-import { CreateUserModel, UpdateUserModel, ForgotPassword, UserInfoModel } from 'src/models';
+import { CreateUserModel, UpdateUserModel, ForgotPassword, UserInfoModel, UserWithRoleModel } from 'src/models';
 import { User } from 'src/entity';
 
 @ApiUseTags('Users table')
@@ -12,12 +12,22 @@ import { User } from 'src/entity';
 export class UsersController {
     constructor(private userService: UserService) { }
 
+    // @UseGuards(AuthGuard('jwt'))
+    // @Get()
+    // @Roles('admin')
+    // @ApiOperation({ title: 'Search all users' })
+    // public async getAll(): Promise<User[]> {
+    //     const user: User[] = await this.userService.getUsers();
+
+    //     return user;
+    // }
+
     @UseGuards(AuthGuard('jwt'))
     @Get()
     @Roles('admin')
-    @ApiOperation({ title: 'Search all users' })
-    public async getAll(): Promise<User[]> {
-        const user: User[] = await this.userService.getUsers();
+    @ApiOperation({ title: 'Search all users with role' })
+    public async getAllUserWithRole(): Promise<UserWithRoleModel[]> {
+        const user: UserWithRoleModel[] = await this.userService.getUserWithRole();
 
         return user;
     }

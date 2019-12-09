@@ -9,4 +9,6 @@ export class CreateOrderModel {
         required: true,
     })
     date: Date;
+    @ApiModelProperty()
+    paymentId: string;
 }

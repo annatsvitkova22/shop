@@ -31,3 +31,4 @@ export * from 'src/models/book/create-printing-edition-author.model';
 export * from 'src/models/access-token.model';
 export * from 'src/models/author/author.model';
 export * from 'src/models/order-item/order-item.model';
+export * from 'src/models/book/printing-edition-cart.model';

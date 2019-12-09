@@ -20,6 +20,14 @@ export class UserInRoleRepository {
         return userInRole;
     }
 
+    public async getUserInRoleByUserId(userId: string): Promise<UserInRoles> {
+        const userInRole: UserInRoles = await db.UserInRoles.findOne({
+            where: { userId },
+        });
+
+        return userInRole;
+    }
+
     public async createUserInRole(createUserInRole: UserInRoles): Promise<UserInRoles> {
         const userInRole: UserInRoles = await createUserInRole.save();
 

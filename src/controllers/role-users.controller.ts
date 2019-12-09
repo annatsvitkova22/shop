@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Get, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, UseGuards } from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { RoleInUsersService } from 'src/services';
 import { CreateRoleInUsersModel, UpdateRoleInUsersModel } from 'src/models';
 import { UserInRoles } from 'src/entity';
+import { Roles } from 'src/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiUseTags('Role in user')
 @Controller('role-user')
@@ -35,8 +37,10 @@ export class RoleInUserController {
     return roleInUser;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put()
-  @ApiOperation({ title: 'Update role in user by id' })
+  @Roles('admin')
+  @ApiOperation({ title: 'Update role in user by userId' })
   public update(@Body() updateRoleInUser: UpdateRoleInUsersModel): Promise<UserInRoles> {
     const roleInUser: Promise<UserInRoles> = this.roleInUserService.updateRoleInUser(updateRoleInUser);
 

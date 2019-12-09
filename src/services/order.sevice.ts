@@ -29,11 +29,12 @@ export class OrderService {
         const order: Order = new Order();
         order.userId = createOrder.userId;
         order.date = createOrder.date;
+        order.paymentId = createOrder.paymentId;
         order.id = this.uuidHelper.uuidv4();
-        const foundUser: Order = await this.orderRepository.getOrderByUserId(order.userId);
-        if (foundUser) {
-            return foundUser;
-        }
+        // const foundUser: Order = await this.orderRepository.getOrderByUserId(order.userId);
+        // if (foundUser) {
+        //     return foundUser;
+        // }
         const savedOrder: Order = await this.orderRepository.createOrder(order);
 
         return savedOrder;

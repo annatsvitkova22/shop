@@ -148,6 +148,14 @@ export class UserService {
         return foundUser;
     }
 
+    public async getUserWithRole(): Promise<UserWithRoleModel[]> {
+        // tslint:disable-next-line: max-line-length
+        const query: string = 'SELECT `users`.`id`, `users`.`firstName`, `users`.`lastName`, `users`.`email`, `users`.`emailConfirmed`, `roles`.`name` FROM `userinroles` INNER JOIN `roles` ON `userinroles`.`roleId` = `roles`.`id` INNER JOIN `users` ON `userinroles`.`userId` = `users`.`id`';
+        const foundUsers: UserWithRoleModel[] = await this.userRepository.getUserWithRole(query);
+
+        return foundUsers;
+    }
+
     public async validateToken(token: string, user: User): Promise<UserInfoModel> {
         if (user.saltForEmail === token) {
             user.emailConfirmed = true;

@@ -40,6 +40,16 @@ export class OrderItemRepository {
         return orderItem;
     }
 
+    public async createOrderItems(query: string): Promise<[number, number]> {
+        const orderItem: [number, number] = await db.OrderItem.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.INSERT,
+        });
+
+        return orderItem;
+    }
+
     public async createOrderItem(createOrderItem: OrderItem): Promise<OrderItem> {
         const orderItem: OrderItem = await createOrderItem.save();
 

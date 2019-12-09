@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Get, Put, Delete, Param} from '@nestjs/common';
+import { Controller, Post, Body, Get, Put, Delete, Param, UseGuards} from '@nestjs/common';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
 import { OrderItemService } from 'src/services';
 import { CreateOrderItemModel, UpdateOrderItemModel, OrderItemModel } from 'src/models';
 import { OrderItem } from 'src/entity';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/common';
 
 @ApiUseTags('Order Item')
 @Controller('orderItem')
@@ -19,7 +21,9 @@ export class OrderItemsController {
         return orderItem;
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
+    @Roles('user')
     @ApiOperation({ title: 'Search order item by id'})
     public async get(@Param() params): Promise<OrderItemModel[]> {
         const orderItem: OrderItemModel[] = await this.orderItemService.getOrderItemByUserId(params.id);
@@ -29,8 +33,8 @@ export class OrderItemsController {
 
     @Post()
     @ApiOperation({ title: 'Create order item'})
-    public async create(@Body() createOrderItem: CreateOrderItemModel): Promise<OrderItem> {
-        const orderItem: OrderItem = await this.orderItemService.createOrderItem(createOrderItem);
+    public async create(@Body() createOrderItem: CreateOrderItemModel): Promise<boolean> {
+        const orderItem: boolean = await this.orderItemService.createOrderItem(createOrderItem);
 
         return orderItem;
     }

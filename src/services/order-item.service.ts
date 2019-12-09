@@ -28,26 +28,32 @@ export class OrderItemService {
         return foundOrderItem;
     }
 
-    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<OrderItem> {
-        const orderItem: OrderItem = new OrderItem();
-        orderItem.pritingEditionId = createOrderItem.printingEditionId;
-        orderItem.amount = createOrderItem.amount;
-        orderItem.currency = createOrderItem.currency;
-        orderItem.count = createOrderItem.count;
-        orderItem.orderId = createOrderItem.orderId;
-        orderItem.id = this.uuidHelper.uuidv4();
+    public async createOrderItem(createOrderItem: CreateOrderItemModel): Promise<boolean> {
+        let query: string = 'INSERT INTO `orderitems` (`id`, `amount`, `currency`, `pritingEditionId`, `orderId`, `count`) VALUES';
+        const count: number = createOrderItem.printingEdition.length;
+        let i: number = 1;
 
-        const foundOrdetItem: OrderItem = await this.orderItemRepository.getOrderItemByPrintingEditionId(orderItem.pritingEditionId);
-        if (foundOrdetItem) {
-            foundOrdetItem.count ++;
-            foundOrdetItem.amount += orderItem.amount;
-            const updatedOrderItem: OrderItem = await this.orderItemRepository.createOrderItem(foundOrdetItem);
-
-            return updatedOrderItem;
+        if (createOrderItem.printingEdition) {
+            for (const printingEdition of createOrderItem.printingEdition) {
+                const generatedId: string = this.uuidHelper.uuidv4();
+                // tslint:disable-next-line: max-line-length
+                query += ' (\'' + generatedId + '\', ' + printingEdition.printingEditionPrice + ', \'' + printingEdition.printingEditionCurrency + '\', \'' + printingEdition.printingEditionId + '\', \'' + createOrderItem.orderId + '\', ' + printingEdition.printingEditionCount + ')';
+                if (i < count) {
+                    query += ', ';
+                }
+                if (i === count) {
+                    query += ';';
+                }
+                i++;
+            }
         }
-        const savedOrderItem: OrderItem = await this.orderItemRepository.createOrderItem(orderItem);
 
-        return savedOrderItem;
+        const savedOrderItem: [number, number] = await this.orderItemRepository.createOrderItems(query);
+        if (!savedOrderItem) {
+            return false;
+        }
+
+        return true;
     }
 
     public async updateOrderItem(updateOrderItem: UpdateOrderItemModel): Promise<OrderItem> {

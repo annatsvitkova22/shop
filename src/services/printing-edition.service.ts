@@ -37,7 +37,7 @@ export class PrintingEditionService {
         authorQuery += id + '\'';
         const foundAuthorByPrintingEditionId: Author[] = await this.printingEditionRepository.getAuthroByPrintingEditionrId(authorQuery);
         // tslint:disable-next-line: max-line-length
-        let printingEditionQuery = 'SELECT `printingeditions`.`id`, `printingeditions`.`name`, `printingeditions`.`description`, `printingeditions`.`price`, `printingeditions`.`isRemoved`, `printingeditions`.`status`, `printingeditions`.`currency`, `printingeditions`.`type` FROM `authorinbooks` INNER JOIN `authors` ON `authorinbooks`.`authorId` = `authors`.`id` INNER JOIN `printingeditions` ON `authorinbooks`.`bookId` = `printingeditions`.`id` WHERE `printingeditions`.`id` = \'';
+        let printingEditionQuery = 'SELECT `printingeditions`.`id`, `printingeditions`.`name`, `printingeditions`.`description`, `printingeditions`.`price`, `printingeditions`.`isRemoved`, `printingeditions`.`status`, `printingeditions`.`currency`, `printingeditions`.`type`, `printingeditions`.`image` FROM `authorinbooks` INNER JOIN `authors` ON `authorinbooks`.`authorId` = `authors`.`id` INNER JOIN `printingeditions` ON `authorinbooks`.`bookId` = `printingeditions`.`id` WHERE `printingeditions`.`id` = \'';
         printingEditionQuery += id + '\'';
         const foundPrintingEditionById: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditionById(printingEditionQuery);
         const foundPrintingEditionByIdWithAuthors: UpdatePrintingEditionWithAuthorModel = {};

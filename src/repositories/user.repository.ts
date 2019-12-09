@@ -41,6 +41,16 @@ export class UserRepository {
         return user;
     }
 
+    public async getUserWithRole(query: string): Promise<UserWithRoleModel[]> {
+        const user: UserWithRoleModel[] = await db.User.sequelize.query(query, {
+            plain: false,
+            raw: false,
+            type: sequelize.QueryTypes.SELECT,
+        });
+
+        return user;
+    }
+
     public async createUser(createUser: User): Promise<User> {
         const user: User = await createUser.save();
 
