@@ -26,6 +26,7 @@ class BookPost extends Component<any, BookPostState> {
         labelChangeName: false,
         isRoleUser: false,
         isEdit: false,
+        isLoadImage: true,
     });
 
     componentDidMount = (): void => {
@@ -80,7 +81,7 @@ class BookPost extends Component<any, BookPostState> {
 
     handleEditBook = async (): Promise<void> => {
         const { book, authors }: BookPostState = this.state;
-
+        debugger;
         const editBook: BookWithAuthorsModel = {
             printingEdition: {
                 id: book.id,
@@ -90,6 +91,7 @@ class BookPost extends Component<any, BookPostState> {
                 status: book.status,
                 currency: book.currency,
                 type: book.type,
+                image: book.image,
             },
             authors
         }
@@ -146,6 +148,10 @@ class BookPost extends Component<any, BookPostState> {
         this.setState({ book });
     }
 
+    closeLoad = (): void => {
+        this.setState({ isLoadImage: false });
+    }
+
     requestGetBookWithAuthor = (id: string): void => {
         const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
@@ -176,7 +182,19 @@ class BookPost extends Component<any, BookPostState> {
             .catch(error => error);
     }
 
-
+    handleInputImageChange = (event: any): void => {
+        const { book } = this.state;
+        event.preventDefault();
+        let file = event.target.files[0];
+        let reader = new FileReader();
+        console.log('file', file.name);
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            const loadImage: string = reader.result as string;
+            book.image = loadImage;
+            this.setState({ book, isLoadImage: true })
+        };
+    }
 
     requestEditBook = async (data: BookWithAuthorsModel): Promise<BookModel> => {
         const token: string | null = localStorage.getItem('accessToken');
@@ -224,11 +242,11 @@ class BookPost extends Component<any, BookPostState> {
     }
 
     render() {
-        const { book, labelChangeName, authorDefaultOptions, isRoleUser, authors, isEdit } = this.state;
-        console.log(this.state);
+        const { book, labelChangeName, isLoadImage, authorDefaultOptions, isRoleUser, authors, isEdit } = this.state;
+        console.log('state', this.state);
         return (
             <div className="book-post">
-                {isRoleUser && isEdit && <NewBook isLoadImage={true} onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} loadImage={book.image} bookName={book.name} bookCurrency={book.currency} bookDescription={book.description} bookPrice={book.price} bookStatus={book.status} bookType={book.type} labelChangeName={labelChangeName} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
+                {isRoleUser && isEdit && <NewBook onInputImageChange={this.handleInputImageChange} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} loadImage={book.image} bookName={book.name} bookCurrency={book.currency} bookDescription={book.description} bookPrice={book.price} bookStatus={book.status} bookType={book.type} labelChangeName={labelChangeName} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
                 {!isEdit && !book.isRemoved && <div>
                     <div>
                         <p><span>Name: </span> {book.name}</p>

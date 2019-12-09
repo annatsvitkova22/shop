@@ -50,7 +50,8 @@ export interface BookPostState {
     authorDefaultOptions: SelectModel[],
     multiValue: string[],
     isRoleUser: boolean,
-    isEdit: boolean
+    isEdit: boolean,
+    isLoadImage: boolean,
 }
 
 export interface NewBookState {
@@ -87,7 +88,6 @@ export interface BookListState {
     file: FileModel,
     image: string,
     isLoadImage?: boolean,
-    nameFile: string,
 }
 
 export interface BookProps {
@@ -98,11 +98,9 @@ export interface BookProps {
     bookCurrency?: string,
     bookType?: string,
     labelChangeName?: boolean,
-    isCreated?: boolean,
     authorDefaultOptions?: SelectModel[],
     loadImage?: string,
     isLoadImage?: boolean,
-    nameFile?: string,
     onCloseLoad?: () => void,
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     onInputDescription: (event: ChangeEvent<HTMLTextAreaElement>) => void,

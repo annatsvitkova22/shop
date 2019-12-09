@@ -37,7 +37,6 @@ class BookList extends Component<BookListProps, BookListState> {
         },
         image: '',
         isLoadImage: false,
-        nameFile: '',
     });
 
     roleUser = (): void => {
@@ -210,10 +209,9 @@ class BookList extends Component<BookListProps, BookListState> {
         });
     }
 
-    handleInputImageChange = (event: any) => {
+    handleInputImageChange = (event: any): void => {
         event.preventDefault();
         let file = event.target.files[0];
-        this.setState({ nameFile: file.name });
         let reader = new FileReader();
         console.log('file', file.name);
         reader.readAsDataURL(file);
@@ -242,7 +240,8 @@ class BookList extends Component<BookListProps, BookListState> {
 
         const savedBook = await this.saveBookwithAuthor(editBook);
         if (savedBook) {
-            this.setState({ isCreated: true });
+            this.getAllBooksWithoutRemoved();
+            this.setState({ isCreate: false });
         }
     }
 
@@ -360,7 +359,7 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     render() {
-        const { books, nameFile, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
+        const { books, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
 
         return (
             <div className="content">
@@ -389,7 +388,7 @@ class BookList extends Component<BookListProps, BookListState> {
                         </div>
                     </div>}
                     {isCreate && <div>
-                        <NewBook isCreated={isCreated} nameFile={nameFile} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        <NewBook  onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
                         {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>

@@ -56,11 +56,11 @@ class NewBook extends Component<BookProps, NewBookState> {
 
     render() {
         const { authorOptions, typeBookOptions, currencyBookOptions } = this.state;
-        const { bookDescription, bookCurrency, bookPrice, bookStatus, bookType, bookName, nameFile, onCloseLoad, isCreated, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions } = this.props;
+        const { bookDescription, bookCurrency, bookPrice, bookStatus, bookType, bookName, onCloseLoad, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions } = this.props;
 
         return (
             <div className="edit-book">
-                {!isCreated && <div id='book-input-wrapper' className='book-input'>
+                <div id='book-input-wrapper' className='book-input'>
                     <p>Book</p>
                     <div className="group">
                         <input
@@ -149,10 +149,7 @@ class NewBook extends Component<BookProps, NewBookState> {
                         {labelChangeName && <label>Book updated</label>}
                         <br />
                     </div>
-                </div>}
-                {isCreated && <div>
-                    <label>Book saved</label>
-                </div>}
+                </div>
             </div>
         );
     }
