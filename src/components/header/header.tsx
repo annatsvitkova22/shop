@@ -13,7 +13,7 @@ const Header: FunctionComponent<HeaderProps> = (props: HeaderProps) => {
           <li><NavLink exact to='/'>Books</NavLink></li>
           {isAdmin && !isUser && <li><NavLink to='/authors'>Authors</NavLink></li>}
           {isAdmin && <li><NavLink to='/users'>Users</NavLink></li>}
-          {isToken && <li><NavLink to='/cart'>Cart</NavLink></li>}
+          {isUser && <li><NavLink to='/cart'>Cart</NavLink></li>}
           {!isToken && <li><NavLink to='/registration'>Registration</NavLink></li>}
           {!isToken && <li><NavLink to='/login'>Login</NavLink></li>}
           {isToken && <li onClick={onLogOut}><NavLink to='/lolOut'>LogOut</NavLink></li>}

@@ -2,6 +2,7 @@ import React, { MouseEvent, ChangeEvent } from 'react';
 import { ADD_USER, LOGIN, LOGOUT } from '../constants';
 import { addUser } from '../actions/user.action';
 import { singIn } from '../actions/login.action';
+import { SelectModel } from './book.type';
 
 export interface UserPayload {
     id: string,
@@ -179,4 +180,33 @@ export interface HeaderProps {
     isUser: boolean,
     isToken: boolean,
     onLogOut: (event: MouseEvent<HTMLLIElement>) => void,
+}
+
+export interface UserModel {
+    id: string,
+    firstName: string,
+    lastName: string,
+    name: string,
+    email: string,
+    emailConfirmed: boolean
+}
+
+export interface UserTableState {
+    user: UserModel[],
+    isRoleUser: boolean,
+    isEdit: boolean,
+    roleOptions: SelectModel[],
+    userId: string,
+    selectedRole: string,
+}
+
+export interface RoleModel {
+    id: string,
+    name: string
+}
+
+export interface UpdateUserRole {
+    id?: string,
+    userId: string,
+    roleId: string,
 }

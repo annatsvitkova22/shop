@@ -1,4 +1,5 @@
 import { BookModel, SelectModel } from "./book.type";
+import { Token } from "react-stripe-checkout";
 
 export interface CartModel {
     userId: string,
@@ -22,6 +23,7 @@ export interface CartState {
     currencyBookOptions: SelectModel[],
     isPay: boolean,
     currencyCart: string,
+    transactionId: string,
 }
 
 export interface PaymentModel {
@@ -43,4 +45,17 @@ export interface PaymentCartState {
 export interface PaymentCartProps {
     totalAmount: number,
     currencyCart: string
+    onCreateTransaction: (id: Token) => void,
+}
+
+export interface CreateOrderModel {
+    id?: string,
+    userId: string,
+    date: string;
+    paymentId: string,
+}
+
+export interface CreateOrderItem {
+    printingEdition: CartItemModel[],
+    orderId: string
 }

@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import './book-cart.css';
 
-const BookCart: FC<any> = ({ image, id, name, price, currency, type, onAddToCart, isRoleUser }) => (
+const BookCart: FunctionComponent<any> = ({ image, id, name, price, currency, type, onAddToCart, isRoleUser }) => (
     <div className="listing-item">
         <figure className="image">
             <img src={image} alt="image" />
@@ -31,6 +31,5 @@ const BookCart: FC<any> = ({ image, id, name, price, currency, type, onAddToCart
 
     </div>
 );
-
 
 export default BookCart;

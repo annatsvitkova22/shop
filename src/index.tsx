@@ -13,6 +13,7 @@ import AuthorPost from './components/content/author/author-post/author-post';
 import BookList from './components/content/book/book-list/book-list';
 import BookPost from './components/content/book/book-post/book-post';
 import CartTable from './components/content/cart/cart-table/cart-table';
+import UserTable from './components/content/user/table-user/table-user';
 
 ReactDOM.render((
   <BrowserRouter>
@@ -26,6 +27,7 @@ ReactDOM.render((
         <Route path='/author/:id' component={AuthorPost} />
         <Route path='/login' component={Login} />
         <Route path='/cart' component={CartTable} />
+        <Route path='/users' component={UserTable} />
       </Provider>
     </Switch>
   </BrowserRouter>

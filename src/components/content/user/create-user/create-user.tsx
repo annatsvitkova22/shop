@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { UserInputProps } from '../../../type/user.type';
+import { UserInputProps } from '../../../../type/user.type';
 
 import './create-user.css';
 

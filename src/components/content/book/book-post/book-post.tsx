@@ -17,17 +17,12 @@ class BookPost extends Component<any, BookPostState> {
             price: 0,
             status: '',
             currency: '',
-            type: ''
+            type: '',
+            image: '',
         },
         authorDefaultOptions: [],
         multiValue: [],
         authors: [],
-        bookName: '',
-        bookDescription: '',
-        bookPrice: 0,
-        bookStatus: '',
-        bookCurrency: '',
-        bookType: '',
         labelChangeName: false,
         isRoleUser: false,
         isEdit: false,
@@ -57,18 +52,22 @@ class BookPost extends Component<any, BookPostState> {
         }
     }
 
-    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const { value } = event.target;
-        const { name } = event.target;
+    handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const { value, name } = event.target;
+        const { book } = this.state;
+        let updateBook = book;
         switch (name) {
             case 'bookName':
-                this.setState({ bookName: value });
+                updateBook.name = value;
+                this.setState({ book: updateBook });
                 break;
             case 'bookType':
-                this.setState({ bookType: value });
+                updateBook.type = value;
+                this.setState({ book: updateBook });
                 break;
             case 'bookPrice':
-                this.setState({ bookPrice: +value });
+                updateBook.price = +value;
+                this.setState({ book: updateBook });
                 break;
             default:
                 break;
@@ -80,23 +79,22 @@ class BookPost extends Component<any, BookPostState> {
     }
 
     handleEditBook = async (): Promise<void> => {
-        const { book, bookName, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookPostState = this.state;
+        const { book, authors }: BookPostState = this.state;
 
-        const eeditBook: BookWithAuthorsModel = {
+        const editBook: BookWithAuthorsModel = {
             printingEdition: {
                 id: book.id,
-                name: bookName,
-                description: bookDescription,
-                price: bookPrice,
-                status: bookStatus,
-                currency: bookCurrency,
-                type: bookType,
+                name: book.name,
+                description: book.description,
+                price: book.price,
+                status: book.status,
+                currency: book.currency,
+                type: book.type,
             },
             authors
         }
 
-        const updatedBook = await this.requestEditBook(eeditBook);
-        console.log('updated', updatedBook);
+        const updatedBook = await this.requestEditBook(editBook);
         if (updatedBook) {
             this.setState({ labelChangeName: true });
         }
@@ -129,26 +127,23 @@ class BookPost extends Component<any, BookPostState> {
 
     handleSelectStatusBook = (event: any): void => {
         const value: any = event.value;
-
-        this.setState({
-            bookStatus: value
-        });
+        const { book } = this.state;
+        book.status = value;
+        this.setState({ book });
     }
 
     handleSelectCurrencyBook = (event: any): void => {
         const value: any = event.value;
-
-        this.setState({
-            bookCurrency: value
-        });
+        const { book } = this.state;
+        book.currency = value;
+        this.setState({ book });
     }
 
     handleInputDescription = (event: ChangeEvent<HTMLTextAreaElement>): void => {
         const { value } = event.target;
-
-        this.setState({
-            bookDescription: value,
-        });
+        const { book } = this.state;
+        book.description = value;
+        this.setState({ book });
     }
 
     requestGetBookWithAuthor = (id: string): void => {
@@ -166,7 +161,7 @@ class BookPost extends Component<any, BookPostState> {
         fetch(request)
             .then((res: Response) => res.json())
             .then((bookWithAuthor: BookWithAuthorsModel) => {
-                this.setState({ book: bookWithAuthor.printingEdition, bookName: bookWithAuthor.printingEdition.name, bookCurrency: bookWithAuthor.printingEdition.currency, bookDescription: bookWithAuthor.printingEdition.description, bookPrice: bookWithAuthor.printingEdition.price, bookStatus: bookWithAuthor.printingEdition.status, bookType: bookWithAuthor.printingEdition.type, authors: bookWithAuthor.authors })
+                this.setState({ book: bookWithAuthor.printingEdition, authors: bookWithAuthor.authors })
                 const mas: BookPostState = {} as BookPostState;
                 mas.authorDefaultOptions = [];
                 for (let i = 0; i < bookWithAuthor.authors.length; i++) {
@@ -202,7 +197,8 @@ class BookPost extends Component<any, BookPostState> {
             .then((res: Response) => res.json())
             .then((cratedBook: BookModel) => {
                 book = cratedBook
-                console.log('book',cratedBook)})
+                console.log('book', cratedBook)
+            })
             .catch(error => error);
 
         return book;
@@ -223,26 +219,28 @@ class BookPost extends Component<any, BookPostState> {
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
-            .then((book: BookModel) => this.setState({ book, bookName: '' }))
+            .then((book: BookModel) => this.setState({ book }))
             .catch(error => error);
     }
 
     render() {
-        const { bookName, book, labelChangeName, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription, isRoleUser, authors, isEdit } = this.state;
-
+        const { book, labelChangeName, authorDefaultOptions, isRoleUser, authors, isEdit } = this.state;
+        console.log(this.state);
         return (
             <div className="book-post">
-                {isRoleUser && isEdit && <NewBook onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} bookName={bookName} labelChangeName={labelChangeName} bookStatus={bookStatus} onSelectCurrencyBook={this.handleSelectCurrencyBook} bookCurrency={bookCurrency} bookPrice={bookPrice} bookType={bookType} onInputDescription={this.handleInputDescription}  bookDescription={bookDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
+                {isRoleUser && isEdit && <NewBook isLoadImage={true} onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} loadImage={book.image} bookName={book.name} bookCurrency={book.currency} bookDescription={book.description} bookPrice={book.price} bookStatus={book.status} bookType={book.type} labelChangeName={labelChangeName} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
                 {!isEdit && !book.isRemoved && <div>
                     <div>
-                        <p><span>Name: </span> {bookName}</p>
-                        <p><span>Authors: </span> {authors.map(({ name, id }) => (
-                            <Link to={`/author/${id}`}><span>{name} </span></Link>))}</p>
-                        <p><span>Description: </span>{bookDescription}</p>
-                        <p><span>Type: </span> {bookType}</p>
-                        <p><span>Status: </span>{bookStatus}</p>
-                        <p><span>Price: </span> {bookPrice}</p>
-                        <p><span>Currency: </span>{bookCurrency}</p>
+                        <p><span>Name: </span> {book.name}</p>
+                        {isRoleUser ? <p><span>Authors: </span> {authors.map(({ name, id }) => (
+                            <Link to={`/author/${id}`}><span>{name} </span></Link>))}</p> : <p><span>Authors: </span> {authors.map(({ name, id }) => (
+                                <span key={id}>{name} </span>))}</p>}
+                        <p><img src={book.image} alt="image" /></p>
+                        <p><span>Description: </span>{book.description}</p>
+                        <p><span>Type: </span> {book.type}</p>
+                        <p><span>Status: </span>{book.status}</p>
+                        <p><span>Price: </span> {book.price}</p>
+                        <p><span>Currency: </span>{book.currency}</p>
                     </div>
                 </div>}
                 {isRoleUser && !isEdit && !book.isRemoved && <div className="button">

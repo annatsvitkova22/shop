@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import Select, { } from "react-select";
 
-import { RequestOptionsModel } from '../../../../type/author.type';
-import { CartModel, CartItemModel, CartState } from '../../../../type/cart.type';
+import { CartModel, CartItemModel, CartState, PaymentModel, CreateTransactionModel, CreateOrderModel, CreateOrderItem } from '../../../../type/cart.type';
 
 import './cart-table.css';
 import PaymentCart from '../stripe/stripe';
+import { RequestOptionsModel } from '../../../../type/author.type';
+import { Token } from 'react-stripe-checkout';
 
 const ORDER_PATH = 'https://192.168.0.104:443/order/';
+const ORDER_ITEM_PATH = 'https://192.168.0.104:443/orderItem/';
+const PAYMENT_PATH = 'https://192.168.0.104:443/payment/';
 
 class CartTable extends Component<any, CartState> {
     state: CartState = ({
@@ -24,7 +27,8 @@ class CartTable extends Component<any, CartState> {
             printingEdition: []
         },
         isPay: false,
-        currencyCart: 'USD'
+        currencyCart: 'USD',
+        transactionId: ''
     });
 
     getUserCartItem = (): void => {
@@ -32,7 +36,7 @@ class CartTable extends Component<any, CartState> {
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
         const foundUserCart: CartModel = cart.find(item => item.userId === userId) as CartModel;
-        if(foundUserCart) {
+        if (foundUserCart) {
             this.setState({ cart: foundUserCart });
         }
     }
@@ -58,7 +62,7 @@ class CartTable extends Component<any, CartState> {
     }
 
     handlePay = (): void => {
-        this.setState({isPay: true});
+        this.setState({ isPay: true });
     }
 
     getTotalAmount = () => {
@@ -83,7 +87,7 @@ class CartTable extends Component<any, CartState> {
         localStorage.setItem('cart', json);
     }
 
-    updateCart = (prevprintingEditionState: CartItemModel[]) => {
+    updateCart = (prevprintingEditionState: CartItemModel[]): void => {
         const { userId } = this.state;
 
         let updateCart: CartModel = {} as CartModel;
@@ -98,7 +102,7 @@ class CartTable extends Component<any, CartState> {
         this.setToLocalStorage(updateCart);
     }
 
-    incrementCount = (id: string) => {
+    incrementCount = (id: string): void => {
         const { cart } = this.state;
 
         const printingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
@@ -112,7 +116,7 @@ class CartTable extends Component<any, CartState> {
         this.updateCart(prevprintingEditionState);
     }
 
-    decrementCount = (id: string) => {
+    decrementCount = (id: string): void => {
         const { cart } = this.state;
 
         const printingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
@@ -129,7 +133,7 @@ class CartTable extends Component<any, CartState> {
         this.updateCart(prevprintingEditionState);
     }
 
-    handleDeleteItem = (id: string) => {
+    handleDeleteItem = (id: string): void => {
         const { cart } = this.state;
         const foundPrintingEdition: CartItemModel = cart.printingEdition.find(item => item.printingEditionId === id) as CartItemModel;
         const foundPrintingEditionIndex = cart.printingEdition.indexOf(foundPrintingEdition);
@@ -178,54 +182,125 @@ class CartTable extends Component<any, CartState> {
             printingEdition.printingEditionCurrency = value;
             totalAmount += printingEdition.printingEditionPrice;
         });
-    
+
         totalAmount = +totalAmount.toFixed(2);
         this.setState({ totalAmount, currencyCart: value });
     }
 
-    // getOrderItemsWithPrintingEdition = (userId: string): void => {
-    //     const token: string | null = localStorage.getItem('accessToken');
-    //     const headers: Headers = new Headers();
-    //     headers.append('Authorization', 'Bearer ' + token);
-    //     const options: RequestOptionsModel = {
-    //         method: 'GET',
-    //         headers,
-    //     };
-    //     let countMas: any = [];
-    //     const url = ORDER_ITEM_PATH + userId;
-    //     let totalAmount: number = 0;
-    //     const request: Request = new Request(url, options);
-    //     fetch(request)
-    //         .then((res: Response) => res.json())
-    //         .then((orderItems: OrderItemsWithPrintingEditionModel[]) => {
+    handleCreateModelTransaction = async (token: Token): Promise<void> => {
+        const { totalAmount, currencyCart, userId, cart } = this.state;
 
-    //             if (!orderItems.length) {
-    //                 this.deleteOrder(userId);
-    //             }
-    //             orderItems.forEach((orderItem) => {
-    //                 totalAmount += orderItem.amount;
-    //             });
-    //             this.setState({ totalAmount, orderItems });
-    //         })
-    //         .catch(error => error);
-    // }
+        const createdTransaction: CreateTransactionModel = {
+            email: token.email,
+            source: token.id,
+            currency: currencyCart,
+            amount: totalAmount * 100,
+        }
+        const transactionId: string = await this.createdTransaction(createdTransaction);
+        if (transactionId) {
+            let date: Date = new Date();
+            const onlyDate: string = date.toUTCString();
+            const createOrder: CreateOrderModel = {
+                userId,
+                date: onlyDate,
+                paymentId: transactionId,
+            }
+            const orderId: string = await this.createOrder(createOrder);
+            if(orderId) {
+                const createOrderItem: CreateOrderItem = {
+                    printingEdition: cart.printingEdition,
+                    orderId
+                }
+                const createdOrderItem: boolean = await this.createOrderItem(createOrderItem);
+                if(createdOrderItem) {
+                    for (let i=0;i<cart.printingEdition.length;i++) {
+                        cart.printingEdition.splice(i);
+                    }   
+                    this.setState({cart , totalAmount: 0})
+                    this.setToLocalStorage(cart);
+                }
+            }
+        }
+    }
 
-    deleteOrder = (userId: string) => {
+    createOrder = async (data: CreateOrderModel): Promise<string> => {
         const token: string | null = localStorage.getItem('accessToken');
         const headers: Headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(data);
+
         const options: RequestOptionsModel = {
-            method: 'DELETE',
+            method: 'POST',
             headers,
+            body: json,
         };
 
-        const url: string = ORDER_PATH + userId;
-        const request: Request = new Request(url, options);
-        fetch(request)
+        const request: Request = new Request(ORDER_PATH, options);
+        let orderId: string = '';
+        await fetch(request)
             .then((res: Response) => res.json())
-            .then((deleted: boolean) => this.setState({ isOrderItem: true }))
+            .then((createdOrder: CreateOrderModel) => {
+                if (createdOrder) {
+                    orderId = createdOrder.id as string;
+                }
+            })
             .catch(error => error);
+
+        return orderId;
+    }
+
+    createOrderItem = async (data: CreateOrderItem): Promise<boolean> => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(data);
+
+        const options: RequestOptionsModel = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+
+        const request: Request = new Request(ORDER_ITEM_PATH, options);
+        let createdOrderItem: boolean = false;
+        await fetch(request)
+            .then((res: Response) => res.json())
+            .then((createdItem: boolean) => {
+                createdOrderItem = createdItem;
+            })
+            .catch(error => error);
+
+        return createdOrderItem;
+    }
+
+    createdTransaction = async (data: CreateTransactionModel): Promise<string> => {
+        const token: string | null = localStorage.getItem('accessToken');
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', 'Bearer ' + token);
+        const json: string = JSON.stringify(data);
+
+        const options: RequestOptionsModel = {
+            method: 'POST',
+            headers,
+            body: json,
+        };
+
+        const request: Request = new Request(PAYMENT_PATH, options);
+        let transactionId: string = '';
+        await fetch(request)
+            .then((res: Response) => res.json())
+            .then((createdTransaction: PaymentModel) => {
+                if (createdTransaction) {
+                    transactionId = createdTransaction.id;
+                    this.setState({ transactionId: createdTransaction.id })
+                }
+            })
+            .catch(error => error);
+
+        return transactionId;
     }
 
     render() {
@@ -241,6 +316,7 @@ class CartTable extends Component<any, CartState> {
                                 <th>Count</th>
                                 <th>Currency</th>
                                 <th>Amount</th>
+                                <th></th>
                             </tr>
                         </thead>
                         {cart.printingEdition.map(({ printingEditionId, printingEditionName, printingEditionCurrency, printingEditionCount, printingEditionPrice }) => (
@@ -267,7 +343,7 @@ class CartTable extends Component<any, CartState> {
                             </th>
                             <th>Total amount:</th>
                             <th>{totalAmount}</th>
-                            <th><PaymentCart currencyCart={currencyCart} totalAmount={totalAmount}/></th>
+                            <th><PaymentCart onCreateTransaction={this.handleCreateModelTransaction} currencyCart={currencyCart} totalAmount={totalAmount} /></th>
                         </tfoot>
                     </table>
                 </div>}

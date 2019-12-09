@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import '../components/author.css';
 import { addUser } from '../actions/user.action';
 import { UserState, UserModelState, User, UserPayload, ErrorsModel, userCreateModel } from '../type/user.type';
-import RegistrationUser from '../components/content/user/create-user';
+import RegistrationUser from '../components/content/user/create-user/create-user';
 import { RequestOptionsModel } from '../type/author.type';
 
 const BASE_PATH = 'https://192.168.0.104:443/user/';

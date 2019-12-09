@@ -4,6 +4,7 @@ import { BookProps, SelectModel, NewBookState } from '../../../../type/book.type
 import { RequestOptionsModel, AuthorModel } from '../../../../type/author.type';
 
 import './new-book.css';
+import { bool } from 'prop-types';
 
 const BASE_AUTHOR = 'https://192.168.0.104:443/author/';
 
@@ -55,7 +56,7 @@ class NewBook extends Component<BookProps, NewBookState> {
 
     render() {
         const { authorOptions, typeBookOptions, currencyBookOptions } = this.state;
-        const { bookName, isCreated, bookImage, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions, bookStatus, bookCurrency, bookType, bookPrice, bookDescription } = this.props;
+        const { bookDescription, bookCurrency, bookPrice, bookStatus, bookType, bookName, nameFile, onCloseLoad, isCreated, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions } = this.props;
 
         return (
             <div className="edit-book">
@@ -75,10 +76,15 @@ class NewBook extends Component<BookProps, NewBookState> {
                     <div>
                         <input
                             type="file"
-                            value={bookImage}
+                            // value={nameFile}
+                            accept="image/x-png,image/gif,image/jpeg"
                             onChange={onInputImageChange}
                         />
-                        {isLoadImage &&<img src={loadImage} alt="image" className="load-image"/>}
+                        {isLoadImage && <div className="load">
+                            <img src={loadImage} alt="image" className="load-image" />
+                            <span className="close" onClick={onCloseLoad}></span>
+                        </div>}
+
                     </div>
                     <br />
                     <div>

@@ -1,3 +1,37 @@
+.load {
+    display: flex;
+    width: 10%;
+    height: 120px;
+}
+
+.close {
+    width: 22px;
+    height: 22px;
+    opacity: 0.3;
+}
+
+.close:hover {
+    opacity: 1;
+}
+
+.close:before, .close:after {
+    position: absolute;
+    left: 110px;
+    align-items: right;
+    content: ' ';
+    height: 23px;
+    width: 2px;
+    background-color: black;
+}
+
+.close:before {
+    transform: rotate(45deg);
+}
+
+.close:after {
+    transform: rotate(-45deg);
+}
+
 .edit-book .group {
     position: relative;
     margin-bottom: 30px;

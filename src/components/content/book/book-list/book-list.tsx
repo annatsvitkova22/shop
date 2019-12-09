@@ -1,16 +1,14 @@
 import React, { Component, ChangeEvent } from 'react';
 
-import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel, CreateOrderModel, OrderModel, CreateOrderItemModel, OrderItemModel, OrderItemsWithPrintingEditionModel, FileModel } from "../../../../type/book.type";
+import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel } from "../../../../type/book.type";
 import { RequestOptionsModel } from '../../../../type/author.type';
 import NewBook from '../new-book/new-book';
 import BookCart from '../book-cart/book-cart';
-
-import './book-list.css';
 import { CartModel, CartItemModel } from '../../../../type/cart.type';
 
+import './book-list.css';
+
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
-const ORDER_PATH = 'https://192.168.0.104:443/order/';
-const ORDER_ITEM_PATH = 'https://192.168.0.104:443/orderItem/';
 
 class BookList extends Component<BookListProps, BookListState> {
     state: BookListState = ({
@@ -38,7 +36,8 @@ class BookList extends Component<BookListProps, BookListState> {
             type: '',
         },
         image: '',
-        isLoadImage: false
+        isLoadImage: false,
+        nameFile: '',
     });
 
     roleUser = (): void => {
@@ -122,6 +121,10 @@ class BookList extends Component<BookListProps, BookListState> {
         this.setState({ cart: prevCartState });
         const json: string = JSON.stringify(prevCartState);
         localStorage.setItem('cart', json);
+    }
+
+    closeLoad = (): void => {
+        this.setState({isLoadImage: false, image: ''});
     }
 
     componentDidMount = () => {
@@ -210,13 +213,13 @@ class BookList extends Component<BookListProps, BookListState> {
     handleInputImageChange = (event: any) => {
         event.preventDefault();
         let file = event.target.files[0];
-        this.setState({ file });
+        this.setState({ nameFile: file.name });
         let reader = new FileReader();
+        console.log('file', file.name);
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             const loadImage: string = reader.result as string;
             this.setState({image: loadImage, isLoadImage: true})
-            console.log(loadImage);
         };
     }
 
@@ -357,7 +360,7 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     render() {
-        const { books, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
+        const { books, nameFile, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
 
         return (
             <div className="content">
@@ -386,7 +389,7 @@ class BookList extends Component<BookListProps, BookListState> {
                         </div>
                     </div>}
                     {isCreate && <div>
-                        <NewBook isCreated={isCreated} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        <NewBook isCreated={isCreated} nameFile={nameFile} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
                         {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>

@@ -46,15 +46,9 @@ export interface SelectModel {
 export interface BookPostState {
     book: BookModel,
     authors: AuthorModel[],
-    bookName: string,
     labelChangeName: boolean,
     authorDefaultOptions: SelectModel[],
     multiValue: string[],
-    bookDescription: string,
-    bookPrice: number,
-    bookStatus: string,
-    bookCurrency: string,
-    bookType: string,
     isRoleUser: boolean,
     isEdit: boolean
 }
@@ -93,21 +87,23 @@ export interface BookListState {
     file: FileModel,
     image: string,
     isLoadImage?: boolean,
+    nameFile: string,
 }
 
 export interface BookProps {
+    bookName?: string,
     bookDescription?: string,
     bookPrice?: number,
     bookStatus?: string,
     bookCurrency?: string,
     bookType?: string,
-    bookName?: string,
-    bookImage?: string,
     labelChangeName?: boolean,
     isCreated?: boolean,
     authorDefaultOptions?: SelectModel[],
     loadImage?: string,
     isLoadImage?: boolean,
+    nameFile?: string,
+    onCloseLoad?: () => void,
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     onInputDescription: (event: ChangeEvent<HTMLTextAreaElement>) => void,
     onSelectStatusBook: (event: any) => void,
