@@ -17,18 +17,34 @@ export class PrintingEditionsController {
 
     constructor(private printingEditionService: PrintingEditionService) { }
 
-    @Get('all')
-    @ApiOperation({ title: 'Search all printing editions' })
-    public async getAll(): Promise<PrintingEdition[]> {
-        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions();
+    @Get('all/:limit/:offset')
+    @ApiOperation({ title: 'Search all printing editions by limit and offset for pagination' })
+    public async getAll(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEdition[]> {
+        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditions(limit, offset);
 
         return printingEdition;
     }
 
-    @Get('isRemoved')
-    @ApiOperation({ title: 'Search all printing editions by IsRemoved' })
-    public async getAllByIsRemoved(): Promise<PrintingEdition[]> {
-        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditionsByIsRemoved();
+    @Get('countByIsRemoved')
+    @ApiOperation({ title: 'Get count all printing editions' })
+    public async getCountByIsRemoved(): Promise<number> {
+        const countPrintingEdition: number = await this.printingEditionService.getCountPrintingEditionByIsRemoved();
+
+        return countPrintingEdition;
+    }
+
+    @Get('count')
+    @ApiOperation({ title: 'Get count all printing editions' })
+    public async getCount(): Promise<number> {
+        const countPrintingEdition: number = await this.printingEditionService.getCountPrintingEdition();
+
+        return countPrintingEdition;
+    }
+
+    @Get('isRemoved/:limit/:offset')
+    @ApiOperation({ title: 'Search all printing editions by IsRemoved and by limit and offset for pagination' })
+    public async getAllByIsRemoved(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEdition[]> {
+        const printingEdition: PrintingEdition[] = await this.printingEditionService.getPrintingEditionsByIsRemoved(limit, offset);
 
         return printingEdition;
     }
@@ -45,14 +61,6 @@ export class PrintingEditionsController {
     @ApiOperation({ title: 'Search printing edition by id' })
     public async getById(@Param() params): Promise<PrintingEdition> {
         const printingEdition: PrintingEdition = await this.printingEditionService.getPrintingEditionById(params.id);
-
-        return printingEdition;
-    }
-
-    @Get('pagination/:limit/:offset')
-    @ApiOperation({ title: 'Search printing edition by take and skip for pagination' })
-    public async getPaging(@Param('limit') limit: number, @Param('offset') offset: number): Promise<PrintingEditionInfoModel> {
-        const printingEdition: PrintingEditionInfoModel = await this.printingEditionService.getPaging(limit, offset);
 
         return printingEdition;
     }

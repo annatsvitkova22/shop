@@ -15,4 +15,6 @@ export class UpdatePrintingEditionModel {
     currency: string;
     @ApiModelProperty()
     type: string;
+    @ApiModelProperty()
+    image: string;
 }

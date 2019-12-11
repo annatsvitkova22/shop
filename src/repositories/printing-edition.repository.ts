@@ -7,18 +7,43 @@ import db = require('src/entity/printing-edition.entity');
 @Injectable()
 export class PrintingEditionRepository {
 
-    public async getPrintingEditions(): Promise<PrintingEdition[]> {
-        const getPrintingEditions: PrintingEdition[] = await db.PrintingEdition.findAll();
+    public async getPrintingEditions(take: number, skip: number): Promise<PrintingEdition[]> {
+        const getPrintingEditions: PrintingEdition[] = await db.PrintingEdition.findAll({
+            limit: +take,
+            offset: +skip,
+        });
 
         return getPrintingEditions;
     }
 
-    public async getPrintingEditionsByIsRemomed(): Promise<PrintingEdition[]> {
+    public async getPrintingEditionsByIsRemomed(take: number, skip: number): Promise<PrintingEdition[]> {
         const getPrintingEditions: PrintingEdition[] = await db.PrintingEdition.findAll({
             where: { isRemoved: false },
+            limit: +take,
+            offset: +skip,
         });
 
         return getPrintingEditions;
+    }
+
+    public async getCountPrintingEditionByIsRemoved(): Promise<number> {
+        const countPrintingEdition: number = await db.PrintingEdition.count({
+            where: { isRemoved: false },
+        });
+
+        return countPrintingEdition;
+    }
+
+    public async getCountPrintingEdition(): Promise<number> {
+        const countPrintingEdition: number = await db.PrintingEdition.count();
+
+        return countPrintingEdition;
+    }
+
+    public async getCountPrintingEditionWithIsRemoved(): Promise<number> {
+        const countPrintingEdition: number = await db.PrintingEdition.count();
+
+        return countPrintingEdition;
     }
 
     public async getPrintingEditionrById(id: string): Promise<PrintingEdition> {
@@ -52,15 +77,6 @@ export class PrintingEditionRepository {
             plain: false,
             raw: false,
             type: sequelize.QueryTypes.SELECT,
-        });
-
-        return printingEditions;
-    }
-
-    public async getPaginationPrintingEdition(take: number, skip: number): Promise<PrintingEdition[]> {
-        const printingEditions: PrintingEdition[] = await db.PrintingEdition.findAll({
-            limit: +take,
-            offset: +skip,
         });
 
         return printingEditions;

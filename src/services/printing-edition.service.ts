@@ -6,9 +6,6 @@ import { UpdatePrintingEditionModel, PrintingEditionFilterModel, PrintingEdition
 import { UuidHelper } from 'src/common';
 import { PrintingEditionRepository, AuthorInBookRepository, AuthorRepository } from 'src/repositories';
 
-// tslint:disable-next-line: no-var-requires
-const fs = require('fs');
-
 @Injectable()
 export class PrintingEditionService {
 
@@ -19,14 +16,26 @@ export class PrintingEditionService {
         @Inject(forwardRef(() => UuidHelper)) public uuidHelper: UuidHelper,
     ) { }
 
-    public async getPrintingEditions(): Promise<PrintingEdition[]> {
-        const getEditions: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditions();
+    public async getPrintingEditions(limit: number, offset: number): Promise<PrintingEdition[]> {
+        const getEditions: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditions(limit, offset);
 
         return getEditions;
     }
 
-    public async getPrintingEditionsByIsRemoved(): Promise<PrintingEdition[]> {
-        const getEditions: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditionsByIsRemomed();
+    public async getCountPrintingEditionByIsRemoved(): Promise<number> {
+        const countPrintingEdition: number = await this.printingEditionRepository.getCountPrintingEditionByIsRemoved();
+
+        return countPrintingEdition;
+    }
+
+    public async getCountPrintingEdition(): Promise<number> {
+        const countPrintingEdition: number = await this.printingEditionRepository.getCountPrintingEdition();
+
+        return countPrintingEdition;
+    }
+
+    public async getPrintingEditionsByIsRemoved(limit: number, offset: number): Promise<PrintingEdition[]> {
+        const getEditions: PrintingEdition[] = await this.printingEditionRepository.getPrintingEditionsByIsRemomed(limit, offset);
 
         return getEditions;
     }
@@ -87,21 +96,6 @@ export class PrintingEditionService {
         const foundPrintingEdition: PrintingEdition[] = await this.printingEditionRepository.getFiltrationPrintingEdition(query);
 
         return foundPrintingEdition;
-    }
-
-    public async getPaging(take: number, skip: number): Promise<PrintingEditionInfoModel> {
-        if (isNaN(+take) || isNaN(+skip)) {
-            const error: PrintingEditionInfoModel = new PrintingEditionInfoModel();
-            error.message = 'You entered incorrect data, please enter take, skip (numbers)';
-
-            return error;
-        }
-
-        const printingEditions: PrintingEdition[] = await this.printingEditionRepository.getPaginationPrintingEdition(take, skip);
-        const printingEditionModel: PrintingEditionInfoModel = new PrintingEditionInfoModel();
-        printingEditionModel.printingEdition = printingEditions;
-
-        return printingEditionModel;
     }
 
     public async createPrintingEditionn(createPrintingEdition: CreatePrintingEditionModel, file): Promise<PrintingEdition> {
@@ -182,6 +176,7 @@ export class PrintingEditionService {
         edition.status = updatePrintingEdition.printingEdition.status;
         edition.currency = updatePrintingEdition.printingEdition.currency;
         edition.type = updatePrintingEdition.printingEdition.type;
+        edition.image = updatePrintingEdition.printingEdition.image;
 
         const toUpdate: PrintingEdition = await this.printingEditionRepository.getPrintingEditionrById(edition.id);
         toUpdate.name = edition.name;
@@ -190,6 +185,7 @@ export class PrintingEditionService {
         toUpdate.status = edition.status;
         toUpdate.currency = edition.currency;
         toUpdate.type = edition.type;
+        toUpdate.image = edition.image;
 
         const savedPrintingEdition: PrintingEdition = await this.printingEditionRepository.createPrintingEdition(toUpdate);
         const deletedAuthors: number = await this.authorInBookRepository.deleteAuthorInBook(toUpdate.id);
