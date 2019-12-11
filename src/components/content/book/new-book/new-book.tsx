@@ -4,7 +4,6 @@ import { BookProps, SelectModel, NewBookState } from '../../../../type/book.type
 import { RequestOptionsModel, AuthorModel } from '../../../../type/author.type';
 
 import './new-book.css';
-import { bool } from 'prop-types';
 
 const BASE_AUTHOR = 'https://192.168.0.104:443/author/';
 
@@ -56,13 +55,13 @@ class NewBook extends Component<BookProps, NewBookState> {
 
     render() {
         const { authorOptions, typeBookOptions, currencyBookOptions } = this.state;
-        const { bookDescription, bookCurrency, bookPrice, bookStatus, bookType, bookName, onCloseLoad, onInputImageChange, isLoadImage, loadImage, labelChangeName, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions } = this.props;
+        const { bookDescription, onValidateBookName, errorName, errorType, errorPrice, onValidateBookType, onValidateBookPrice, isCreate, bookCurrency, bookPrice, bookStatus, bookType, bookName, onCloseLoad, onInputImageChange, isLoadImage, loadImage, onSelectStatusBook, onInputChange, onSelectCurrencyBook, onSelectAuthor, onInputDescription, authorDefaultOptions } = this.props;
 
         return (
             <div className="edit-book">
                 <div id='book-input-wrapper' className='book-input'>
                     <p>Book</p>
-                    <div className="group">
+                    <div className={`form-group ${onValidateBookName}`}>
                         <input
                             type='text'
                             value={bookName}
@@ -71,7 +70,7 @@ class NewBook extends Component<BookProps, NewBookState> {
                             required
                         />
                         <span className="bar"></span>
-                        <label>Name</label>
+                        <label>{errorName}</label>
                     </div>
                     <div>
                         <input
@@ -104,7 +103,7 @@ class NewBook extends Component<BookProps, NewBookState> {
                             onChange={onInputDescription} />
                     </div>
                     <br />
-                    <div className="group">
+                    <div className={`form-group ${onValidateBookType}`}>
                         <input
                             type='text'
                             value={bookType}
@@ -113,11 +112,11 @@ class NewBook extends Component<BookProps, NewBookState> {
                             required
                         />
                         <span className="bar"></span>
-                        <label>Type</label>
+                        <label>{errorType}</label>
                     </div>
                     <br />
                     <div>
-                        <div>
+                        <div className={`form-group ${onValidateBookPrice}`}>
                             <label>Price:</label>
                             <input
                                 type='number'
@@ -127,26 +126,35 @@ class NewBook extends Component<BookProps, NewBookState> {
                                 min="0"
                                 step="1"
                             />
+                            <label>{errorPrice}</label>
                         </div>
                         <div>
                             <label>Currency:</label>
-                            <Select
+                            {!isCreate ? <Select
                                 placeholder="Currency"
                                 options={currencyBookOptions}
                                 defaultValue={[{ value: bookCurrency, label: bookCurrency }]}
                                 onChange={onSelectCurrencyBook}
-                            />
+                            /> : <Select
+                                    placeholder="Currency"
+                                    options={currencyBookOptions}
+                                    defaultValue={[currencyBookOptions[0]]}
+                                    onChange={onSelectCurrencyBook} />}
                         </div>
                     </div>
                     <div>
                         <label>Status:</label>
-                        <Select
+                        {!isCreate ? <Select
                             placeholder="Status"
                             options={typeBookOptions}
                             defaultValue={[{ value: bookStatus, label: bookStatus }]}
                             onChange={onSelectStatusBook}
-                        />
-                        {labelChangeName && <label>Book updated</label>}
+                        /> : <Select
+                                placeholder="Status"
+                                options={typeBookOptions}
+                                defaultValue={[typeBookOptions[0]]}
+                                onChange={onSelectStatusBook}
+                            />}
                         <br />
                     </div>
                 </div>

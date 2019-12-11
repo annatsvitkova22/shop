@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './book-cart.css';
 
+
 const BookCart: FunctionComponent<any> = ({ image, id, name, price, currency, type, onAddToCart, isRoleUser }) => (
     <div className="listing-item">
         <figure className="image">

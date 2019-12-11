@@ -1,4 +1,6 @@
 import React, { Component, ChangeEvent } from 'react';
+import 'antd/dist/antd.css';
+import { Pagination } from 'antd';
 
 import { BookListProps, BookListState, BookModel, BookPostState, AuthorModel, BookWithAuthorsModel } from "../../../../type/book.type";
 import { RequestOptionsModel } from '../../../../type/author.type';
@@ -7,6 +9,7 @@ import BookCart from '../book-cart/book-cart';
 import { CartModel, CartItemModel } from '../../../../type/cart.type';
 
 import './book-list.css';
+import defaultImage from '../../../../image/default.jpg';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 
@@ -16,8 +19,8 @@ class BookList extends Component<BookListProps, BookListState> {
         bookName: '',
         bookDescription: '',
         bookPrice: 0,
-        bookStatus: '',
-        bookCurrency: '',
+        bookStatus: 'yes',
+        bookCurrency: 'USD',
         bookType: '',
         check: false,
         isRoleUser: false,
@@ -27,16 +30,20 @@ class BookList extends Component<BookListProps, BookListState> {
         userId: '',
         orderId: '',
         cart: [],
-        file: {
-            lastModified: 0,
-            name: '',
-            lastModifiedDate: Date,
-            size: 0,
-            webkitRelativePath: '',
-            type: '',
-        },
         image: '',
         isLoadImage: false,
+        dataErrors: {
+            bookName: '',
+            bookType: '',
+            bookPrice: '',
+        },
+        bookNameValid: false,
+        bookTypeValid: false,
+        bookPriceValid: false,
+        dataValid: false,
+        page: 1,
+        pageSize: 10,
+        countBook: 0,
     });
 
     roleUser = (): void => {
@@ -58,9 +65,11 @@ class BookList extends Component<BookListProps, BookListState> {
         const check = event.target.checked;
         this.setState({ check })
         if (check) {
+            this.getCountBooks();
             this.getAllBooks();
         }
         if (!check) {
+            this.getCountBooksWithoutRemoved();
             this.getAllBooksWithoutRemoved();
         }
     }
@@ -123,12 +132,13 @@ class BookList extends Component<BookListProps, BookListState> {
     }
 
     closeLoad = (): void => {
-        this.setState({isLoadImage: false, image: ''});
+        this.setState({ isLoadImage: false, image: '' });
     }
 
     componentDidMount = () => {
         this.roleUser();
         this.getAllBooksWithoutRemoved();
+        this.getCountBooksWithoutRemoved();
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
         if (cart) {
@@ -136,15 +146,18 @@ class BookList extends Component<BookListProps, BookListState> {
         }
     }
 
-    componentDidUpdate(prevProps: any) {
+    componentDidUpdate(prevProps: any, prevState: any) {
         const { book }: any = this.props;
-        const { check }: BookListState = this.state;
+        const { check, page, pageSize }: BookListState = this.state;
 
-        if (book !== prevProps.book) {
+        if (book !== prevProps.book || page !== prevState.page || pageSize !== prevState.pageSize) {
+            console.log('dsfdsf');
             if (check) {
+                this.getCountBooks();
                 this.getAllBooks();
             }
             if (!check) {
+                this.getCountBooksWithoutRemoved();
                 this.getAllBooksWithoutRemoved();
             }
         }
@@ -155,17 +168,52 @@ class BookList extends Component<BookListProps, BookListState> {
         const { name } = event.target;
         switch (name) {
             case 'bookName':
-                this.setState({ bookName: value });
+                this.setState({ bookName: value },
+                    () => { this.validateField(name, value) });
                 break;
             case 'bookType':
-                this.setState({ bookType: value });
+                this.setState({ bookType: value },
+                    () => { this.validateField(name, value) });
                 break;
             case 'bookPrice':
-                this.setState({ bookPrice: +value });
+                this.setState({ bookPrice: +value },
+                    () => { this.validateField(name, value) });
                 break;
             default:
                 break;
         }
+    }
+
+    validateField(fieldName: string, value: any) {
+        let { dataErrors, bookNameValid, bookTypeValid, bookPriceValid } = this.state;
+
+        switch (fieldName) {
+            case 'bookName':
+                bookNameValid = value.length >= 4;
+                dataErrors.bookName = bookNameValid ? '' : 'name book is too short';
+                break;
+            case 'bookType':
+                bookTypeValid = value.length >= 2;
+                dataErrors.bookType = bookTypeValid ? '' : 'type book is too short';
+                break;
+            case 'bookPrice':
+                bookPriceValid = value > 0;
+                dataErrors.bookPrice = bookPriceValid ? '' : 'price bokk is small';
+                break;
+            default:
+                break;
+        }
+
+        this.setState({ dataErrors, bookNameValid, bookTypeValid, bookPriceValid }, this.validateForm);
+    }
+
+    validateForm() {
+        const { bookNameValid, bookTypeValid, bookPriceValid } = this.state;
+        this.setState({ dataValid: bookNameValid && bookTypeValid && bookPriceValid });
+    }
+
+    errorClass = (error: string) => {
+        return (error.length === 0 ? '' : 'has-error');
     }
 
     handleSelectAuthor = (event: any): void => {
@@ -212,12 +260,11 @@ class BookList extends Component<BookListProps, BookListState> {
     handleInputImageChange = (event: any): void => {
         event.preventDefault();
         let file = event.target.files[0];
-        let reader = new FileReader();
-        console.log('file', file.name);
+        let reader: FileReader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             const loadImage: string = reader.result as string;
-            this.setState({image: loadImage, isLoadImage: true})
+            this.setState({ image: loadImage, isLoadImage: true })
         };
     }
 
@@ -241,32 +288,49 @@ class BookList extends Component<BookListProps, BookListState> {
         const savedBook = await this.saveBookwithAuthor(editBook);
         if (savedBook) {
             this.getAllBooksWithoutRemoved();
-            this.setState({ isCreate: false });
+            this.setState({ isCreate: false, image: '', isLoadImage: false });
         }
     }
 
+    handleShowSizeChange = (page: number, pageSize: number ): void => {
+        this.setState({ page, pageSize});
+    }
 
-    // handleSaveBook = async (event: any): Promise<void> => {
-    //     event.preventDefault();
+    handleChangePagination = (page: number, pageSize: number | undefined): void => {
+        this.setState({ page, pageSize: pageSize as number });
+    }
 
-    //     const { bookName, file, authors, bookDescription, bookCurrency, bookPrice, bookStatus, bookType }: BookListState = this.state;
+    getCountBooksWithoutRemoved = (): void => {
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options: RequestOptionsModel = {
+            method: 'GET',
+            headers,
+        };
 
-    //     console.log('file', file);
+        const url = BASE_PATH + 'countByIsRemoved';
+        const request: Request = new Request(url, options);
+        fetch(request)
+            .then((res: Response) => res.json())
+            .then((count: number) => this.setState({ countBook: count }))
+            .catch(error => error);
+    }
 
-    //     const editBook: BookModel = {
-    //         name: bookName,
-    //         description: bookDescription,
-    //         price: bookPrice,
-    //         status: bookStatus,
-    //         currency: bookCurrency,
-    //         type: bookType,
-    //     }
+    getCountBooks = (): void => {
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options: RequestOptionsModel = {
+            method: 'GET',
+            headers,
+        };
 
-    //     const savedBook = await this.saveBookwithAuthor(editBook, file);
-    //     if (savedBook) {
-    //         this.setState({ isCreated: true });
-    //     }
-    // }
+        const url = BASE_PATH + 'count';
+        const request: Request = new Request(url, options);
+        fetch(request)
+            .then((res: Response) => res.json())
+            .then((count: number) => this.setState({ countBook: count }))
+            .catch(error => error);
+    }
 
     saveBookwithAuthor = async (data: BookWithAuthorsModel): Promise<BookModel> => {
         const token: string | null = localStorage.getItem('accessToken');
@@ -291,75 +355,68 @@ class BookList extends Component<BookListProps, BookListState> {
         return book;
     }
 
-    // saveBookwithAuthor = async (data: BookModel, file: any): Promise<BookModel> => {
-    //     const token: string | null = localStorage.getItem('accessToken');
-    //     const headers: Headers = new Headers();
-    //     headers.append('Authorization', 'Bearer ' + token);
-    //     const formData = new FormData();
-    //     formData.append('image', file);
-    //     formData.append('name', data.name);
-    //     formData.append('description', data.description);
-    //     formData.append('price', data.price.toString());
-    //     formData.append('status', data.status);
-    //     formData.append('currency', data.currency);
-    //     formData.append('type', data.type);
-
-    //     const options = {
-    //         method: 'POST',
-    //         headers,
-    //         body: formData,
-    //     };
-
-    //     console.log('options', options);
-
-    //     let book: BookModel = {} as BookModel;
-    //     const url = BASE_PATH + 'file';
-    //     console.log(url);
-    //     const request: Request = new Request(url, options);
-    //     await fetch(request)
-    //         .then((res: Response) => res.json())
-    //         .then((cratedBook: BookModel) => book = cratedBook)
-    //         .catch(error => error);
-
-    //     return book;
-    // }
-
     getAllBooksWithoutRemoved = (): void => {
-        const token: string | null = localStorage.getItem('accessToken');
+        const { page, pageSize } = this.state;
         const headers: Headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + token);
+        headers.append('Content-Type', 'application/json');
         const options: RequestOptionsModel = {
             method: 'GET',
             headers,
         };
 
-        const url = BASE_PATH + 'isRemoved';
+        let masBook: BookModel[] = {} as BookModel[];
+        masBook = [];
+        const url = BASE_PATH + 'isRemoved/' + pageSize + '/' + (page - 1) * pageSize;
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
-            .then((books: BookModel[]) => this.setState({ books }))
+            .then((books: BookModel[]) => {
+                for (let i = 0; i < books.length; i++) {
+                    let book: BookModel = {} as BookModel;
+                    book = books[i];
+                    if (!book.image) {
+                        book.image = defaultImage;
+                    }
+
+                    masBook.push(book);
+                }
+                this.setState({ books: masBook });
+            })
             .catch(error => error);
     }
 
     getAllBooks = (): void => {
-        const token: string | null = localStorage.getItem('accessToken');
+        const { page, pageSize } = this.state;
         const headers: Headers = new Headers();
-        headers.append('Authorization', 'Bearer ' + token);
+        headers.append('Content-Type', 'application/json');
         const options: RequestOptionsModel = {
             method: 'GET',
             headers,
         };
 
-        const url = BASE_PATH + 'all';
+        let masBook: BookModel[] = {} as BookModel[];
+        masBook = [];
+        const url = BASE_PATH + 'all/' + pageSize + '/' + (page - 1) * pageSize;
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
-            .then((books: BookModel[]) => this.setState({ books }))
+            .then((books: BookModel[]) => {
+                for (let i = 0; i < books.length; i++) {
+                    let book: BookModel = {} as BookModel;
+                    book = books[i];
+                    if (!book.image) {
+                        book.image = defaultImage;
+                    }
+
+                    masBook.push(book);
+                }
+                this.setState({ books: masBook })
+            })
             .catch(error => error);
     }
 
     render() {
-        const { books, isCreated, isRoleUser, isCreate, image, isLoadImage } = this.state;
+        const { books, countBook, dataValid, isCreated, isRoleUser, isCreate, image, isLoadImage, dataErrors } = this.state;
 
         return (
             <div className="content">
@@ -386,16 +443,25 @@ class BookList extends Component<BookListProps, BookListState> {
                             ))}
 
                         </div>
+                        <div className="pagination">
+                            <Pagination
+                                showSizeChanger
+                                onShowSizeChange={this.handleShowSizeChange}
+                                onChange={this.handleChangePagination}
+                                defaultCurrent={1}
+                                total={countBook}
+                            />
+                        </div>
                     </div>}
                     {isCreate && <div>
-                        <NewBook  onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
-                        {!isCreated && <a href="#" className="button" onClick={this.handleSaveBook}>
+                        <NewBook onValidateBookName={this.errorClass(dataErrors.bookName)} errorPrice={dataErrors.bookPrice} errorType={dataErrors.bookType} errorName={dataErrors.bookName} onValidateBookType={this.errorClass(dataErrors.bookType)} onValidateBookPrice={this.errorClass(dataErrors.bookPrice)} isCreate={isCreate} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} loadImage={image} onInputImageChange={this.handleInputImageChange} onSelectStatusBook={this.handleSelectStatusBook} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} onSelectAuthor={this.handleSelectAuthor} onInputChange={this.handleInputChange} />
+                        {!isCreated && <button className="button" onClick={this.handleSaveBook} disabled={!dataValid}>
                             <span className="button__line button__line--top"></span>
                             <span className="button__line button__line--right"></span>
                             <span className="button__line button__line--bottom"></span>
                             <span className="button__line button__line--left"></span>
                             Create
-                        </a>}
+                        </button>}
                     </div>}
                 </div>
             </div>

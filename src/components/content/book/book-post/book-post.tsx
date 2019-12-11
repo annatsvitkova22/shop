@@ -4,6 +4,7 @@ import { RequestOptionsModel } from '../../../../type/author.type';
 import { BookPostState, BookModel, AuthorModel, BookWithAuthorsModel, SelectModel } from '../../../../type/book.type';
 import { Link } from 'react-router-dom';
 import NewBook from '../new-book/new-book';
+import defaultImage from '../../../../image/default.jpg';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 
@@ -27,6 +28,15 @@ class BookPost extends Component<any, BookPostState> {
         isRoleUser: false,
         isEdit: false,
         isLoadImage: true,
+        dataErrors: {
+            bookName: '',
+            bookType: '',
+            bookPrice: '',
+        },
+        bookNameValid: false,
+        bookTypeValid: false,
+        bookPriceValid: false,
+        dataValid: true,
     });
 
     componentDidMount = (): void => {
@@ -60,19 +70,54 @@ class BookPost extends Component<any, BookPostState> {
         switch (name) {
             case 'bookName':
                 updateBook.name = value;
-                this.setState({ book: updateBook });
+                this.setState({ book: updateBook },
+                    () => { this.validateField(name, value) });
                 break;
             case 'bookType':
                 updateBook.type = value;
-                this.setState({ book: updateBook });
+                this.setState({ book: updateBook },
+                    () => { this.validateField(name, value) });
                 break;
             case 'bookPrice':
                 updateBook.price = +value;
-                this.setState({ book: updateBook });
+                this.setState({ book: updateBook },
+                    () => { this.validateField(name, value) });
                 break;
             default:
                 break;
         }
+    }
+
+    validateField(fieldName: string, value: any) {
+        let { dataErrors, bookNameValid, bookTypeValid, bookPriceValid } = this.state;
+
+        switch (fieldName) {
+            case 'bookName':
+                bookNameValid = value.length >= 2;
+                dataErrors.bookName = bookNameValid ? '' : 'name book is too short';
+                break;
+            case 'bookType':
+                bookTypeValid = value.length >= 2;
+                dataErrors.bookType = bookTypeValid ? '' : 'type book is too short';
+                break;
+            case 'bookPrice':
+                bookPriceValid = value > 0;
+                dataErrors.bookPrice = bookPriceValid ? '' : 'price bokk is small';
+                break;
+            default:
+                break;
+        }
+
+        this.setState({ dataErrors, bookNameValid, bookTypeValid, bookPriceValid }, this.validateForm);
+    }
+
+    validateForm() {
+        const { bookNameValid, bookTypeValid, bookPriceValid } = this.state;
+        this.setState({ dataValid: bookNameValid && bookTypeValid && bookPriceValid });
+    }
+
+    errorClass = (error: string) => {
+        return (error.length === 0 ? '' : 'has-error');
     }
 
     handleEdit = (): void => {
@@ -81,7 +126,6 @@ class BookPost extends Component<any, BookPostState> {
 
     handleEditBook = async (): Promise<void> => {
         const { book, authors }: BookPostState = this.state;
-        debugger;
         const editBook: BookWithAuthorsModel = {
             printingEdition: {
                 id: book.id,
@@ -98,7 +142,7 @@ class BookPost extends Component<any, BookPostState> {
 
         const updatedBook = await this.requestEditBook(editBook);
         if (updatedBook) {
-            this.setState({ labelChangeName: true });
+            this.setState({ isEdit: false });
         }
     }
 
@@ -167,6 +211,9 @@ class BookPost extends Component<any, BookPostState> {
         fetch(request)
             .then((res: Response) => res.json())
             .then((bookWithAuthor: BookWithAuthorsModel) => {
+                if(!bookWithAuthor.printingEdition.image) {
+                    bookWithAuthor.printingEdition.image = defaultImage;
+                }
                 this.setState({ book: bookWithAuthor.printingEdition, authors: bookWithAuthor.authors })
                 const mas: BookPostState = {} as BookPostState;
                 mas.authorDefaultOptions = [];
@@ -187,7 +234,6 @@ class BookPost extends Component<any, BookPostState> {
         event.preventDefault();
         let file = event.target.files[0];
         let reader = new FileReader();
-        console.log('file', file.name);
         reader.readAsDataURL(file);
         reader.onloadend = () => {
             const loadImage: string = reader.result as string;
@@ -214,8 +260,7 @@ class BookPost extends Component<any, BookPostState> {
         await fetch(request)
             .then((res: Response) => res.json())
             .then((cratedBook: BookModel) => {
-                book = cratedBook
-                console.log('book', cratedBook)
+                book = cratedBook;
             })
             .catch(error => error);
 
@@ -242,11 +287,11 @@ class BookPost extends Component<any, BookPostState> {
     }
 
     render() {
-        const { book, labelChangeName, isLoadImage, authorDefaultOptions, isRoleUser, authors, isEdit } = this.state;
-        console.log('state', this.state);
+        const { book, isLoadImage, authorDefaultOptions, dataValid, isRoleUser, authors, dataErrors, isEdit } = this.state;
+
         return (
             <div className="book-post">
-                {isRoleUser && isEdit && <NewBook onInputImageChange={this.handleInputImageChange} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} loadImage={book.image} bookName={book.name} bookCurrency={book.currency} bookDescription={book.description} bookPrice={book.price} bookStatus={book.status} bookType={book.type} labelChangeName={labelChangeName} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
+                {isRoleUser && isEdit && <NewBook onValidateBookName={this.errorClass(dataErrors.bookName)} errorPrice={dataErrors.bookPrice} errorType={dataErrors.bookType} errorName={dataErrors.bookName} onValidateBookType={this.errorClass(dataErrors.bookType)} onValidateBookPrice={this.errorClass(dataErrors.bookPrice)} onInputImageChange={this.handleInputImageChange} onCloseLoad={this.closeLoad} isLoadImage={isLoadImage} onSelectStatusBook={this.handleSelectStatusBook} onSelectAuthor={this.handleSelectAuthor} loadImage={book.image} bookName={book.name} bookCurrency={book.currency} bookDescription={book.description} bookPrice={book.price} bookStatus={book.status} bookType={book.type} onSelectCurrencyBook={this.handleSelectCurrencyBook} onInputDescription={this.handleInputDescription} authorDefaultOptions={authorDefaultOptions} onInputChange={this.handleInputChange} />}
                 {!isEdit && !book.isRemoved && <div>
                     <div>
                         <p><span>Name: </span> {book.name}</p>
@@ -266,7 +311,7 @@ class BookPost extends Component<any, BookPostState> {
                     <button onClick={this.handleRemoveBook} >Remove</button>
                 </div>}
                 {book.isRemoved ? <label>Book {book.name} deleted</label> : <br />}
-                {isEdit && <button onClick={this.handleEditBook} >Edit</button>}
+                {isEdit && <button onClick={this.handleEditBook} disabled={!dataValid} >Save</button>}
             </div>
         );
     }

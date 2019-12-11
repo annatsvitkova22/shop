@@ -56,40 +56,30 @@ class CreateUser extends Component<any, UserModelState> {
     }
     
     validateField(fieldName: string, value: any) {
-        let fieldValidationErrors: ErrorsModel = this.state.formErrors;
-        let emailValid: boolean = this.state.emailValid;
-        let passwordValid: boolean = this.state.passwordValid;
-        let firstNameValid: boolean = this.state.firstNameValid;
-        let lastNameValid: boolean =this.state.lastNameValid;
-
+        let {formErrors, emailValid, passwordValid, firstNameValid, lastNameValid } = this.state;
+ 
         switch (fieldName) {
             case 'email':
                 emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-                fieldValidationErrors.email = emailValid ? '' : 'Email is invalid';
+                formErrors.email = emailValid ? '' : 'Email is invalid';
                 break;
             case 'password':
                 passwordValid = value.length >= 6;
-                fieldValidationErrors.password = passwordValid ? '' : 'Password is too short';
+                formErrors.password = passwordValid ? '' : 'Password is too short';
                 break;
             case 'firstName':
                 firstNameValid = value.length >= 2;
-                fieldValidationErrors.firstName = firstNameValid ? '' : 'First name is too short';
+                formErrors.firstName = firstNameValid ? '' : 'First name is too short';
                 break;
             case 'lastName':
                 lastNameValid = value.length >= 2;
-                fieldValidationErrors.lastName = lastNameValid ? '' : 'Last name is too short';
+                formErrors.lastName = lastNameValid ? '' : 'Last name is too short';
                 break;
             default:
                 break;
         }
 
-        this.setState({
-            formErrors: fieldValidationErrors,
-            emailValid: emailValid,
-            passwordValid: passwordValid,
-            firstNameValid: firstNameValid,
-            lastNameValid: lastNameValid,
-        }, this.validateForm);
+        this.setState({ formErrors, emailValid, passwordValid, firstNameValid, lastNameValid }, this.validateForm);
     }
 
     validateForm() {

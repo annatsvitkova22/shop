@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { UserInputProps } from '../../../../type/user.type';
 
+import { UserInputProps } from '../../../../type/user.type';
 import './create-user.css';
+
 
 const RegistrationUser: FC<UserInputProps> = ({ onValidateFirstName, onValidateLastName, isUser, errorFirstName, errorLastName, errorPassword, isRegistration, errorEmail, formValid, onValidateEmail, onValidatePassword, valueFirstName, onInputValueUpdateFirstName, valueLastName, onInputValueUpdateLastName, valuePassword, onInputValueUpdatePassword, valueEmail, onInputValueUpdateEmail, onCreateUser }) => (
     <form className="user-input-wrapper">

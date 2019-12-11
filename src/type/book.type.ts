@@ -52,21 +52,21 @@ export interface BookPostState {
     isRoleUser: boolean,
     isEdit: boolean,
     isLoadImage: boolean,
+    dataErrors: {
+        bookName: string,
+        bookType: string,
+        bookPrice: string,
+    },
+    bookNameValid: boolean,
+    bookTypeValid: boolean,
+    bookPriceValid: boolean,
+    dataValid: boolean,
 }
 
 export interface NewBookState {
     authorOptions: SelectModel[],
     typeBookOptions: SelectModel[],
     currencyBookOptions: SelectModel[],
-}
-
-export interface FileModel {
-    lastModified: number;
-    name: string;
-    lastModifiedDate: Object;
-    size: number;
-    webkitRelativePath: string;
-    type: string
 }
 
 export interface BookListState {
@@ -85,9 +85,20 @@ export interface BookListState {
     userId: string,
     orderId: string,
     cart: CartModel[],
-    file: FileModel,
     image: string,
     isLoadImage?: boolean,
+    dataErrors: {
+        bookName: string,
+        bookType: string,
+        bookPrice: string,
+    },
+    bookNameValid: boolean,
+    bookTypeValid: boolean,
+    bookPriceValid: boolean,
+    dataValid: boolean,
+    page: number,
+    pageSize: number,
+    countBook: number
 }
 
 export interface BookProps {
@@ -97,10 +108,16 @@ export interface BookProps {
     bookStatus?: string,
     bookCurrency?: string,
     bookType?: string,
-    labelChangeName?: boolean,
     authorDefaultOptions?: SelectModel[],
     loadImage?: string,
     isLoadImage?: boolean,
+    isCreate?: boolean,
+    onValidateBookName: string,
+    onValidateBookType: string,
+    onValidateBookPrice: string,
+    errorName: string,
+    errorType: string,
+    errorPrice: string,
     onCloseLoad?: () => void,
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     onInputDescription: (event: ChangeEvent<HTMLTextAreaElement>) => void,
