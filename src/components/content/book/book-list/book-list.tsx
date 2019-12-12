@@ -10,6 +10,7 @@ import { CartModel, CartItemModel } from '../../../../type/cart.type';
 
 import './book-list.css';
 import defaultImage from '../../../../image/default.jpg';
+import Filter from '../../filter/filter';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 
@@ -151,7 +152,6 @@ class BookList extends Component<BookListProps, BookListState> {
         const { check, page, pageSize }: BookListState = this.state;
 
         if (book !== prevProps.book || page !== prevState.page || pageSize !== prevState.pageSize) {
-            console.log('dsfdsf');
             if (check) {
                 this.getCountBooks();
                 this.getAllBooks();
@@ -422,7 +422,7 @@ class BookList extends Component<BookListProps, BookListState> {
             <div className="content">
                 <div className="book-input-wrapper">
                     {!isCreate && <div>
-                        <div className="title">
+                        <div className="hover-table-layout">
                             {!isRoleUser && <input
                                 type='checkbox'
                                 onChange={this.handleInputCheck}
@@ -437,6 +437,7 @@ class BookList extends Component<BookListProps, BookListState> {
                                 Create book
                             </a>}
                         </div>
+                        <Filter/>
                         <div className="hover-table-layout">
                             {books.map(({ id, name, price, currency, type, image }) => (
                                 <BookCart isRoleUser={isRoleUser} onAddToCart={this.handleAddBookToCart} image={image} id={id} name={name} price={price} currency={currency} type={type} />

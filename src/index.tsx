@@ -19,7 +19,7 @@ ReactDOM.render((
   <BrowserRouter>
     <Switch>
       <Provider store={store}>
-      <App />
+        <App />
         <Route exact path='/' component={BookList} />
         <Route path='/book/:id' component={BookPost} />
         <Route path='/registration' component={CreateUser} />

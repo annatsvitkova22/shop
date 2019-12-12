@@ -12,20 +12,20 @@
     margin:0 auto;
   }
 .listing-item {
-     display: block;
-     width:100%;
-      margin-bottom:20px;
-      float: left;
-      background: #fff;
-      border-radius:10px;
-      z-index:0;
-      cursor:pointer;
-      -webkit-transition: all 0.3s ease;
-      -moz-transition: all 0.3s ease;
-      transition: all 0.3s ease;
-          -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
-      -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
-      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+    display: block;
+    width:100%;
+    margin-bottom:20px;
+    float: left;
+    background: #fff;
+    border-radius:10px;
+    z-index:0;
+    cursor:pointer;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+    -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
   
 }
 .listing-item:hover,  .listing-item.active{
