@@ -34,6 +34,12 @@ export class PrintingEditionRepository {
         return countPrintingEdition;
     }
 
+    public async getMaxPricePrintingEdition(): Promise<number> {
+        const maxPricePrintingEdition: number = await db.PrintingEdition.max('price');
+
+        return maxPricePrintingEdition;
+    }
+
     public async getCountPrintingEdition(): Promise<number> {
         const countPrintingEdition: number = await db.PrintingEdition.count();
 

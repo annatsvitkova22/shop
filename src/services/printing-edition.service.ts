@@ -28,6 +28,12 @@ export class PrintingEditionService {
         return countPrintingEdition;
     }
 
+    public async getMaxPricePrintingEdition(): Promise<number> {
+        const maxPricePrintingEdition: number = await this.printingEditionRepository.getMaxPricePrintingEdition();
+
+        return maxPricePrintingEdition;
+    }
+
     public async getCountPrintingEdition(): Promise<number> {
         const countPrintingEdition: number = await this.printingEditionRepository.getCountPrintingEdition();
 
@@ -72,10 +78,10 @@ export class PrintingEditionService {
         let query: string = 'SELECT `id`, `name`, `description`, `price`, `isRemoved`, `status`, `currency`, `type` FROM `PrintingEditions` WHERE';
 
         if (printingEdition.name && (printingEdition.priceMax || printingEdition.priceMin || printingEdition.status)) {
-            query += ' `name` = \'' + printingEdition.name + '\' AND';
+            query += ' `name` REGEXP \'' + printingEdition.name + '\' AND';
         }
         if (!printingEdition.priceMax && !printingEdition.priceMin && !printingEdition.status && printingEdition.name) {
-            query += ' `name` = \'' + printingEdition.name + '\'';
+            query += ' `name` REGEXP \'' + printingEdition.name + '\'';
         }
         if (printingEdition.status && (printingEdition.priceMax || printingEdition.priceMin)) {
             query += ' `status` = \'' + printingEdition.status + '\' AND';

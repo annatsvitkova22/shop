@@ -33,6 +33,14 @@ export class PrintingEditionsController {
         return countPrintingEdition;
     }
 
+    @Get('maxPrice')
+    @ApiOperation({ title: 'Get count all printing editions' })
+    public async getMaxPrice(): Promise<number> {
+        const countPrintingEdition: number = await this.printingEditionService.getMaxPricePrintingEdition();
+
+        return countPrintingEdition;
+    }
+
     @Get('count')
     @ApiOperation({ title: 'Get count all printing editions' })
     public async getCount(): Promise<number> {
