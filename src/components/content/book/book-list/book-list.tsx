@@ -12,9 +12,9 @@ import './book-list.css';
 import defaultImage from '../../../../image/default.jpg';
 import Filter from '../../filter/filter';
 
-const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
+const BASE_PATH = 'https://192.168.0.104:443/printingEdition';
 
-class BookList extends Component<BookListProps, BookListState> {
+class BookList extends Component<any, BookListState> {
     state: BookListState = ({
         books: [],
         bookName: '',
@@ -45,6 +45,7 @@ class BookList extends Component<BookListProps, BookListState> {
         page: 1,
         pageSize: 10,
         countBook: 0,
+        isFilter: false,
     });
 
     roleUser = (): void => {
@@ -53,7 +54,6 @@ class BookList extends Component<BookListProps, BookListState> {
         const payload = jwt.decode(token);
         if (token) {
             if (payload.role === 'user') {
-
                 this.setState({ isRoleUser: true, userId: payload.userId });
             }
         }
@@ -64,7 +64,7 @@ class BookList extends Component<BookListProps, BookListState> {
 
     handleInputCheck = (event: ChangeEvent<HTMLInputElement>): void => {
         const check = event.target.checked;
-        this.setState({ check })
+        this.setState({ check });
         if (check) {
             this.getCountBooks();
             this.getAllBooks();
@@ -73,6 +73,12 @@ class BookList extends Component<BookListProps, BookListState> {
             this.getCountBooksWithoutRemoved();
             this.getAllBooksWithoutRemoved();
         }
+    }
+
+    handleFilter = (dataFilter: string) => {
+        const url: string = '/filter?' + dataFilter;
+        this.props.history.push(url);
+        this.setState({isFilter: true});
     }
 
     handleCreateBook = (event: any) => {
@@ -138,30 +144,44 @@ class BookList extends Component<BookListProps, BookListState> {
 
     componentDidMount = () => {
         this.roleUser();
-        this.getAllBooksWithoutRemoved();
-        this.getCountBooksWithoutRemoved();
+        this.handleGetBook();
         const localStorageCart: string = localStorage.getItem('cart') as string;
         const cart: CartModel[] = JSON.parse(localStorageCart);
         if (cart) {
             this.setState({ cart });
         }
+
     }
 
     componentDidUpdate(prevProps: any, prevState: any) {
         const { book }: any = this.props;
-        const { check, page, pageSize }: BookListState = this.state;
+        const { page, pageSize, isFilter }: BookListState = this.state;
 
-        if (book !== prevProps.book || page !== prevState.page || pageSize !== prevState.pageSize) {
-            if (check) {
-                this.getCountBooks();
-                this.getAllBooks();
-            }
-            if (!check) {
-                this.getCountBooksWithoutRemoved();
-                this.getAllBooksWithoutRemoved();
-            }
+        if (book !== prevProps.book || page !== prevState.page || pageSize !== prevState.pageSize || isFilter !== prevState.isFilter) {
+           this.handleGetBook();
         }
     }
+
+    handleGetBook = () => {
+        const { pathname, search } = this.props.history.location;
+        const { check }: BookListState = this.state;
+
+        if (pathname !== '/filter' && check) {
+            this.getCountBooks();
+            this.getAllBooks();
+        }
+        if (pathname !== '/filter' && !check) {
+            this.getAllBooksWithoutRemoved();
+            this.getCountBooksWithoutRemoved();
+        }
+        if (pathname == '/filter') {
+            const urlFilter: string = pathname + search;
+            this.getBookByFilter(urlFilter);
+            this.setState({isFilter: false});
+        }
+    }
+
+    
 
     handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { value } = event.target;
@@ -292,8 +312,8 @@ class BookList extends Component<BookListProps, BookListState> {
         }
     }
 
-    handleShowSizeChange = (page: number, pageSize: number ): void => {
-        this.setState({ page, pageSize});
+    handleShowSizeChange = (page: number, pageSize: number): void => {
+        this.setState({ page, pageSize });
     }
 
     handleChangePagination = (page: number, pageSize: number | undefined): void => {
@@ -308,7 +328,7 @@ class BookList extends Component<BookListProps, BookListState> {
             headers,
         };
 
-        const url = BASE_PATH + 'countByIsRemoved';
+        const url = BASE_PATH + '/countByIsRemoved';
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
@@ -324,7 +344,7 @@ class BookList extends Component<BookListProps, BookListState> {
             headers,
         };
 
-        const url = BASE_PATH + 'count';
+        const url = BASE_PATH + '/count';
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
@@ -366,7 +386,7 @@ class BookList extends Component<BookListProps, BookListState> {
 
         let masBook: BookModel[] = {} as BookModel[];
         masBook = [];
-        const url = BASE_PATH + 'isRemoved/' + pageSize + '/' + (page - 1) * pageSize;
+        const url = BASE_PATH + '/isRemoved/' + pageSize + '/' + (page - 1) * pageSize;
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
@@ -396,7 +416,7 @@ class BookList extends Component<BookListProps, BookListState> {
 
         let masBook: BookModel[] = {} as BookModel[];
         masBook = [];
-        const url = BASE_PATH + 'all/' + pageSize + '/' + (page - 1) * pageSize;
+        const url = BASE_PATH + '/all/' + pageSize + '/' + (page - 1) * pageSize;
         const request: Request = new Request(url, options);
         fetch(request)
             .then((res: Response) => res.json())
@@ -411,6 +431,36 @@ class BookList extends Component<BookListProps, BookListState> {
                     masBook.push(book);
                 }
                 this.setState({ books: masBook })
+            })
+            .catch(error => error);
+    }
+
+    getBookByFilter = (data: string): void => {
+        const headers: Headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        const options: RequestOptionsModel = {
+            method: 'GET',
+            headers,
+        };
+
+        let masBook: BookModel[] = {} as BookModel[];
+        masBook = [];
+        const url = BASE_PATH + data;
+        const request: Request = new Request(url, options);
+        fetch(request)
+            .then((res: Response) => res.json())
+            .then((books: BookModel[]) => {
+                for (let i = 0; i < books.length; i++) {
+                    let book: BookModel = {} as BookModel;
+                    book = books[i];
+                    if (!book.image) {
+                        book.image = defaultImage;
+                    }
+
+                    masBook.push(book);
+                }
+
+                this.setState({ books: masBook, countBook:books.length })
             })
             .catch(error => error);
     }
@@ -437,7 +487,7 @@ class BookList extends Component<BookListProps, BookListState> {
                                 Create book
                             </a>}
                         </div>
-                        <Filter/>
+                        <Filter handleFilter={this.handleFilter} />
                         <div className="hover-table-layout">
                             {books.map(({ id, name, price, currency, type, image }) => (
                                 <BookCart isRoleUser={isRoleUser} onAddToCart={this.handleAddBookToCart} image={image} id={id} name={name} price={price} currency={currency} type={type} />

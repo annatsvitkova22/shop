@@ -1,27 +1,76 @@
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import { Slider } from 'antd';
 
 import './filter.css';
 import 'antd/dist/antd.css';
 import { RequestOptionsModel } from '../../../type/author.type';
+import { BookModel, FilterState, FilterProps } from '../../../type/book.type';
+import { SliderValue } from 'antd/lib/slider';
 
 const BASE_PATH = 'https://192.168.0.104:443/printingEdition/';
 
-class Filter extends Component<any, any> {
-    state = ({
+class Filter extends Component<FilterProps, FilterState> {
+    state: FilterState = ({
         maxPrice: 0,
+        check: false,
+        nameBook: '',
+        priceMin: '',
+        priceMax: '',
     });
 
-    onChange(value: any) {
-        console.log('onChange: ', value);
+    handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        const { value } = event.target;
+        this.setState({ nameBook: value });
     }
 
-    onAfterChange(value: any) {
-        console.log('onAfterChange: ', value);
+    handleInputCheck = (event: ChangeEvent<HTMLInputElement>): void => {
+        const check = event.target.checked;
+        this.setState({ check });
+    }
+
+    onAfterSliderChange = (value: SliderValue) => {
+        const price: SliderValue[] = value as Array<SliderValue>;
+        let priceMin: string = '';
+        if (price.length) {
+            console.log('fdgfdg');
+            const priceMin: string = 'priceMin=' + price[0];
+            const priceMax: string = 'priceMax=' + price[1];
+            console.log(priceMin, priceMax);
+            this.setState({ priceMin, priceMax });
+            console.log(this.state)
+        }
     }
 
     componentDidMount = () => {
         this.getMaxPrice();
+    }
+
+    onCreateFilter = (): void => {
+        const { check, nameBook, priceMin, priceMax } = this.state;
+        let dataFilter: string = '';
+        if (nameBook) {
+            dataFilter += 'name=' + nameBook;
+        }
+        if (check) {
+            if (dataFilter) {
+                dataFilter += '&';
+            }
+            dataFilter += 'status=yes';
+        }
+        if (priceMin) {
+            if (dataFilter) {
+                dataFilter += '&';
+            }
+            dataFilter += priceMin;
+        }
+        if (priceMax) {
+            if (dataFilter) {
+                dataFilter += '&';
+            }
+            dataFilter += priceMax;
+        }
+        console.log('dataFilter', dataFilter);
+        this.props.handleFilter(dataFilter);
     }
 
     getMaxPrice = (): void => {
@@ -42,7 +91,8 @@ class Filter extends Component<any, any> {
 
     render() {
         const { maxPrice } = this.state;
-
+        console.log(this.state);
+        console.log(this.props);
         return (
             <div className="hover-table-layout">
                 <div>
@@ -51,6 +101,7 @@ class Filter extends Component<any, any> {
                         <input
                             type='text'
                             name="bookName"
+                            onChange={this.handleInputChange}
                             required
                         />
                         <span className="bar"></span>
@@ -59,6 +110,7 @@ class Filter extends Component<any, any> {
                         <label>In stock</label>
                         <input type="checkbox"
                             className="option-input"
+                            onChange={this.handleInputCheck}
                         />
                     </div>
                     <div className="filter-price">
@@ -67,13 +119,12 @@ class Filter extends Component<any, any> {
                             range
                             step={1}
                             defaultValue={[0, maxPrice]}
-                            onChange={this.onChange}
-                            onAfterChange={this.onAfterChange}
+                            onAfterChange={this.onAfterSliderChange}
                             max={maxPrice}
                         />
                     </div>
                     <div>
-                        <button className="button-create">
+                        <button className="button-create" onClick={() => this.onCreateFilter()}>
                             Filter
                         </button>
                     </div>

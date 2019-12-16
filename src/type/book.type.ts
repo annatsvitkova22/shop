@@ -1,5 +1,6 @@
 import { ChangeEvent } from "react";
 import { CartModel } from "./cart.type";
+import { SliderValue } from "antd/lib/slider";
 
 export interface BookListProps {
     books: BookModel[],
@@ -98,7 +99,8 @@ export interface BookListState {
     dataValid: boolean,
     page: number,
     pageSize: number,
-    countBook: number
+    countBook: number,
+    isFilter: boolean,
 }
 
 export interface BookProps {
@@ -165,4 +167,16 @@ export interface OrderItemsWithPrintingEditionModel {
     pritingEditionId: string,
     orderId: string,
     userId: string,
+}
+
+export interface FilterState {
+    maxPrice: number,
+    check: boolean,
+    nameBook: string,
+    priceMin: string,
+    priceMax: string,
+}
+
+export interface FilterProps {
+    handleFilter: (dataFilter: string) => void,
 }

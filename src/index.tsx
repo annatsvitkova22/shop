@@ -21,6 +21,7 @@ ReactDOM.render((
       <Provider store={store}>
         <App />
         <Route exact path='/' component={BookList} />
+        <Route path='/filter' component={BookList} />
         <Route path='/book/:id' component={BookPost} />
         <Route path='/registration' component={CreateUser} />
         <Route exact path='/authors' component={Author} />

@@ -155,7 +155,6 @@ class UserTable extends Component<any, UserTableState> {
                                     <Select
                                         options={roleOptions}
                                         defaultValue={[roleOptions[0]]}
-                                       // defaultValue={{ value: { name }, label: { name } }}
                                         onChange={this.hangleSelectUserRole}
                                     />
                                 </th> : <th>{name}</th>}

@@ -29,7 +29,6 @@ const BookCart: FunctionComponent<any> = ({ image, id, name, price, currency, ty
                 Add to cart
             </a>}
         </div>
-
     </div>
 );
 
