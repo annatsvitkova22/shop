@@ -9,5 +9,6 @@ export class RequestMiddleware implements NestMiddleware {
     const { password, ...user } = req.body;
 
     next();
+
   }
 }
